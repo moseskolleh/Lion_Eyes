@@ -23,7 +23,7 @@ from pathlib import Path
 import markdown
 import pandas as pd
 
-from floodwatch import config, events
+from floodwatch import config, events, outlook
 
 OUT = config.REPO_ROOT / "_site"
 DOCS = config.REPO_ROOT / "docs"
@@ -188,16 +188,35 @@ def _md(path: Path, target: str | None = None) -> str:
     return page
 
 
+def _issued_key(o: dict) -> str:
+    """Sort key for Outlooks: issue time; older files (morning only) have none."""
+    return o.get("issued_at") or f"{o['issued']}T09:23Z"
+
+
+def _outlooks() -> list[tuple[str, dict]]:
+    """(file stem, Outlook) for every issued Outlook, newest first."""
+    found = [(f.stem, json.loads(f.read_text())) for f in (config.DATA_DIR / "outlook").glob("*.json")]
+    return sorted(found, key=lambda x: _issued_key(x[1]), reverse=True)
+
+
 def _latest_outlook() -> dict | None:
-    files = sorted((config.DATA_DIR / "outlook").glob("*.json"))
-    return json.loads(files[-1].read_text()) if files else None
+    found = _outlooks()
+    return found[0][1] if found else None
+
+
+_LEVEL_HINT = {"HIGH": " <span class='small muted'>act</span>", "ELEVATED": " <span class='small muted'>watch</span>"}
+
+
+def _period(d: dict) -> str:
+    return d.get("label") or f"{pd.Timestamp(d['day']):%a %d %b}"
 
 
 def _outlook_card(o: dict | None) -> str:
     if not o:
         return '<div class="card">No Outlook has been issued yet.</div>'
     rows = "".join(
-        f"<tr><td class='nowrap'>{pd.Timestamp(d['day']):%a %d %b}</td><td><span class='lvl {d['level']}'>{d['level']}</span></td>"
+        f"<tr><td class='nowrap'>{html.escape(_period(d))}</td>"
+        f"<td class='nowrap'><span class='lvl {d['level']}'>{d['level']}</span>{_LEVEL_HINT.get(d['level'], '')}</td>"
         f"<td>{d['p_wet']:.0%}</td><td>{d['p_very_wet']:.0%}</td><td class='nowrap'>{d['median_mm']:.0f} mm</td>"
         f"<td class='nowrap'>{d['prior_3d_mm']:.0f} mm</td>"
         f"<td class='nowrap'>{'<br>'.join(html.escape(t) for t in d['high_tides']) or '-'}</td></tr>"
@@ -205,12 +224,19 @@ def _outlook_card(o: dict | None) -> str:
     )
     wet = o.get("observed_rain_last_3_days_mm")
     wet_text = f"{wet:.0f} mm" if wet is not None else "not available"
-    return f"""<div class="card"><p class="eyebrow">3-day Outlook · issued {o['issued']}</p>
-<p class="muted small">ECMWF ensemble run {o['forecast_run']}. Rain in the last 3 days (satellite): {wet_text}.</p>
-<table><thead><tr><th>Day</th><th>Level</th><th>Chance of a wet day</th><th>Chance of a very wet day</th>
-<th>Most likely rain</th><th>Ground wetness</th><th>High tides</th></tr></thead><tbody>{rows}</tbody></table>
-<p class="small muted">Levels: LOW, ELEVATED, HIGH. Thresholds are provisional until calibrated against a rainy season of
-archived forecasts. <a href="outlook-method.html">How the Outlook works</a>.</p></div>"""
+    edition = o.get("edition", "morning")
+    first_col = "Period" if edition == "evening" else "Day"
+    note = (" Periods run noon to noon (Freetown time = UTC); the first began at noon today."
+            if edition == "evening" else "")
+    return f"""<div class="card"><p class="eyebrow">3-day Outlook · {edition} issue · {o['issued']}</p>
+<p class="muted small">ECMWF ensemble run {o['forecast_run']}. Rain in {o.get('observed_period', 'the last 3 days')}
+(satellite): {wet_text}.{note}</p>
+<table><thead><tr><th>{first_col}</th><th>Level</th><th>Wet chance</th>
+<th>Very wet chance</th><th>Likely rain</th><th>Ground wetness</th><th>High tides</th></tr></thead>
+<tbody>{rows}</tbody></table>
+<p class="small muted">{outlook.level_meaning(("<strong>", "</strong>"))}
+Issued twice a day, around 09:30 and 21:00 Freetown time. <a href="outlook-method.html">How the Outlook works</a> ·
+<a href="analysis/backtest.html">how well it has done</a>.</p></div>"""
 
 
 def _home(o: dict | None) -> str:
@@ -330,11 +356,11 @@ The list is incomplete, especially before 2015 and for small floods. Know of a f
 
 def _archive_page() -> str:
     items = []
-    for f in sorted((config.DATA_DIR / "outlook").glob("*.json"), reverse=True):
-        o = json.loads(f.read_text())
-        levels = " ".join(f"<span class='lvl {d['level']}'>{pd.Timestamp(d['day']):%d %b}</span>" for d in o["days"])
-        items.append(f"<tr><td><a href='{f.stem}.html'>{o['issued']}</a></td><td>{levels}</td></tr>")
-    body = f"""<p class="eyebrow">Record</p><h1>Outlook <em>archive</em></h1><p class="muted">Every daily Outlook, newest first.</p>
+    for stem, o in _outlooks():
+        levels = " ".join(f"<span class='lvl {d['level']}'>{html.escape(_period(d))}</span>" for d in o["days"])
+        items.append(f"<tr><td class='nowrap'><a href='{stem}.html'>{o['issued']}</a> {o.get('edition', 'morning')}</td>"
+                     f"<td>{levels}</td></tr>")
+    body = f"""<p class="eyebrow">Record</p><h1>Outlook <em>archive</em></h1><p class="muted">Every Outlook, newest first.</p>
 <table><thead><tr><th>Issued</th><th>Levels for the next 3 days</th></tr></thead><tbody>{''.join(items)}</tbody></table>"""
     return _shell("Outlook archive", body, depth=1, path="outlook/index.html")
 

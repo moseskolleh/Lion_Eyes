@@ -13,6 +13,7 @@ project's cloud environment the network proxy adds it; elsewhere set
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import time
@@ -141,6 +142,44 @@ def daily_total(day: date) -> dict:
             return {"date": day.isoformat(), "product": product, "mean_mm": round(float(np.mean(values)), 1),
                     "max_mm": round(float(np.max(values)), 1)}
     raise RuntimeError(f"No IMERG daily total for {day}")
+
+
+HH_NEAR_REAL_TIME = ("GPM_3IMERGHH.07", "GPM_3IMERGHHL.07", "GPM_3IMERGHHE.07")  # Final, Late, Early (~4 h)
+
+
+def total_until(day: date, until_hour: int = 12, workers: int = 4) -> dict:
+    """Rain over the peninsula on ``day`` from 00:00 to ``until_hour`` UTC (mm).
+
+    Used by the evening Outlook for "rain so far today". Takes the most refined
+    half-hourly run that already covers those hours: Final, then Late, then
+    Early. Same cells as `daily_total` (the 8.55 N row is mostly water).
+    """
+    cached = CACHE / f"until_{day.isoformat()}_{until_hour:02d}.json"
+    if cached.exists():
+        return json.loads(cached.read_text())
+    s = _session()
+    doy = day.timetuple().tm_yday
+    for product in HH_NEAR_REAL_TIME:
+        try:
+            html = _get(s, f"{HOST}/data/GPM_L3/{product}/{day.year}/{doy:03d}/").text
+        except (requests.HTTPError, RuntimeError):
+            continue
+        names = sorted(n for n in set(re.findall(r"3B-HHR[^\"<>]*?\.HDF5(?=[\"<])", html))
+                       if int(re.search(r"-S(\d{2})\d{4}-", n).group(1)) < until_hour)
+        if len(names) < 2 * until_hour:
+            continue
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            df = pd.concat(pool.map(lambda n: _read_half_hour(s, product, day, n), names), ignore_index=True)
+        df = df[df["lat"] <= 8.45]
+        per_cell = df.groupby(["lat", "lon"])["rate_mm_h"].sum(min_count=1).dropna() * 0.5  # mm/h x 0.5 h
+        if len(per_cell):
+            out = {"date": day.isoformat(), "until": f"{until_hour:02d}:00 UTC", "product": product,
+                   "mean_mm": round(float(per_cell.mean()), 1), "max_mm": round(float(per_cell.max()), 1)}
+            if product == HH_NEAR_REAL_TIME[0]:  # Final run: will not change, so keep it
+                CACHE.mkdir(parents=True, exist_ok=True)
+                cached.write_text(json.dumps(out))
+            return out
+    raise RuntimeError(f"No IMERG half-hourly rain covering {day} 00-{until_hour:02d} UTC yet")
 
 
 def fetch_days(days: list[date], workers: int = 4) -> pd.DataFrame:
