@@ -19,6 +19,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 
+import numpy as np
 import pandas as pd
 import requests
 
@@ -107,6 +108,39 @@ def fetch_day(day: date, workers: int = 4) -> pd.DataFrame:
     df["product"] = "final" if product == PRODUCTS[0] else "late"
     df.to_csv(path, index=False)
     return df
+
+
+DAILY_PRODUCTS = ("GPM_3IMERGDL.07", "GPM_3IMERGDE.07")  # Late (~14 h), then Early (~4 h)
+
+
+def daily_total(day: date) -> dict:
+    """Near-real-time daily rain (mm) over the peninsula cells: mean and max."""
+    s = _session()
+    for product in DAILY_PRODUCTS:
+        folder = f"{HOST}/data/GPM_L3/{product}/{day.year}/{day.month:02d}/"
+        try:
+            html = _get(s, folder).text
+        except (requests.HTTPError, RuntimeError):
+            continue
+        names = sorted(set(re.findall(rf"3B-DAY-[LE]\.MS\.MRG\.3IMERG\.{day:%Y%m%d}[^\"<>]*?\.nc4(?=[\"<])", html)))
+        if not names:
+            continue
+        lat_hi = LAT_I[0] + 2  # the 8.55 N row is mostly water
+        sub = f"precipitation%5B0:0%5D%5B{LON_I[0]}:{LON_I[1]}%5D%5B{LAT_I[0]}:{lat_hi}%5D"
+        text = _get(s, f"{HOST}/opendap/GPM_L3/{product}/{day.year}/{day.month:02d}/{names[-1]}.ascii?{sub}").text
+        # Rows look like "precipitation[0][1], v, v, v" (HDF5 grids) or
+        # "precipitation.precipitation[...lon=-13.25], v, v, v" (netCDF grids).
+        values = [
+            float(v)
+            for line in text.splitlines()
+            if re.match(r"precipitation(\.precipitation)?\[", line.replace(" ", ""))
+            for v in line.split(",")[1:]
+            if float(v) > FILL + 1
+        ]
+        if values:
+            return {"date": day.isoformat(), "product": product, "mean_mm": round(float(np.mean(values)), 1),
+                    "max_mm": round(float(np.max(values)), 1)}
+    raise RuntimeError(f"No IMERG daily total for {day}")
 
 
 def fetch_days(days: list[date], workers: int = 4) -> pd.DataFrame:
