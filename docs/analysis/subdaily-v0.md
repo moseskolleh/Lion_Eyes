@@ -51,16 +51,34 @@ The **May floods stay weak even half-hourly**:
 
 Either these early-season events (a boulder fall, a wall collapse, a localised flood) need much less rain because drains and slopes are in their dry-season state, or the rain was too local for any satellite. Either way, May needs its own lower trigger, and ground reports.
 
-## 3. Comparison with very wet days that did not flood
+## 3. Do short bursts separate floods better than daily totals?
 
-*In progress.* This section will compare 1-6 hour maxima on flood windows with two groups:
-- 30 of the wettest rainy-season days with no reported flood.
-- 30 ordinary rainy-season days.
+All windows were the same three days long. I compared the 21 flood windows with two groups:
+- **30 very wet days with no reported flood:** the wettest rainy-season days in CHIRPS that were at least 4 days from any reported flood.
+- **30 ordinary days:** random rainy-season days.
 
-It will use the same three-day windows. Results follow when the download completes.
+| Rain measure (wettest cell unless noted) | AUC vs ordinary days | AUC vs very wet no-flood days | Median: floods | very wet no-flood | ordinary |
+|---|---|---|---|---|---|
+| Most rain in 1 hour (IMERG) | 0.75 (0.67-0.83) | 0.42 (0.31-0.53) | 16 mm | 19 mm | 9 mm |
+| Most rain in 3 hours | 0.74 (0.66-0.82) | 0.37 (0.26-0.49) | 37 mm | 39 mm | 18 mm |
+| Most rain in 6 hours | 0.74 (0.66-0.82) | 0.36 (0.24-0.47) | 50 mm | 61 mm | 23 mm |
+| Most rain in 24 hours | 0.76 (0.68-0.84) | 0.36 (0.26-0.48) | 81 mm | 110 mm | 32 mm |
+| 24 hours, peninsula average (IMERG) | 0.80 (0.73-0.87) | 0.38 (0.27-0.51) | 62 mm | 80 mm | 21 mm |
+| Day's rain, peninsula average (CHIRPS) | 0.83 (0.73-0.91) | 0.14* | 67 mm | 118 mm | 19 mm |
+
+\* The very wet group was *chosen* by CHIRPS rain, so this AUC is low by construction. The IMERG columns were not used to choose it.
+
+What this shows:
+1. **Against ordinary days, short bursts add nothing.** All measures separate floods from ordinary days about equally well (AUC 0.74-0.83). Daily totals do as well as or better than 1-3 hour peaks, because satellite bursts are smeared (section 1). The Outlook can work on daily totals.
+2. **Among the very wettest days, no rain measure tells floods from non-floods.** The 30 wettest no-flood days were as intense or more intense than the flood days on every measure; the AUC is below 0.5 with intervals mostly below it. Their rain was no more "bursty" either: the 3-hour peak was 46% of the day's total on flood days and 42% on no-flood days. Two explanations, both likely true:
+   - **Many of those days probably did flood,** but no report was found. The flood history is news-based and incomplete; 16 Aug 2013, with 232 mm across the peninsula, is the clearest candidate.
+   - **Whether a wet day floods also depends on things rain cannot show:** blocked drains, exactly which hillside got the rain, the tide, and the time of day.
+
+**Consequence for the product.** Rain can say "this is one of the wettest days of the season", and every such day should be treated as a potential flood day. It cannot say which of those days will actually flood. That last step needs information from the ground: residents' reports during the event, and a flood history completed by checking the wettest days.
 
 ## What this means for the product
 
+0. **Daily totals are enough for the Outlook.** Sub-daily satellite intensity adds no skill (section 3), so the daily Outlook (`floodwatch outlook`) is the right design for the day-scale levels.
 1. **There is little time to warn from observed rain.** The heavy rain usually falls in the 1-6 hours before a flood. IMERG's quickest version arrives about 4 hours late, so it can *confirm* and *learn*, but cannot be the real-time trigger.
 2. **The real-time Warning level needs faster signals:**
    - Storm tracking from geostationary satellite imagery (every 10-15 minutes) and lightning from the MTG Lightning Imager. These see storms forming before the rain peaks.
