@@ -30,7 +30,7 @@ OUT = config.REPO_ROOT / "_site"
 DOCS = config.REPO_ROOT / "docs"
 TITLE = "Lion Eyes"
 SLOGAN = "Eyes of the mountains"
-SITE_URL = "https://moseskolleh.github.io/Maji/"  # absolute links in the feed
+SITE_URL = "https://moseskolleh.github.io/Lion_Eyes/"  # absolute links in the feed
 
 PAGES = [  # (source markdown, output path, nav label)
     (DOCS / "concept.md", "concept.html", "Concept"),
@@ -172,7 +172,7 @@ def _shell(title: str, body: str, depth: int = 0, extra_head: str = "", path: st
 <p>{DISCLAIMER}</p>
 <p>Data: ECMWF open data, NASA IMERG, CHIRPS, Copernicus DEM, Overture Maps, Meta HRSL, OpenStreetMap contributors.
 Get each Outlook as it is issued: <a href="{up}feed.xml">feed</a> · <a href="{up}latest.json">latest.json</a> ·
-<a href="https://github.com/moseskolleh/Maji">source code</a>.</p></div></footer>"""
+<a href="https://github.com/moseskolleh/Lion_Eyes">source code</a>.</p></div></footer>"""
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">{THEME_HEAD}
 <title>{html.escape(title)} · {TITLE}</title><meta name="description" content="{TITLE}: {SLOGAN}. Flash-flood outlook for Freetown, Sierra Leone.">
@@ -248,7 +248,7 @@ def _outlook_card(o: dict | None, up: str = "") -> str:
     first_col = "Period" if edition == "evening" else "Day"
     note = (" Periods run noon to noon (Freetown time = UTC); the first began at noon today."
             if edition == "evening" else "")
-    sms = html.escape(o.get("sms") or outlook.sms_text(o))
+    sms = html.escape(outlook.sms_text(o))
     return f"""<div class="card"><p class="eyebrow">Latest outlook · {edition} · {o['issued']}</p>
 <p class="muted small">ECMWF ensemble run {o['forecast_run']}. Rain in {o.get('observed_period', 'the last 3 days')}
 (satellite): {wet_text}.{note}</p>
@@ -437,7 +437,7 @@ def _home(found: list[tuple[str, dict]]) -> str:
         wet = o.get("observed_rain_last_3_days_mm")
         wet_text = (f"Rain in {o.get('observed_period', 'the last 3 days')}: {wet:.0f} mm (satellite)."
                     if wet is not None else "Recent rain: not available.")
-        sms = html.escape(o.get("sms") or outlook.sms_text(o))
+        sms = html.escape(outlook.sms_text(o))
         named = (o.get("low_ground_zones", []) + o.get("steep_zones", [])) if level != "LOW" else []
         body = f"""<div id="map" role="application" aria-label="Map of Freetown's warning zones"></div>
 <aside id="panel" class="panel state-{level}" aria-live="polite"><div class="stripe"></div>
@@ -482,7 +482,7 @@ def _floods_page() -> str:
     body = f"""<p class="eyebrow">Record</p><h1>Flood <em>history</em></h1>
 <p>{len(cat)} floods on the Freetown peninsula, 2007-2026, each from public sources (news, NDMA, Red Cross/IFRC, OCHA).
 The list is incomplete, especially before 2015 and for small floods. Know of a flood that is missing? Open an issue on
-<a href="https://github.com/moseskolleh/Maji/issues">GitHub</a>.</p>
+<a href="https://github.com/moseskolleh/Lion_Eyes/issues">GitHub</a>.</p>
 <table><thead><tr><th>Date</th><th>Type</th><th>Places</th><th>Deaths</th><th>Summary</th><th>Sources</th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table>"""
     return _shell("Flood history", body, path="floods.html")
@@ -565,7 +565,7 @@ def _feed(limit: int = 60) -> str:
         entries.append(
             f"<entry><title>{html.escape(title)}</title><link href=\"{url}\"/><id>{url}</id>"
             f"<updated>{_atom_time(o)}</updated>"
-            f"<summary>{html.escape(o.get('sms') or outlook.sms_text(o))}</summary></entry>"
+            f"<summary>{html.escape(outlook.sms_text(o))}</summary></entry>"
         )
     updated = _atom_time(_outlooks()[0][1]) if entries else "2026-11-22T00:00:00Z"
     return (
@@ -582,7 +582,7 @@ def _latest_json() -> dict | None:
     if not found:
         return None
     stem, o = found[0]
-    return o | {"sms": o.get("sms") or outlook.sms_text(o), "bulletin_url": f"{SITE_URL}outlook/{stem}.html"}
+    return o | {"sms": outlook.sms_text(o), "bulletin_url": f"{SITE_URL}outlook/{stem}.html"}
 
 
 def _places_geojson() -> dict:

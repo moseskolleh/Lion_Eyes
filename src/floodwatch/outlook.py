@@ -245,7 +245,7 @@ def sms_text(o: dict) -> str:
     head = f"Lion Eyes flood outlook, {pd.Timestamp(o['issued']):%d %b}{edition}: "
     levels = ", ".join(f"{_short_period(d, k, evening)} {d['level']}" for k, d in enumerate(o["days"])) + ". "
     worst = max(o["days"], key=lambda d: ["LOW", "ELEVATED", "HIGH"].index(d["level"]))["level"]
-    tail = " moseskolleh.github.io/Maji"
+    tail = " moseskolleh.github.io/Lion_Eyes"
     zones = list(o.get("low_ground_zones") or [])
     for n in range(min(3, len(zones)), -1, -1):
         if worst == "HIGH":

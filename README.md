@@ -21,7 +21,7 @@ residents. Physical sensors come later and plug in as extra inputs.
 
 Read the full idea in [docs/concept.md](docs/concept.md).
 
-**Website:** https://moseskolleh.github.io/Maji/ (the latest Outlook, the zone map,
+**Website:** https://moseskolleh.github.io/Lion_Eyes/ (the latest Outlook, the zone map,
 the flood history and all the analysis). Built and published by GitHub Actions,
 and refreshed with each Outlook, morning and evening. Each issue is also published as a
 feed (`feed.xml`), as data (`latest.json`) and as a one-text-message summary for SMS or WhatsApp.
