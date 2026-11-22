@@ -1,4 +1,4 @@
-# Half-hourly rain around past floods (NASA IMERG) — v0
+# Half-hourly rain around past floods (NASA IMERG)
 
 *November 2026. Reproduce with `floodwatch subdaily` (needs a NASA Earthdata token).*
 

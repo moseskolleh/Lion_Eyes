@@ -101,7 +101,7 @@ def test_short_message_fits_one_text_and_names_low_ground_when_high():
          "low_ground_zones": ["New Life Community", "Kaningo", "Tengbeh Town", "Kroo Bay"]}
     text = outlook.sms_text(o)
     assert len(text) <= outlook.SMS_LIMIT and text.isascii()
-    assert text.startswith("Freetown flood outlook, 02 Aug pm: Tonight HIGH, Tomorrow ELEVATED, Wed LOW.")
+    assert text.startswith("Lion Eyes flood outlook, 02 Aug pm: Tonight HIGH, Tomorrow ELEVATED, Wed LOW.")
     assert "ACT:" in text and "New Life Community" in text
     o["days"] = [dict(d, level="LOW") for d in days]
     assert "No action needed." in outlook.sms_text(o)

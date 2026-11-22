@@ -1,4 +1,4 @@
-# Outlook backtest v0: would the forecasts have warned?
+# Outlook backtest: would the forecasts have warned?
 
 *November 2026. Reproduce with `floodwatch backtest`, then `floodwatch backtest --evening`. The first run downloads about 20 GB of forecasts; each run's result is then kept in `data/archive/ecmwf/`.*
 

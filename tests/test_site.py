@@ -17,5 +17,6 @@ def test_feed_is_valid_atom_with_newest_issue_first(monkeypatch):
     assert len(entries) == 2
     first = entries[0]
     assert first.getElementsByTagName("title")[0].firstChild.data == "2027-08-02 evening: HIGH (act)"
-    assert first.getElementsByTagName("summary")[0].firstChild.data == "evening & text"
+    # The summary is the short message, built from the issue (not a stored copy).
+    assert first.getElementsByTagName("summary")[0].firstChild.data.startswith("Lion Eyes flood outlook, 02 Aug pm: Tonight HIGH.")
     assert doc.getElementsByTagName("updated")[0].firstChild.data == "2027-08-02T20:50:00Z"

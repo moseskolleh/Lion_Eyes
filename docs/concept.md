@@ -1,6 +1,6 @@
 # Product concept: flash-flood warnings for Freetown from open data
 
-*Working name: FloodWatch Freetown. Status: concept + first analysis, November 2026.*
+*Lion Eyes, "Eyes of the mountains". Concept, November 2026; the Outlook has run twice a day since.*
 
 ## The problem
 

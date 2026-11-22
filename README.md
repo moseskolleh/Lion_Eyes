@@ -1,7 +1,11 @@
-# FloodWatch Freetown *(working name)*
+# Lion Eyes · *Eyes of the mountains*
 
-Flash-flood warnings for Freetown, Sierra Leone, built from open data, so it
+Flash-flood outlook for Freetown, Sierra Leone, built from open data, so it
 works before any sensor is installed and by a team that is not on the ground.
+Sierra Leone is named after the Lion Mountains, the peninsula hills above
+Freetown; Lion Eyes watches the rain that falls on them.
+
+(The Python package and command are still called `floodwatch`.)
 
 > This repository used to hold *Maji*, a water-vendor marketplace. That project
 > was dropped in November 2026; its code remains in the git history.
@@ -17,7 +21,7 @@ residents. Physical sensors come later and plug in as extra inputs.
 
 Read the full idea in [docs/concept.md](docs/concept.md).
 
-**Website:** https://moseskolleh.github.io/Maji/ (the latest Outlook, the zone map,
+**Website:** https://moseskolleh.github.io/Lion_Eyes/ (the latest Outlook, the zone map,
 the flood history and all the analysis). Built and published by GitHub Actions,
 and refreshed with each Outlook, morning and evening. Each issue is also published as a
 feed (`feed.xml`), as data (`latest.json`) and as a one-text-message summary for SMS or WhatsApp.

@@ -1,4 +1,4 @@
-"""Flood Outlook for the next three days (v0), issued morning and evening.
+"""Lion Eyes flood Outlook for the next three days, issued morning and evening.
 
 Inputs, all available remotely every day:
 * ECMWF ensemble rain forecast (50 members, peninsula average). The morning
@@ -208,7 +208,7 @@ def level_rates() -> dict | None:
         season = 214  # 1 May - 30 Nov
         return {"high_pct": round(100 * od["days_with_any_high_per_season"] / season),
                 "elevated_pct": round(100 * od["days_with_any_elevated_or_high_per_season"] / season),
-                "floods_high": fl["high"], "floods_of": r["floods"]}
+                "floods_high": fl["high"], "floods_any": fl["elevated_or_high"], "floods_of": r["floods"]}
     except (OSError, ValueError, KeyError):
         return None
 
@@ -242,10 +242,10 @@ def sms_text(o: dict) -> str:
     """The Outlook in one text message (<= 160 plain characters), for SMS or WhatsApp."""
     evening = o.get("edition") == "evening"
     edition = {"morning": " am", "evening": " pm"}.get(o.get("edition"), "")
-    head = f"Freetown flood outlook, {pd.Timestamp(o['issued']):%d %b}{edition}: "
+    head = f"Lion Eyes flood outlook, {pd.Timestamp(o['issued']):%d %b}{edition}: "
     levels = ", ".join(f"{_short_period(d, k, evening)} {d['level']}" for k, d in enumerate(o["days"])) + ". "
     worst = max(o["days"], key=lambda d: ["LOW", "ELEVATED", "HIGH"].index(d["level"]))["level"]
-    tail = " moseskolleh.github.io/Maji"
+    tail = " moseskolleh.github.io/Lion_Eyes"
     zones = list(o.get("low_ground_zones") or [])
     for n in range(min(3, len(zones)), -1, -1):
         if worst == "HIGH":
@@ -270,8 +270,8 @@ def to_text(o: dict) -> str:
     wet = o["observed_rain_last_3_days_mm"]
     period = o.get("observed_period", "the last 3 days")
     lines = [
-        f"# Freetown flood outlook, {'evening' if evening else 'morning'} of {o['issued']}"
-        if "edition" in o else f"# Freetown flood outlook, issued {o['issued']}",
+        f"# Lion Eyes · Freetown flood outlook, {'evening' if evening else 'morning'} of {o['issued']}"
+        if "edition" in o else f"# Lion Eyes · Freetown flood outlook, issued {o['issued']}",
         "",
         f"Forecast: ECMWF ensemble run {o['forecast_run']}. Rain in {period} (satellite): "
         + (f"{wet:.0f} mm" + ("" if n_obs == expected else f" ({n_obs} of {expected} parts available)")
@@ -320,5 +320,7 @@ def to_text(o: dict) -> str:
         )
     lines += ["", f"**Short message** (SMS or WhatsApp): {sms_text(o)}"]
     lines += ["", "**What the levels mean.** " + level_meaning(),
-              "", "*v0: thresholds are provisional. Issued twice a day, around 08:15 and 21:00 Freetown time.*"]
+              "", "*Lion Eyes is an independent flood outlook built from open satellite and forecast data. It does not "
+                  "replace official warnings: in an emergency, follow the National Disaster Management Agency (NDMA) and "
+                  "local authorities. Issued twice a day, around 08:15 and 21:00 Freetown time.*"]
     return "\n".join(lines) + "\n"
