@@ -22,9 +22,9 @@ Read the full idea in [docs/concept.md](docs/concept.md).
 | Piece | State |
 |---|---|
 | Flood history (`data/events/freetown_floods.csv`) | v0: 26 sourced events, 2007-2026; thin before 2015 |
-| Rainfall history | CHIRPS v3 daily (satellite + gauges), rainy seasons; 2013-2026 analysed, 2000-2012 downloading |
+| Rainfall history | CHIRPS v3 daily (satellite + gauges), rainy seasons; 2008-2026 analysed (2000-2007 not scored: no dated floods found there yet) |
 | Tide | Harmonic tide fitted to 2023-2026 modelled sea level, predicted back to 2000 (4.7 cm error on a held-out year) |
-| Hindcast (do rain/tide rules flag past floods?) | v0, daily: flood days clearly wetter (AUC 0.79); daily rules catch ~half of floods at ~3 false alarms per season; misses cluster in May/October. See [docs/analysis/hindcast-v0.md](docs/analysis/hindcast-v0.md) |
+| Hindcast (do rain/tide rules flag past floods?) | v0, daily: 2008-2026, 21 floods: flood days clearly wetter (AUC 0.81); daily rules catch ~half of floods at ~3 false alarms per season; misses cluster in May/October. See [docs/analysis/hindcast-v0.md](docs/analysis/hindcast-v0.md) |
 | Hourly model rain (ERA5, ECMWF 9 km) | Code ready; blocked by the free API's daily quota |
 | Terrain and flood places | v0 map of streams and past flood places (two groups: stream mouths/shoreline and hillsides); street level next |
 | Live pipeline, resident reporting, warnings | Planned for April-May 2027 |
