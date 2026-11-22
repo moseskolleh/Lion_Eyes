@@ -1,0 +1,137 @@
+{
+ "checked": {
+  "2013-08-16": {
+   "flood_found": false,
+   "note": "No Freetown flood/landslide report found for 14\u201318 Aug 2013. Checked web search (several phrasings and neighbourhoods), the ReliefWeb full-text archive (no Sierra Leone flood reports Aug\u2013Sep 2013), the Sierra Leone Telegraph archive via its WP API (no 2013 flood posts), FloodList and ACAPS weekly snapshots. Context only: the IRIN 17 Sep 2013 round-up names Sierra Leone among the West African countries most affected by 2013 floods, with no locations or dates, and the CPC Africa Hazards Outlook of 22 Aug 2013 reports above-average rain and surpluses over Sierra Leone since mid-July, with localized flood risk.",
+   "sources": [
+    "https://reliefweb.int/report/niger/west-africa-flood-round",
+    "https://reliefweb.int/map/ethiopia/climate-prediction-center%E2%80%99s-africa-hazards-outlook-august-22-%E2%80%93-august-28-2013"
+   ]
+  },
+  "2008-08-23": {
+   "flood_found": false,
+   "note": "No dated Freetown flood found for 21\u201325 Aug 2008. The 2008 sources found describe chronic Kroo Bay flooding (IRIN 21 Jul 2008) and a WHO/UN note (19 Aug 2008) that seasonal rains caused damage in Sierra Leone, with no place or date. The nearest dated Freetown event is the 11\u201312 Sep 2008 Kroo Bay storm and flood, added as a new event.",
+   "sources": [
+    "https://reliefweb.int/report/benin/floods-west-africa-raise-major-health-risks",
+    "https://reliefweb.int/report/sierra-leone/sierra-leone-dwellers-refuse-leave-flood-prone-slums"
+   ]
+  },
+  "2024-07-30": {
+   "flood_found": true,
+   "note": "Yes, approximate date. Heavy rain over the weekend of 27\u201328 Jul 2024 (SLMet heavy-rain alert for Freetown, 27 Jul to 15:00 on 28 Jul) set off a night-time landslide in Moyiba that buried at least 6 houses, reported 30 Jul. On 1 Aug, NDMA spoke of 'recent floods in Freetown'. The 30 Jul NDMA press briefing reviewed the July rains (about 6 deaths across the city), but no new event was reported on 30 Jul itself. Earlier July events (20 Jul flooding, 21 Jul SS Camp collapse) were added separately.",
+   "sources": [
+    "https://sierraloaded.sl/local/landslide-six-houses-moyiba-community/",
+    "https://sierraloaded.sl/news/slmet-heavy-rain-alert-freetown/",
+    "https://sierraloaded.sl/news/ndma-human-activities-flooding/"
+   ]
+  },
+  "2008-07-27": {
+   "flood_found": false,
+   "note": "No dated Freetown flood found for 25\u201329 Jul 2008. The IRIN Kroo Bay piece of 21 Jul 2008 describes routine flooding but no specific event. ReliefWeb's Jul\u2013Aug 2008 West Africa flood reports mention Sierra Leone only in passing.",
+   "sources": [
+    "https://reliefweb.int/report/sierra-leone/sierra-leone-rampant-disease-washes-flood-water",
+    "https://reliefweb.int/report/benin/flood-emergency-persists-west-africa"
+   ]
+  },
+  "2012-07-29": {
+   "flood_found": false,
+   "note": "Unconfirmed lead. The CPC/FEWS NET Africa Hazards Outlook issued 2 Aug 2012 (covering about 25\u201331 Jul) reports more than 300 mm weekly rainfall on the coast of Guinea and Sierra Leone and says the rain 'has caused flash flooding in Sierra Leone and Guinea', with no Freetown location given. A Sierra Leone Telegraph piece of 27 Jul 2012 mentions debris washed into the capital by heavy rains, with no date. No Freetown-specific flood report found. 2012 coverage in Freetown is dominated by the cholera outbreak.",
+   "sources": [
+    "https://reliefweb.int/report/guinea/climate-prediction-center-s-africa-hazards-outlook-usaid-fews-net-august-2-august-8",
+    "https://www.thesierraleonetelegraph.com/sierra-leones-dodgy-mining-deals-someone-is-sharing-the-loot/"
+   ]
+  },
+  "2024-08-14": {
+   "flood_found": false,
+   "note": "No Freetown flood reported for 12\u201316 Aug 2024. A five-storey building collapsed on Tue 13 Aug 2024 at Joshua, behind Mission School in Wellington (no casualties), and a four-storey building collapsed in Congo Town about 12 Aug. Sierraloaded links the run of collapses loosely to 'heavy rainfall and flooding ... in recent weeks', but other reports blame poor construction, so no rain trigger is established. Floods that week were reported in Makeni and Kailahun, not Freetown.",
+   "sources": [
+    "https://sierraloaded.sl/local/five-storey-building-collapses-freetown/",
+    "https://sierraloaded.sl/news/four-storey-building-collapses-congo-town/",
+    "https://sierraloaded.sl/news/heavy-rains-trigger-severe-flooding-makeni/"
+   ]
+  },
+  "2010-08-22": {
+   "flood_found": false,
+   "note": "No Freetown flood found for 20\u201324 Aug 2010. Web and ReliefWeb searches turned up no Sierra Leone entries in OCHA's 2010 West/Central Africa flood reports. The only 2010 Freetown event found is a rain-triggered Mountain Cut landslide in September 2010 (14 dead, day unknown), from the World Bank Multi-City Hazard Review, added as a month_only event.",
+   "sources": [
+    "https://reliefweb.int/attachments/3815b247-b7a3-3ff9-94a1-670e52c6e734/Final-Report-Volume-2-of-5-Freetown-City-Hazard-and-Risk-Part1.pdf"
+   ]
+  },
+  "2017-07-08": {
+   "flood_found": false,
+   "note": "No Freetown flood report found for 6\u201310 Jul 2017. Checked the Sierra Leone Telegraph archive (WP API, Jul 2017), ReliefWeb, FloodList and the web. Sources only say Freetown received about triple its usual rainfall from 1 Jul 2017, ahead of the 14 Aug mudslide.",
+   "sources": [
+    "https://www.Wikipedia.com/wiki/2017_Sierra_Leone_mudslides",
+    "https://www.directrelief.org/2017/08/sierra-leone-reeling-in-wake-of-rising-flood-waters/"
+   ]
+  },
+  "2023-07-29": {
+   "flood_found": true,
+   "note": "Yes. A heavy downpour from late Fri 28 Jul to early Sat 29 Jul 2023 flooded the Old Road Market Square in Waterloo (Western Area Rural), and traders fled as stalls were nearly submerged.",
+   "sources": [
+    "https://sierraloaded.sl/local/rains-business-waterloo/"
+   ]
+  },
+  "2015-05-18": {
+   "flood_found": false,
+   "note": "No Freetown flood found for 16\u201320 May 2015, during the Ebola period. Checked the Sierra Leone Telegraph and Sierraloaded archives (WP API), ReliefWeb and FloodList. Context only: the CPC Africa Hazards Outlook of 21 May 2015 notes weekly rainfall anomalies of +50\u2013100 mm over Sierra Leone and Guinea.",
+   "sources": [
+    "https://reliefweb.int/map/angola/climate-prediction-center-s-africa-hazards-outlook-may-21-may-28-2015"
+   ]
+  },
+  "2013-08-30": {
+   "flood_found": false,
+   "note": "No Freetown flood found for 28 Aug\u20131 Sep 2013. The CPC outlooks of 28 Aug and 4 Sep 2013 report torrential rain (more than 75 mm per week, over 150 mm on the Sierra Leone coast), large 30-day surpluses and saturated ground in Sierra Leone, with a heightened risk of localized flooding, but no reported impacts. OCHA's 'On Watch \u2013 Flooding Likely' map of 27 Aug 2013 covers Guinea, Mali and Sierra Leone.",
+   "sources": [
+    "https://reliefweb.int/map/guinea/climate-prediction-center%E2%80%99s-africa-hazards-outlook-september-5-%E2%80%93-september-11-2013",
+    "https://reliefweb.int/map/mali/guinea-mali-sierra-leone-watch-flooding-likely-27-august-2013"
+   ]
+  },
+  "2023-07-14": {
+   "flood_found": true,
+   "note": "Yes. A heavy downpour on Fri 14 Jul 2023 flooded the main route through Regent Village with debris from the hills and disrupted traffic. No casualties were reported.",
+   "sources": [
+    "https://sierraloaded.sl/news/heavy-rain-traffic-regent/"
+   ]
+  },
+  "2025-08-07": {
+   "flood_found": false,
+   "note": "No Freetown flood found for 5\u20139 Aug 2025. Sierraloaded's posts for 3\u201315 Aug show no flood impacts. Search results show NDMA/SLMet issued a heavy-rain advisory for 5\u20139 Aug 2025, which I did not open. The nearest events are the 31 Jul 2025 flooding in Kroo Bay and Regent and the Dwarzack erosion reported 1 Aug (added as a new event). The 31 Aug\u20135 Sep 2025 floods hit provincial districts, not Freetown.",
+   "sources": [
+    "https://sierraloaded.sl/local/flooding-kroo-bay-community-properties-damage/",
+    "https://reliefweb.int/disaster/fl-2025-000169-sle"
+   ]
+  },
+  "2016-07-27": {
+   "flood_found": false,
+   "note": "No Freetown flood found for 25\u201329 Jul 2016. Checked the Sierra Leone Telegraph and Sierraloaded archives (WP API, May\u2013Nov 2016), ReliefWeb, FloodList and the web. The only rain-damage report in 2016 is Kabala, 22 Aug 2016, which is not in Freetown.",
+   "sources": [
+    "https://sierraloaded.sl/news/heavy-rain-destroy-houses-properties-in-kabala/"
+   ]
+  },
+  "2018-07-22": {
+   "flood_found": false,
+   "note": "No Freetown flood found for 20\u201324 Jul 2018. A Sierra Leone Telegraph piece of 1 Nov 2018 credits the Freetown City Council's flood mitigation work between June and September 2018 with averting a flooding disaster. ReliefWeb items from Jul\u2013Aug 2018 cover only the 2017 mudslide anniversary.",
+   "sources": [
+    "https://www.thesierraleonetelegraph.com/in-four-months-mayor-of-freetown-collected-over-300-more-taxes-than-the-whole-of-2017/",
+    "https://reliefweb.int/report/sierra-leone/our-city-has-no-future-if-we-dont-save-environment-freetown-mayor"
+   ]
+  }
+ },
+ "decisions": [
+  {
+   "date": "2010-09-01",
+   "decision": "dropped",
+   "why": "Probably the 9 Aug 2010 Owen Street / Mountain Cut mudslide (16 dead) misdated as September in a later review; month-only, would double-count deaths.",
+   "sources": [
+    "https://reliefweb.int/attachments/3815b247-b7a3-3ff9-94a1-670e52c6e734/Final-Report-Volume-2-of-5-Freetown-City-Hazard-and-Risk-Part1.pdf",
+    "https://reliefweb.int/report/sierra-leone/sierra-leone-multi-city-hazard-review-and-risk-assessment-final-report-volume-2"
+   ]
+  },
+  {
+   "date": "2024-07-21",
+   "decision": "merged into 2024-07-20",
+   "why": "NDMA: collapse reported ~23:30 after 'yesterday's heavy downpour'; the existing 20 Jul 2024 record already covers the SS Camp collapse."
+  }
+ ]
+}

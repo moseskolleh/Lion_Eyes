@@ -1,13 +1,13 @@
 {
-  "places_named": 75,
-  "places_geocoded": 21,
+  "places_named": 92,
+  "places_geocoded": 23,
   "flood_places_median_hand_m": 15.5,
   "lowland_median_hand_m": 8.3,
-  "flood_places_share_hand_below_5m": 0.333,
+  "flood_places_share_hand_below_5m": 0.348,
   "lowland_share_hand_below_5m": 0.399,
-  "flood_places_median_elev_m": 25.8,
+  "flood_places_median_elev_m": 44.7,
   "lowland_median_elev_m": 14.2,
-  "flood_places_median_stream_km2": 0.0,
+  "flood_places_median_stream_km2": 0.42,
   "lowland_median_stream_km2": 0.26,
   "figure": "docs/analysis/figures/streams_and_flood_places.png"
 }

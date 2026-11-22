@@ -196,7 +196,7 @@ catchment) and the places named in past flood reports.</p><a href="map.html"><im
 <div class="card"><h3><a href="analysis/subdaily.html">When the rain falls</a></h3><p class="small">Half-hourly satellite rain around 21 past
 floods: heavy rain usually comes 1-6 hours before a flood is reported.</p><a href="analysis/subdaily.html"><img src="figures/flood_rain_timelines.png" alt="Rain timelines"></a></div>
 <div class="card"><h3><a href="analysis/hindcast.html">Does open data see past floods?</a></h3><p class="small">Over 19 rainy seasons,
-flood days were clearly wetter (AUC 0.81). Daily rules catch about half of floods at about 3 false alarms per season.</p>
+flood days were clearly wetter (AUC 0.82). Daily rules catch about half of floods at about 3 false alarms per season.</p>
 <a href="analysis/hindcast.html"><img src="figures/streams_and_flood_places.png" alt="Streams and flood places"></a></div>
 </div>"""
     return _shell("Outlook", body, path="index.html")

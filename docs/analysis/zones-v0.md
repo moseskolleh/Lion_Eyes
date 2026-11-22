@@ -14,18 +14,18 @@ model.
 
 - **94 zones** cover the peninsula, **21** of them with outlets in the city.
 - The rest of the land is **zone 0, the "coastal fringe"**: short slopes that drain straight to the sea, and the flat eastern lowlands and mangroves.
-- **11 zones** contain a place named in the flood history.
+- **12 zones** contain a place named in the flood history.
 
 | Zone | Name | Area | Low ground near streams | Steep share | Flood places in it |
 |---|---|---|---|---|---|
-| 16 | Kroo Bay | 7.6 km² | 0.11 km² | 7% | Kroo Bay (7 events) |
+| 16 | Kroo Bay | 7.6 km² | 0.11 km² | 7% | Kroo Bay (8 events) |
 | 11 | Kaningo | 13.6 km² | 0.21 km² | 18% | Kaningo, Lumley |
 | 23 | Cline Town | 6.6 km² | 0.06 km² | 13% | Cline Town, Kanikay |
 | 25 | Tengbeh Town | 6.2 km² | 0.14 km² | 2% | Tengbeh Town, Wilberforce |
-| 1 | Bathurst | 47.1 km² | 0.33 km² | 19% | Regent, Sugar Loaf, Looking Town, Bathurst |
+| 1 | Regent | 47.1 km² | 0.33 km² | 19% | Regent, Regent Village, Sugar Loaf, Looking Town, Bathurst |
 | 57 | Susan's Bay | 2.2 km² | 0.02 km² | 5% | Susan's Bay |
 | 68 | Portor | 1.7 km² | 0.21 km² | 1% | Portor |
-| 34, 38, 75 | Wellington, Kissy, Rokupa | 1.5-4.1 km² | small | 9-11% | one each |
+| 34, 38, 42, 75 | Wellington, Kissy, Calaba Town, Rokupa | 1.5-4.1 km² | small | 7-11% | one each |
 
 The full list, with outlets and all measures, is in `data/derived/zones.csv`. Zone outlines are in `data/derived/zones.geojson`.
 
@@ -75,7 +75,7 @@ Each zone's numbers are in `data/derived/zones.csv`, the map popups and the Outl
 | 11 Kaningo | 128,500 | 4,200 | 290 | 4,900 | 4 |
 | 25 Tengbeh Town | 103,700 | 3,300 | 900 | 1,400 | 2 |
 | 93 Cline Town (east) | 20,500 | 3,200 | 200 | 600 | 0 |
-| 16 Kroo Bay | 153,200 | 2,800 | 1,100 | 9,800 | 7 |
+| 16 Kroo Bay | 153,200 | 2,800 | 1,100 | 9,800 | 8 |
 | 68 Portor | 29,000 | 2,500 | 400 | 0 | 1 |
 | 23 Cline Town | 52,400 | 900 | 400 | 11,800 | 3 |
 
