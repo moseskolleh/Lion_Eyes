@@ -35,7 +35,7 @@ and refreshed daily with the new Outlook.
 | Warning zones | v0: 94 catchment zones (21 in the city), each with low-ground and steep-slope measures and CHIRPS weights. See [docs/analysis/zones-v0.md](docs/analysis/zones-v0.md) |
 | Exposure | ~72,600 people (23,300 buildings) on low ground near streams and the shore, ~44,200 on steep slopes; per zone from Overture buildings and Meta HRSL population (`floodwatch exposure`) |
 | Daily 3-day Outlook | v0 running on live data (ECMWF ensemble + IMERG + tide), provisional thresholds, forecasts archived for calibration. Issued daily by GitHub Actions. See [docs/outlook.md](docs/outlook.md) |
-| Website | Static site on GitHub Pages: Outlook, interactive zone map (Leaflet), flood history, analysis pages (`floodwatch site`) |
+| Website | Static site on GitHub Pages: Outlook, interactive zone map (Leaflet), flood history, analysis pages (`floodwatch site`); styled with the sustaintheworld theme (dark/light, Newsreader / Inter / IBM Plex Mono) |
 | Nowcast (hours), resident reporting, warning delivery | Planned for April-May 2027 |
 
 ## Quick start
@@ -83,6 +83,7 @@ src/floodwatch/
   sources/ecmwf.py           ECMWF open-data ensemble rain (byte-range GRIB)
   site.py                    static website for GitHub Pages
 site_assets/leaflet/         Leaflet 1.9.4 (BSD-2), vendored for the map page
+site_assets/fonts/           Newsreader, Inter, IBM Plex Mono (SIL OFL), from the sustaintheworld site
 data/outlook/                daily Outlook bulletins (committed by the daily workflow)
 data/archive/ecmwf/          forecast archive for calibrating Outlook thresholds
 .github/workflows/           daily Outlook + website deploy; tests on pull requests
