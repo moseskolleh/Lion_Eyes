@@ -38,6 +38,9 @@ ReliefWeb, and resident interviews.
 | `hindcast_tables.md` | The same scores as Markdown tables, used in the write-up |
 | `flood_places.csv` | Each place named in the flood history, geocoded where possible, with elevation, height above nearest stream and nearby stream size (`floodwatch terrain`) |
 | `exposure_summary.json` | Flood places vs ordinary low-lying land |
+| `zones.csv`, `zones.geojson` | Warning zones (one per catchment draining >= 1 km² to the sea): outlet, area, low ground near streams, steep area, flood places (`floodwatch zones`) |
+| `zone_chirps_weights.csv` | Share of each zone in each CHIRPS 0.05° cell, for zone-averaged rain |
+| `zone_resolution_check.json` | Zone rain vs peninsula rain on past flood days |
 
 ## `raw/` (not committed)
 
