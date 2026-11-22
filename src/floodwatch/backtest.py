@@ -31,6 +31,7 @@ from floodwatch.hindcast import auc, auc_interval
 from floodwatch.sources import ecmwf, imerg
 
 FIRST_DAY = date(2024, 5, 1)
+FETCH_WORKERS = 3  # bulk downloads: fewer parallel requests, so the archive does not throttle us
 SEASON_DAYS = 214  # 1 May - 30 Nov
 ISSUE_HOUR = 9.5  # the daily job runs at 09:23 UTC; Freetown is on UTC
 LEVELS = ["LOW", "ELEVATED", "HIGH"]
@@ -61,7 +62,7 @@ def random_sample(last_issue: date, n: int = 120, seed: int = 11) -> list[date]:
 
 def replay(issue: date, obs: pd.Series) -> list[dict]:
     """The Outlook as it would have been issued on the morning of `issue`."""
-    members = ecmwf.daily_rain(ecmwf.fetch_run(issue, 0))
+    members = ecmwf.daily_rain(ecmwf.fetch_run(issue, 0, workers=FETCH_WORKERS))
     before = [float(obs.get(pd.Timestamp(issue - timedelta(days=k)), np.nan)) for k in (3, 2, 1)]
     rows = outlook.day_levels(members, issue, before)
     for k, r in enumerate(rows, 1):
@@ -207,7 +208,7 @@ def run(n_random: int = 120) -> dict:
 
 
 def replay_evening(issue: date, obs: pd.Series) -> list[dict]:
-    members = ecmwf.daily_rain(ecmwf.fetch_run(issue, 12))
+    members = ecmwf.daily_rain(ecmwf.fetch_run(issue, 12, workers=FETCH_WORKERS))
     before = [float(obs.get(pd.Timestamp(issue - timedelta(days=k)), np.nan)) for k in (2, 1)]
     before.append(imerg.total_until(issue, 12)["mean_mm"])
     rows = outlook.day_levels(members, issue, before)

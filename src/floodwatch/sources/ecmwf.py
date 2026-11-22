@@ -71,7 +71,7 @@ def _decode_points(message: bytes) -> np.ndarray:
 _local = threading.local()
 
 
-def _get(url: str, headers: dict | None = None, tries: int = 7) -> requests.Response:
+def _get(url: str, headers: dict | None = None, tries: int = 10) -> requests.Response:
     """GET with back-off: the archive answers 503 "SlowDown" when busy."""
     if not hasattr(_local, "session"):
         _local.session = requests.Session()
@@ -86,7 +86,7 @@ def _get(url: str, headers: dict | None = None, tries: int = 7) -> requests.Resp
         except (requests.ConnectionError, requests.exceptions.ChunkedEncodingError, requests.Timeout):
             if attempt == tries - 1:  # dropped or cut-off transfers are worth retrying
                 raise
-        time.sleep(min(60, 2 * 2**attempt))
+        time.sleep(min(120, 2 * 2**attempt))
     raise RuntimeError(f"ECMWF open data did not answer: {url}")
 
 
