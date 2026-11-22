@@ -27,6 +27,7 @@ Read the full idea in [docs/concept.md](docs/concept.md).
 | Hindcast (do rain/tide rules flag past floods?) | v0, daily: 2008-2026, 21 floods: flood days clearly wetter (AUC 0.81); daily rules catch ~half of floods at ~3 false alarms per season; misses cluster in May/October. See [docs/analysis/hindcast-v0.md](docs/analysis/hindcast-v0.md) |
 | Hourly model rain (ERA5, ECMWF 9 km) | Code ready; blocked by the free API's daily quota |
 | Terrain and flood places | v0 map of streams and past flood places (two groups: stream mouths/shoreline and hillsides); street level next |
+| Warning zones | v0: 94 catchment zones (21 in the city), each with low-ground and steep-slope measures and CHIRPS weights. See [docs/analysis/zones-v0.md](docs/analysis/zones-v0.md) |
 | Live pipeline, resident reporting, warnings | Planned for April-May 2027 |
 
 ## Quick start
@@ -38,7 +39,9 @@ pip install -e '.[dev]'
 floodwatch fetch            # sea level + CHIRPS daily rain into data/raw (cached, slow first time)
 floodwatch fetch --hourly   # optional: hourly model rain from Open-Meteo (rate-limited)
 floodwatch catalogue data/events/research/*.jsonl   # rebuild the flood history
-floodwatch hindcast         # score warning rules; writes data/derived/
+floodwatch hindcast --from 2008   # score warning rules; writes data/derived/
+floodwatch terrain          # streams, flood places, map
+floodwatch zones            # warning zones (after terrain)
 pytest
 ```
 
@@ -58,6 +61,8 @@ src/floodwatch/
   events.py                  flood catalogue build/load
   features.py                hourly -> daily rain features
   hindcast.py                scoring: hits, misses, false alarms, AUC
+  terrain.py, exposure.py    streams, height above stream, flood places on the terrain
+  zones.py                   warning zones (catchments), zone rainfall
 tests/
 ```
 

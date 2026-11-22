@@ -5,6 +5,7 @@ Commands
   catalogue  merge research files into data/events/freetown_floods.csv
   hindcast   score warning rules against the flood history
   terrain    trace streams, place past floods on the terrain, draw the map
+  zones      split the peninsula into warning zones (run after terrain)
 """
 
 from __future__ import annotations
@@ -61,6 +62,12 @@ def _terrain(args: argparse.Namespace) -> None:
     exposure.run()
 
 
+def _zones(args: argparse.Namespace) -> None:
+    from floodwatch import zones
+
+    zones.build()
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="floodwatch")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -75,6 +82,7 @@ def main(argv: list[str] | None = None) -> None:
                     help="first rainy season to include (default %(default)s)")
     hc.set_defaults(func=_hindcast)
     sub.add_parser("terrain", help="streams, flood places and exposure map").set_defaults(func=_terrain)
+    sub.add_parser("zones", help="warning zones (one per catchment) and their maps").set_defaults(func=_zones)
     args = parser.parse_args(argv)
     args.func(args)
 

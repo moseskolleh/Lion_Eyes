@@ -60,6 +60,23 @@ class Hydrology:
     streams: np.ndarray
     hand: np.ndarray
     transform: object  # affine.Affine
+    fdir: np.ndarray  # D8 flow directions (pysheds codes, see DIRMAP)
+    cell_km2: float
+    grid: object = None  # the pysheds Grid, for catchment tracing
+    fdir_raster: object = None  # fdir as a pysheds Raster
+
+    @property
+    def land(self) -> np.ndarray:
+        return self.dem != NODATA
+
+    def slope_deg(self) -> np.ndarray:
+        """Terrain slope in degrees (NaN over sea)."""
+        lat = (BOUNDS[1] + BOUNDS[3]) / 2
+        dx = abs(self.transform.a) * 111_320 * np.cos(np.radians(lat))
+        dy = abs(self.transform.e) * 110_570
+        z = np.where(self.land, self.dem, np.nan)
+        gy, gx = np.gradient(z, dy, dx)
+        return np.degrees(np.arctan(np.hypot(gx, gy)))
 
     def sample(self, lon: float, lat: float) -> dict:
         col, row = ~self.transform * (lon, lat)
@@ -103,4 +120,12 @@ def hydrology(path: Path = DEM_PATH) -> Hydrology:
     to_sea = land & (hand > 2000)
     hand[to_sea] = np.asarray(dem)[to_sea]
     hand[~land] = np.nan
-    return Hydrology(np.asarray(dem), upstream_km2, streams, hand, grid.affine)
+    return Hydrology(
+        np.asarray(dem), upstream_km2, streams, hand, grid.affine,
+        np.asarray(fdir), float(cell_km2), grid, fdir,
+    )
+
+
+# pysheds' default D8 codes, in the order N, NE, E, SE, S, SW, W, NW.
+DIRMAP = (64, 128, 1, 2, 4, 8, 16, 32)
+D8_OFFSETS = {64: (-1, 0), 128: (-1, 1), 1: (0, 1), 2: (1, 1), 4: (1, 0), 8: (1, -1), 16: (0, -1), 32: (-1, -1)}

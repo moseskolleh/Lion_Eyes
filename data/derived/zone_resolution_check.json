@@ -1,0 +1,162 @@
+{
+  "pairs": 22,
+  "mean_percentile_zone_rain": 89.6,
+  "mean_percentile_peninsula_rain": 88.7,
+  "zone_better_in": 14,
+  "detail": [
+    {
+      "flood": "2008-09-11",
+      "zone_id": 16,
+      "zone": "Kroo Bay",
+      "zone_rain_pct": 95.1,
+      "peninsula_rain_pct": 93.7
+    },
+    {
+      "flood": "2015-09-16",
+      "zone_id": 11,
+      "zone": "Kaningo",
+      "zone_rain_pct": 90.6,
+      "peninsula_rain_pct": 89.8
+    },
+    {
+      "flood": "2015-09-16",
+      "zone_id": 16,
+      "zone": "Kroo Bay",
+      "zone_rain_pct": 92.6,
+      "peninsula_rain_pct": 89.8
+    },
+    {
+      "flood": "2015-09-16",
+      "zone_id": 25,
+      "zone": "Tengbeh Town",
+      "zone_rain_pct": 92.1,
+      "peninsula_rain_pct": 89.8
+    },
+    {
+      "flood": "2017-08-14",
+      "zone_id": 1,
+      "zone": "Bathurst",
+      "zone_rain_pct": 94.7,
+      "peninsula_rain_pct": 93.6
+    },
+    {
+      "flood": "2017-08-14",
+      "zone_id": 11,
+      "zone": "Kaningo",
+      "zone_rain_pct": 95.4,
+      "peninsula_rain_pct": 93.6
+    },
+    {
+      "flood": "2017-08-14",
+      "zone_id": 34,
+      "zone": "Wellington",
+      "zone_rain_pct": 93.7,
+      "peninsula_rain_pct": 93.6
+    },
+    {
+      "flood": "2017-08-26",
+      "zone_id": 16,
+      "zone": "Kroo Bay",
+      "zone_rain_pct": 81.7,
+      "peninsula_rain_pct": 86.0
+    },
+    {
+      "flood": "2019-08-02",
+      "zone_id": 1,
+      "zone": "Bathurst",
+      "zone_rain_pct": 97.6,
+      "peninsula_rain_pct": 96.1
+    },
+    {
+      "flood": "2019-08-02",
+      "zone_id": 16,
+      "zone": "Kroo Bay",
+      "zone_rain_pct": 97.3,
+      "peninsula_rain_pct": 96.1
+    },
+    {
+      "flood": "2019-08-02",
+      "zone_id": 23,
+      "zone": "Cline Town",
+      "zone_rain_pct": 97.4,
+      "peninsula_rain_pct": 96.1
+    },
+    {
+      "flood": "2020-08-25",
+      "zone_id": 75,
+      "zone": "Rokupa",
+      "zone_rain_pct": 97.2,
+      "peninsula_rain_pct": 98.1
+    },
+    {
+      "flood": "2022-08-17",
+      "zone_id": 16,
+      "zone": "Kroo Bay",
+      "zone_rain_pct": 98.8,
+      "peninsula_rain_pct": 98.5
+    },
+    {
+      "flood": "2022-08-28",
+      "zone_id": 1,
+      "zone": "Bathurst",
+      "zone_rain_pct": 99.6,
+      "peninsula_rain_pct": 99.9
+    },
+    {
+      "flood": "2022-08-28",
+      "zone_id": 11,
+      "zone": "Kaningo",
+      "zone_rain_pct": 99.8,
+      "peninsula_rain_pct": 99.9
+    },
+    {
+      "flood": "2022-08-28",
+      "zone_id": 16,
+      "zone": "Kroo Bay",
+      "zone_rain_pct": 99.9,
+      "peninsula_rain_pct": 99.9
+    },
+    {
+      "flood": "2022-08-28",
+      "zone_id": 23,
+      "zone": "Cline Town",
+      "zone_rain_pct": 99.9,
+      "peninsula_rain_pct": 99.9
+    },
+    {
+      "flood": "2022-08-28",
+      "zone_id": 25,
+      "zone": "Tengbeh Town",
+      "zone_rain_pct": 99.9,
+      "peninsula_rain_pct": 99.9
+    },
+    {
+      "flood": "2022-08-28",
+      "zone_id": 38,
+      "zone": "Kissy",
+      "zone_rain_pct": 99.9,
+      "peninsula_rain_pct": 99.9
+    },
+    {
+      "flood": "2023-05-09",
+      "zone_id": 23,
+      "zone": "Cline Town",
+      "zone_rain_pct": 46.6,
+      "peninsula_rain_pct": 41.6
+    },
+    {
+      "flood": "2026-05-23",
+      "zone_id": 57,
+      "zone": "Susan's Bay",
+      "zone_rain_pct": 16.1,
+      "peninsula_rain_pct": 15.2
+    },
+    {
+      "flood": "2026-08-03",
+      "zone_id": 68,
+      "zone": "Portor",
+      "zone_rain_pct": 84.2,
+      "peninsula_rain_pct": 80.8
+    }
+  ]
+}
