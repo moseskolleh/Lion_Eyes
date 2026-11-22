@@ -214,6 +214,9 @@ def _map_page(o: dict | None) -> str:
 .leaflet-popup-content{font-size:.88rem;line-height:1.5}
 .leaflet-bar a{background:var(--card-bg);color:var(--text-primary);border-color:var(--line-soft)}
 .leaflet-bar a:hover{background:var(--card-bg-alt)}
+.leaflet-container img{border:0;border-radius:0;background:none}
+.leaflet-tile-pane{filter:grayscale(.85) contrast(.9) brightness(1.03)}
+html:not(.light-mode) .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) grayscale(.75) brightness(.8) contrast(.9)}
 .leaflet-control-attribution{background:var(--bar-bg)!important;color:var(--text-dim)}
 .leaflet-control-attribution a{color:var(--accent-color)}
 .legend{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:10px;font-size:.86rem;color:var(--text-secondary)}
@@ -229,12 +232,10 @@ neighbourhood centres, not exact streets. Click anything for details.</p>
 <script src="vendor/leaflet/leaflet.js"></script>
 <script>
 const map = L.map('map').setView([8.455, -13.22], 12);
-// Basemap follows the page theme: CARTO dark or light, from OpenStreetMap data.
-const tileUrl = light => `https://{{s}}.basemaps.cartocdn.com/${{light ? 'light_all' : 'dark_all'}}/{{z}}/{{x}}/{{y}}{{r}}.png`;
-const isLight = () => document.documentElement.classList.contains('light-mode');
-const tiles = L.tileLayer(tileUrl(isLight()), {{maxZoom: 19, subdomains: 'abcd',
-  attribution: '&copy; OpenStreetMap contributors &copy; CARTO'}}).addTo(map);
-document.addEventListener('themechange', () => tiles.setUrl(tileUrl(isLight())));
+// Basemap: OpenStreetMap's standard tiles, which need no API key (CARTO's now do).
+// The CSS above mutes them in light mode and turns them dark in dark mode.
+L.tileLayer('https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{maxZoom: 19,
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}}).addTo(map);
 function kind(p) {{
   const low = p.low_ground_km2 >= 0.1, steep = p.steep_share >= 0.15;
   return low && steep ? 'both' : low ? 'low' : steep ? 'steep' : 'other';
