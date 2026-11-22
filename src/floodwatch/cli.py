@@ -9,6 +9,7 @@ Commands
   exposure   count buildings and people per zone and hazard class (after zones)
   subdaily   half-hourly satellite rain around past floods (after hindcast)
   backtest   replay the Outlook on past ECMWF forecasts (2024-2026)
+  layers     map layers for the website (after zones and exposure)
   outlook    today's 3-day flood outlook (live data; writes data/outlook/)
   site       build the static website (GitHub Pages) into _site/
 """
@@ -97,6 +98,12 @@ def _exposure(args: argparse.Namespace) -> None:
     population.run()
 
 
+def _layers(args: argparse.Namespace) -> None:
+    from floodwatch import maplayers
+
+    maplayers.run()
+
+
 def _backtest(args: argparse.Namespace) -> None:
     from floodwatch import backtest
 
@@ -123,6 +130,7 @@ def main(argv: list[str] | None = None) -> None:
     sub.add_parser("zones", help="warning zones (one per catchment) and their maps").set_defaults(func=_zones)
     sub.add_parser("exposure", help="buildings and people per zone (after zones)").set_defaults(func=_exposure)
     sub.add_parser("subdaily", help="half-hourly IMERG rain around past floods (needs Earthdata token)").set_defaults(func=_subdaily)
+    sub.add_parser("layers", help="map layers for the website (terrain, people, buildings, roads)").set_defaults(func=_layers)
     bt = sub.add_parser("backtest", help="replay the Outlook on past ECMWF forecasts and score it")
     bt.add_argument("--evening", action="store_true", help="evening issues before each flood (after the morning run)")
     bt.set_defaults(func=_backtest)

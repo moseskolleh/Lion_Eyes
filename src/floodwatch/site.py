@@ -282,141 +282,53 @@ def _what_to_do(o: dict) -> str:
     return "No heavy rain expected. No action needed."
 
 
-MAP_HEAD = """<link rel="stylesheet" href="vendor/leaflet/leaflet.css"><style>
-body.bare{overflow:hidden;height:100dvh}
-body.bare header.bar{position:fixed;left:0;right:0;top:0}
-#map{position:fixed;inset:0;z-index:0;background:var(--dark-bg)}
-.leaflet-top{top:var(--bar-h,64px)}
-.leaflet-container{font-family:var(--font-body);background:var(--dark-bg)}
-.leaflet-container img{border:0;border-radius:0;background:none}
-.leaflet-tile-pane{filter:grayscale(.85) contrast(.9) brightness(1.03)}
-html:not(.light-mode) .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) grayscale(.75) brightness(.8) contrast(.9)}
-.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--card-bg);color:var(--text-primary);border:1px solid var(--line-color)}
-.leaflet-popup-content{font-size:.88rem;line-height:1.5}
-.leaflet-bar a,.leaflet-control-layers{background:var(--card-bg);color:var(--text-primary);border-color:var(--line-soft)}
-.leaflet-bar a:hover{background:var(--card-bg-alt)}
-.leaflet-control-attribution{background:var(--bar-bg)!important;color:var(--text-dim)}
-.leaflet-control-attribution a{color:var(--accent-color)}
-.legend{background:var(--card-bg);color:var(--text-secondary);border:1px solid var(--line-soft);border-radius:8px;padding:8px 10px;
-font-size:.8rem;line-height:1.7}
-.sw{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px}
-.panel{position:fixed;z-index:900;left:16px;top:calc(var(--bar-h,64px) + 16px);width:min(380px,calc(100vw - 32px));
-max-height:calc(100dvh - var(--bar-h,64px) - 32px);overflow:auto;background:var(--card-bg);border:1px solid var(--line-color);
-border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.35);padding:0 18px 14px}
-.panel .stripe{height:5px;margin:0 -18px 14px;background:var(--lvl)}
-.panel{color:var(--text-primary)}.panel.state-HIGH{--lvl:var(--lvl-high)}.panel.state-ELEVATED{--lvl:var(--lvl-elev)}.panel.state-LOW{--lvl:var(--lvl-low)}
-.panel .eyebrow{font-size:.72rem;margin-bottom:4px}
-.headline{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;margin:2px 0 8px}
-.headline .word{font-family:var(--font-display);font-size:3.1rem;line-height:1;color:var(--lvl)}
-.headline .what{font-family:var(--font-mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)}
-.todo{font-size:1rem;line-height:1.5;margin-bottom:12px}
-.periods{list-style:none;padding:0;margin:0 0 12px;display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:.92rem}
-.periods li{display:contents}.periods .lvl{justify-self:end}
-.facts{font-size:.85rem;color:var(--text-secondary);margin-bottom:10px}
-.sms{background:var(--card-bg-alt);border:1px solid var(--line-soft);border-radius:8px;padding:10px;margin-bottom:10px}
-.sms p{font-family:var(--font-mono);font-size:.8rem;line-height:1.5;margin:4px 0 8px;color:var(--text-primary)}
-.sms button,.toggle{font:inherit;font-size:.82rem;cursor:pointer;border:1px solid var(--line-color);background:none;color:var(--accent-color);
-border-radius:999px;padding:3px 12px}
-.sms button:hover,.toggle:hover{background:var(--accent-color);color:var(--darker-bg)}
-.links{font-size:.88rem;margin-bottom:8px}
-.fine{font-size:.74rem;color:var(--text-dim);line-height:1.45;margin:0}
-.stale{font-size:.82rem;color:var(--accent-amber);margin-bottom:8px}
-.toggle{display:none}
-@media (max-width:700px){
-.panel{left:0;right:0;bottom:0;top:auto;width:100%;max-height:62dvh;border-radius:14px 14px 0 0;border-bottom:0}
-.panel.folded .more{display:none}.toggle{display:inline-block;float:right;margin-top:2px}
-.headline .word{font-size:2.4rem}.leaflet-bottom{bottom:var(--sheet-h,0px)}.legend{display:none}}
-</style>"""
+MAP_HEAD = '<link rel="stylesheet" href="vendor/leaflet/leaflet.css"><link rel="stylesheet" href="map.css">'
 
-MAP_SCRIPT = r"""
-const bar = document.querySelector('header.bar');
-function sizes() {
-  document.documentElement.style.setProperty('--bar-h', bar.offsetHeight + 'px');
-  const p = document.getElementById('panel');
-  document.documentElement.style.setProperty('--sheet-h', (innerWidth <= 700 ? p.offsetHeight : 0) + 'px');
-}
-const map = L.map('map', {zoomControl: false}).setView([8.44, -13.2], 12);
-L.control.zoom({position: 'topright'}).addTo(map);
-// Basemap: OpenStreetMap's standard tiles (no API key); CSS mutes them, or darkens them in dark mode.
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19,
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
-const onAlert = LE.level !== 'LOW';
-const named = new Set(LE.named);
-const levelColour = {HIGH: '#ff5a4f', ELEVATED: '#f2b705', LOW: '#7CFC00'}[LE.level];
-const kindColour = {low: '#22b8c9', steep: '#c08457', both: '#b48cff', other: '#8a939e'};
-const kindLabel = {low: 'Low ground near streams or the shore', steep: 'Steep hillsides', both: 'Both', other: 'Neither'};
-function kind(p) {
-  const low = p.low_ground_km2 >= 0.1, steep = p.steep_share >= 0.15;
-  return low && steep ? 'both' : low ? 'low' : steep ? 'steep' : 'other';
-}
-const fmt = v => (v === undefined || v === null) ? '?' : (Math.round(v / (v >= 1000 ? 100 : 10)) * (v >= 1000 ? 100 : 10)).toLocaleString('en');
-const zones = L.layerGroup().addTo(map), places = L.layerGroup().addTo(map);
-fetch('data/zones.geojson').then(r => r.json()).then(gj => {
-  L.geoJSON(gj, {
-    filter: f => f.properties.zone_id > 0,
-    style: f => {
-      const p = f.properties, hit = named.has(p.name);
-      if (onAlert) return hit ? {color: levelColour, weight: 2, fillColor: levelColour, fillOpacity: 0.42}
-                            : {color: '#8a939e', weight: 0.5, fillColor: '#8a939e', fillOpacity: 0.05};
-      return {color: '#8a939e', weight: 0.5, fillColor: kindColour[kind(p)], fillOpacity: 0.14};
-    },
-    onEachFeature: (f, layer) => {
-      const p = f.properties;
-      layer.bindPopup(`<b>${p.name || 'Zone ' + p.zone_id}</b>` +
-        (named.has(p.name) && onAlert ? `<br><b style="color:${levelColour}">Named in this outlook: ${LE.word}</b>` : '') +
-        `<br>About ${fmt(p.people)} people live here` +
-        `<br>${fmt(p.people_low_ground)} on low ground near streams or the shore` +
-        `<br>${fmt(p.people_steep)} on steep slopes` +
-        (p.flood_places ? `<br>Flooded before: ${p.flood_places}` : ''));
-    }
-  }).addTo(zones);
-});
-fetch('data/flood_places.geojson').then(r => r.json()).then(gj => {
-  L.geoJSON(gj, {
-    pointToLayer: (f, ll) => L.circleMarker(ll, {radius: 3 + 2 * f.properties.events, color: '#fff', weight: 1,
-      fillColor: '#ff5a4f', fillOpacity: 0.85}),
-    onEachFeature: (f, layer) => layer.bindPopup(`<b>${f.properties.place}</b><br>Reported floods:<br>` + f.properties.dates.join('<br>'))
-  }).addTo(places);
-});
-L.control.layers(null, {'Warning zones': zones, 'Past flood places': places}, {position: 'topright', collapsed: true}).addTo(map);
-const legend = L.control({position: 'bottomright'});
-legend.onAdd = () => {
-  const d = L.DomUtil.create('div', 'legend');
-  d.innerHTML = onAlert
-    ? `<span class="sw" style="background:${levelColour}"></span>Named in this outlook (${LE.word})<br>` +
-      `<span class="sw" style="background:#ff5a4f;border-radius:50%"></span>Flooded before`
-    : Object.keys(kindColour).filter(k => k !== 'other').map(k =>
-        `<span class="sw" style="background:${kindColour[k]}"></span>${kindLabel[k]}`).join('<br>') +
-      `<br><span class="sw" style="background:#ff5a4f;border-radius:50%"></span>Flooded before`;
-  return d;
-};
-legend.addTo(map);
-// Copy the short message.
-const copy = document.getElementById('copy');
-if (copy) copy.addEventListener('click', () => {
-  const t = document.getElementById('smstext').textContent;
-  (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(
-    () => { copy.textContent = 'Copied'; setTimeout(() => copy.textContent = 'Copy', 1500); },
-    () => { const r = document.createRange(); r.selectNodeContents(document.getElementById('smstext'));
-            const s = getSelection(); s.removeAllRanges(); s.addRange(r); });
-});
-// On phones the panel is a sheet that folds down to the headline.
-const panel = document.getElementById('panel'), fold = document.getElementById('fold');
-if (innerWidth <= 700 && !LE.onAlert) panel.classList.add('folded');
-function syncFold() { fold.textContent = panel.classList.contains('folded') ? 'Details' : 'Less'; sizes(); }
-fold.addEventListener('click', () => { panel.classList.toggle('folded'); syncFold(); });
-syncFold();
-// Say so when the latest outlook is older than it should be (one comes every ~12 hours).
-if (LE.issued_at) {
-  const hours = (Date.now() - Date.parse(LE.issued_at)) / 36e5;
-  if (hours > 15) {
-    const s = document.getElementById('stale');
-    s.hidden = false;
-    s.textContent = `This outlook is ${Math.round(hours)} hours old; the next one is late.`;
-  }
-}
-addEventListener('resize', sizes); sizes(); setTimeout(() => { sizes(); map.invalidateSize(); }, 200);
-"""
+# The layers panel: (id, group, name, note, key, on by default)
+MAP_LAYERS = [
+    ("zones", "Flood outlook", "Warning zones", "One per stream catchment. At Watch or Act, the zones named in the outlook light up.",
+     "border:2px dashed #8a939e", True),
+    ("floods", "Flood outlook", "Past flood places", "Neighbourhoods named in flood reports since 2007; bigger means more floods.",
+     "background:#d23b3a;border-radius:50%;width:14px;height:14px", True),
+    ("relief", "Ground", "Hills", "The Lion Mountains: the rain that falls on them reaches the city within the hour.",
+     "background:linear-gradient(135deg,#fff 0,#999 50%,#222 100%)", True),
+    ("low", "Ground", "Low ground", "Near a stream or the shore and under 3 m above it: water gathers here.",
+     "background:#2a78d6;opacity:.75", True),
+    ("steep", "Ground", "Steep slopes", "Steeper than 25 degrees: landslides and wall collapses are likelier.",
+     "background:#eb6834;opacity:.7", True),
+    ("streams", "Ground", "Streams", "Drainage lines traced from the terrain.", "background:#4cb4ff;height:3px;margin-top:9px", True),
+    ("buildings", "People and places", "Buildings", "Every footprint, coloured by the ground it stands on.",
+     "background:linear-gradient(90deg,#2a78d6 33%,#eb6834 33% 66%,#969ca4 66%)", True),
+    ("pop", "People and places", "Population", "People per hectare, estimated from buildings (about 3.6 people each).", "background:linear-gradient(90deg,#f3e8ff,#a855f7,#4c1d95)", False),
+    ("roads", "People and places", "Main roads", "Blue stretches run over low ground and may flood.",
+     "background:linear-gradient(180deg,transparent 40%,#2a78d6 40% 70%,transparent 70%)", True),
+    ("facilities", "People and places", "Hospitals, schools, police, worship", "A blue ring means it stands on low ground.",
+     "background:#1f2937;border:2px solid #2a78d6;border-radius:50%;width:14px;height:14px", True),
+]
+ZOOM_HINTS = {"buildings": "Zoom in to see them", "facilities": "Zoom in to see them"}
+
+
+def _layers_panel() -> str:
+    rows, group = [], None
+    for lid, grp, name, note, key, on in MAP_LAYERS:
+        if grp != group:
+            rows.append(f"<h3>{grp}</h3>")
+            group = grp
+        hint = (f'<span class="zoomhint" data-zoomhint="{lid}" hidden>{ZOOM_HINTS[lid]}</span>' if lid in ZOOM_HINTS else "")
+        ramp = ""
+        if lid == "pop":
+            ramp = ('<span class="ramp">' + "".join(f'<span class="c" style="background:{c}"></span>' for _, c in
+                    [(5, "#f3e8ff"), (25, "#d8b4fe"), (60, "#a855f7"), (120, "#7e22ce"), (200, "#4c1d95")]) +
+                    " 5 → 200+ per ha</span>")
+        rows.append(f'<label><input type="checkbox" data-layer="{lid}"{" checked" if on else ""}>'
+                    f'<span class="key" style="{key}"></span><span class="name">{name}</span>'
+                    f'<span class="note">{note}</span>{ramp}{hint}</label>')
+    return ('<button id="layersBtn" class="btn layers-btn" type="button">Layers</button>'
+            '<aside id="layers" class="layers" aria-label="Map layers">'
+            '<div class="search"><input id="q" type="search" placeholder="Search a neighbourhood or place" '
+            'aria-label="Search a neighbourhood or place" autocomplete="off"><ul id="results" class="results" hidden></ul></div>'
+            + "".join(rows) + "</aside>"
+            '<div id="hint" class="hint">Click anywhere on the map to see what is there</div>')
 
 
 def _home(found: list[tuple[str, dict]]) -> str:
@@ -457,10 +369,10 @@ def _home(found: list[tuple[str, dict]]) -> str:
 <p class="fine">{DISCLAIMER}</p></div></aside>"""
         data = {"level": level, "word": LEVEL_WORD[level], "named": named, "issued_at": o.get("issued_at"),
                 "alert": level != "LOW"}
-    body += f"""
+    body += _layers_panel() + f"""
 <script src="vendor/leaflet/leaflet.js"></script>
 <script>const LE = {json.dumps(data)};</script>
-<script>{MAP_SCRIPT}</script>"""
+<script src="map.js"></script>"""
     return _shell("Freetown flood outlook", body, extra_head=MAP_HEAD, path="index.html", bare=True)
 
 
@@ -608,6 +520,10 @@ def build(out: Path = OUT) -> Path:
         shutil.copytree(DOCS / "analysis" / "figures", target)
     shutil.copytree(config.REPO_ROOT / "site_assets" / "leaflet", out / "vendor" / "leaflet")  # Leaflet 1.9.4, BSD-2
     shutil.copytree(config.REPO_ROOT / "site_assets" / "fonts", out / "fonts")  # OFL fonts from sustaintheworld
+    for name in ("map.css", "map.js"):
+        shutil.copy(config.REPO_ROOT / "site_assets" / name, out / name)
+    if (config.REPO_ROOT / "site_assets" / "layers").exists():  # `floodwatch layers`
+        shutil.copytree(config.REPO_ROOT / "site_assets" / "layers", out / "layers")
     shutil.copy(config.DERIVED_DIR / "zones.geojson", out / "data" / "zones.geojson")
     (out / "data" / "flood_places.geojson").write_text(json.dumps(_places_geojson()))
 
