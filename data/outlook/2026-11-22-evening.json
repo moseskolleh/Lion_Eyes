@@ -1,18 +1,38 @@
 {
   "issued": "2026-11-22",
   "edition": "evening",
-  "issued_at": "2026-11-22T21:20Z",
+  "issued_at": "2026-11-22T23:07Z",
   "forecast_run": "2026-11-22 12:00 UTC",
-  "observed_rain_last_3_days_mm": null,
+  "observed_rain_last_3_days_mm": 0.1,
   "observed_period": "the last 2\u00bd days",
-  "observed_days": [],
+  "observed_days": [
+    {
+      "date": "2026-11-20",
+      "product": "GPM_3IMERGDL.07",
+      "mean_mm": 0.0,
+      "max_mm": 0.0
+    },
+    {
+      "date": "2026-11-21",
+      "product": "GPM_3IMERGDL.07",
+      "mean_mm": 0.1,
+      "max_mm": 0.2
+    },
+    {
+      "date": "2026-11-22",
+      "until": "12:00 UTC",
+      "product": "GPM_3IMERGHHE.07",
+      "mean_mm": 0.0,
+      "max_mm": 0.0
+    }
+  ],
   "days": [
     {
       "day": "2026-11-22",
       "p_wet": 0.0,
       "p_very_wet": 0.0,
       "median_mm": 0.7,
-      "prior_3d_mm": 0,
+      "prior_3d_mm": 0.1,
       "level": "LOW",
       "start": "2026-11-22T12:00:00",
       "end": "2026-11-23T12:00:00",
@@ -27,7 +47,7 @@
       "p_wet": 0.0,
       "p_very_wet": 0.0,
       "median_mm": 0.9,
-      "prior_3d_mm": 0.7,
+      "prior_3d_mm": 0.8,
       "level": "LOW",
       "start": "2026-11-23T12:00:00",
       "end": "2026-11-24T12:00:00",
@@ -91,5 +111,6 @@
     "saturated_3d_mm": 100.0,
     "likely": 0.3,
     "provisional": true
-  }
+  },
+  "sms": "Freetown flood outlook, 22 Nov pm: Tonight LOW, Tomorrow LOW, Tue LOW. No action needed. moseskolleh.github.io/Maji"
 }
