@@ -1,0 +1,76 @@
+place,events,geocoded,lat,lon,osm_type,coastal,elevation_m,hand_m,nearby_stream_km2
+Kroo Bay,7,True,8.48953,-13.24084,bay,True,0.47493594884872437,0.47493594884872437,7.900169894467864
+Culvert,5,False,,,,,,,
+Freetown,3,False,,,,,,,
+Cline Town,2,True,8.48824,-13.20908,suburb,False,22.037057876586914,22.037057876586914,0.0
+Gray Bush,2,False,,,,,,,
+Juba,2,False,,,,,,,
+Kaningo,2,True,8.44852,-13.26416,neighbourhood,False,18.858562469482422,15.48451566696167,12.746634727444226
+Lumley,2,True,8.45599,-13.2714,suburb,False,9.20336627960205,0.8324871063232422,1.0438973302514032
+Aberdeen,1,True,8.49552,-13.28671,suburb,True,25.845020294189453,25.845020294189453,0.0
+Allen Town-Waterloo Highway,1,False,,,,,,,
+Babadorie River Valley,1,False,,,,,,,
+Bathurst,1,True,8.43118,-13.19986,village,False,283.0249328613281,52.880218505859375,0.0
+Blackhall (Kissy),1,False,,,,,,,
+Bololo,1,False,,,,,,,
+Brooks field,1,False,,,,,,,
+Campbell Street,1,False,,,,,,,
+Cassava town,1,False,,,,,,,
+Cockerill Bay,1,True,8.4657,-13.28324,bay,False,0.7373717427253723,0.7373717427253723,0.0
+Colbert,1,False,,,,,,,
+Congo Town,1,True,8.48423,-13.25709,suburb,False,23.108659744262695,23.108659744262695,0.0
+Connaught Hospital,1,False,,,,,,,
+Dwazark,1,False,,,,,,,
+East End of Freetown,1,False,,,,,,,
+Falcon Bridge,1,False,,,,,,,
+Femi Turner Drive,1,False,,,,,,,
+Freetown (no neighbourhoods named),1,False,,,,,,,
+Freetown (several parts),1,False,,,,,,,
+Freetown (three hillside houses; neighbourhood not named),1,False,,,,,,,
+Freetown low-lying areas,1,False,,,,,,,
+Freetown lowlands and floodplains (no neighbourhoods named),1,False,,,,,,,
+Gbangbayilla,1,False,,,,,,,
+George Brook,1,False,,,,,,,
+Goderich,1,True,8.43297,-13.28887,suburb,False,10.513460159301758,9.669694423675537,0.42376030237928247
+"Haja Soni Drive, Mortomeh",1,False,,,,,,,
+Juba Bridge,1,False,,,,,,,
+Kamayama,1,False,,,,,,,
+Kanikay,1,True,8.48766,-13.20562,neighbourhood,True,1.2875380516052246,1.2875380516052246,7.08553534421767
+Kissy,1,True,8.46863,-13.18931,suburb,False,49.4889030456543,6.272071838378906,3.1016247409179853
+Kissy (Leone Oil facility),1,False,,,,,,,
+Kolloh Town,1,False,,,,,,,
+Krootown Road,1,False,,,,,,,
+Kuntholoh,1,False,,,,,,,
+Looking Town,1,True,8.43309,-13.21647,neighbourhood,False,277.9129333496094,9.913116455078125,4.907538934206191
+Lower Kuntolor,1,False,,,,,,,
+Malama,1,False,,,,,,,
+Mama Wurie (Femi Turner),1,False,,,,,,,
+Metchem,1,False,,,,,,,
+Moeba,1,False,,,,,,,
+Mountain Cut,1,False,,,,,,,
+Moyeiba,1,False,,,,,,,
+Moyiba,1,False,,,,,,,
+New England Ville (54 Off Pratt Street),1,False,,,,,,,
+Owen Street,1,False,,,,,,,
+"PWD Junction, Pademba Road",1,False,,,,,,,
+Portee,1,False,,,,,,,
+Portor,1,True,8.44365,-13.27574,neighbourhood,False,3.8087100982666016,2.976163685321808,1.1735623451701191
+Queen Elizabeth II Quay,1,False,,,,,,,
+Regent,1,True,8.43548,-13.21846,village,False,271.80120849609375,2.074249267578125,4.589953607811075
+Rokupa,1,True,8.45944,-13.17417,hamlet,True,44.70021057128906,44.70021057128906,0.0
+SS Camp,1,False,,,,,,,
+Signal Hill,1,False,,,,,,,
+Sugar Loaf,1,True,8.43157,-13.22326,neighbourhood,False,364.6432189941406,88.71185302734375,0.0
+Susan's Bay,1,True,8.48988,-13.22724,neighbourhood,True,4.28825569152832,1.9200217723846436,2.1902112302574444
+Temne,1,True,8.40771,-13.15385,town,False,147.91685485839844,142.4740972518921,0.0
+Tengbeh Town,1,True,8.47203,-13.2547,neighbourhood,False,93.36094665527344,86.58192110061646,0.0
+"Texaco, Old Road",1,False,,,,,,,
+"Upper Melon Street, Old Road",1,False,,,,,,,
+Waterloo,1,False,,,,,,,
+Wellington,1,True,8.44761,-13.17055,suburb,False,52.3851432800293,19.237281799316406,0.0
+Wilberforce,1,True,8.47536,-13.26359,suburb,False,182.83775329589844,137.6397819519043,0.0
+Wilkinson Road,1,False,,,,,,,
+central Freetown,1,False,,,,,,,
+downtown Freetown,1,False,,,,,,,
+east and west of Freetown,1,False,,,,,,,
+low-lying areas of Freetown (no neighbourhoods named),1,False,,,,,,,
