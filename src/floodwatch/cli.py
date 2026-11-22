@@ -7,6 +7,8 @@ Commands
   terrain    trace streams, place past floods on the terrain, draw the map
   zones      split the peninsula into warning zones (run after terrain)
   subdaily   half-hourly satellite rain around past floods (after hindcast)
+  outlook    today's 3-day flood outlook (live data; writes data/outlook/)
+  site       build the static website (GitHub Pages) into _site/
 """
 
 from __future__ import annotations
@@ -75,6 +77,18 @@ def _subdaily(args: argparse.Namespace) -> None:
     subdaily.run()
 
 
+def _outlook(args: argparse.Namespace) -> None:
+    from floodwatch import outlook
+
+    outlook.build()
+
+
+def _site(args: argparse.Namespace) -> None:
+    from floodwatch import site
+
+    site.build()
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="floodwatch")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -91,6 +105,8 @@ def main(argv: list[str] | None = None) -> None:
     sub.add_parser("terrain", help="streams, flood places and exposure map").set_defaults(func=_terrain)
     sub.add_parser("zones", help="warning zones (one per catchment) and their maps").set_defaults(func=_zones)
     sub.add_parser("subdaily", help="half-hourly IMERG rain around past floods (needs Earthdata token)").set_defaults(func=_subdaily)
+    sub.add_parser("outlook", help="today's 3-day flood outlook (ECMWF ensemble + IMERG + tide)").set_defaults(func=_outlook)
+    sub.add_parser("site", help="build the static website into _site/").set_defaults(func=_site)
     args = parser.parse_args(argv)
     args.func(args)
 

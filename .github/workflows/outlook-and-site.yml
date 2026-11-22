@@ -1,0 +1,80 @@
+# Daily flood Outlook + website.
+#
+# Every day: issue the 3-day Outlook, commit the bulletin and the forecast
+# archive to main, rebuild the website and publish it on GitHub Pages.
+# On every push to main: rebuild and publish the website only.
+#
+# One-time setup (repository settings):
+#   * Settings > Pages > Build and deployment > Source: "GitHub Actions".
+#   * Settings > Secrets and variables > Actions > New repository secret
+#     EARTHDATA_TOKEN = a NASA Earthdata Login token (for observed rain).
+#     Without it the Outlook still runs, but ground wetness shows as unknown.
+#     Earthdata tokens expire after 60 days; replace the secret when it does.
+
+name: Daily outlook and website
+
+on:
+  schedule:
+    - cron: "23 9 * * *" # 09:23 UTC: the ECMWF 00 UTC ensemble is published by then
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: outlook-and-site
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: pip install -e .
+
+      - name: Issue today's Outlook
+        if: github.event_name != 'push'
+        env:
+          EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
+        run: floodwatch outlook
+
+      - name: Commit the Outlook and forecast archive
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/outlook data/archive
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit."
+          else
+            git commit -m "Outlook $(date -u +%F)"
+            git push
+          fi
+
+      - name: Build the website
+        run: floodwatch site
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
