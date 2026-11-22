@@ -53,3 +53,17 @@ def test_bulletin_says_when_wetness_is_unknown():
         "low_ground_zones": [], "steep_zones": [],
     }
     assert "not available" in outlook.to_text(o)
+
+
+def _members(day_mm: dict[int, float], n: int = 51) -> pd.DataFrame:
+    return pd.DataFrame([{"member": m, "day": k, "mean_mm": mm, "max_mm": mm}
+                         for m in range(n) for k, mm in day_mm.items()])
+
+
+def test_day_levels_chains_observed_rain_into_forecast_medians():
+    days = outlook.day_levels(_members({1: 40.0, 2: 0.0, 3: 0.0}), date(2027, 8, 3), [50.0, 30.0, 25.0])
+    assert [d["day"] for d in days] == [date(2027, 8, 3), date(2027, 8, 4), date(2027, 8, 5)]
+    # Day 1: 105 mm in the 3 observed days (saturated) and every member wet -> HIGH.
+    assert days[0]["prior_3d_mm"] == 105.0 and days[0]["level"] == "HIGH"
+    # Day 2: the 3 days before are 30 + 25 observed + 40 forecast = 95 mm -> not saturated, dry -> LOW.
+    assert days[1]["prior_3d_mm"] == 95.0 and days[1]["level"] == "LOW"
