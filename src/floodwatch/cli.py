@@ -6,6 +6,7 @@ Commands
   hindcast   score warning rules against the flood history
   terrain    trace streams, place past floods on the terrain, draw the map
   zones      split the peninsula into warning zones (run after terrain)
+  exposure   count buildings and people per zone and hazard class (after zones)
   subdaily   half-hourly satellite rain around past floods (after hindcast)
   outlook    today's 3-day flood outlook (live data; writes data/outlook/)
   site       build the static website (GitHub Pages) into _site/
@@ -89,6 +90,12 @@ def _site(args: argparse.Namespace) -> None:
     site.build()
 
 
+def _exposure(args: argparse.Namespace) -> None:
+    from floodwatch import population
+
+    population.run()
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="floodwatch")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -104,6 +111,7 @@ def main(argv: list[str] | None = None) -> None:
     hc.set_defaults(func=_hindcast)
     sub.add_parser("terrain", help="streams, flood places and exposure map").set_defaults(func=_terrain)
     sub.add_parser("zones", help="warning zones (one per catchment) and their maps").set_defaults(func=_zones)
+    sub.add_parser("exposure", help="buildings and people per zone (after zones)").set_defaults(func=_exposure)
     sub.add_parser("subdaily", help="half-hourly IMERG rain around past floods (needs Earthdata token)").set_defaults(func=_subdaily)
     sub.add_parser("outlook", help="today's 3-day flood outlook (ECMWF ensemble + IMERG + tide)").set_defaults(func=_outlook)
     sub.add_parser("site", help="build the static website into _site/").set_defaults(func=_site)
