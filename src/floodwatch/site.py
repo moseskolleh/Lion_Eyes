@@ -99,7 +99,7 @@ transition:border-color .3s ease}
 table{border-collapse:collapse;width:100%;font-size:.92rem;display:block;overflow-x:auto;margin:0 0 1em}
 th,td{border-bottom:1px solid var(--line-soft);padding:8px 10px;text-align:left;vertical-align:top}
 th{font-family:var(--font-mono);font-weight:400;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);white-space:nowrap}
-code{font-family:var(--font-mono);font-size:.88em;background:var(--card-bg-alt);border:1px solid var(--line-soft);border-radius:3px;padding:.05em .35em}
+code{overflow-wrap:anywhere;font-family:var(--font-mono);font-size:.88em;background:var(--card-bg-alt);border:1px solid var(--line-soft);border-radius:3px;padding:.05em .35em}
 pre{background:var(--card-bg-alt);border:1px solid var(--line-soft);border-radius:var(--border-radius);padding:12px;overflow-x:auto;margin:0 0 1em}
 pre code{border:0;padding:0;background:none}
 img{max-width:100%;height:auto;border-radius:var(--border-radius);border:1px solid var(--line-soft);background:#fff}
@@ -112,6 +112,82 @@ hr{border:0;border-top:1px solid var(--line-soft);margin:2em 0}
 footer{border-top:1px solid var(--line-soft);padding:22px 0 30px;color:var(--text-dim);font-size:.85rem}
 footer .mono{font-size:.76rem;letter-spacing:.06em;text-transform:uppercase}
 .nowrap{white-space:nowrap}
+/* Page furniture shared by the content pages */
+.hero{margin:8px 0 28px}.hero .lede{max-width:760px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:22px 0 30px}
+.stat{background:var(--card-bg);border:1px solid var(--line-soft);border-radius:10px;padding:16px 16px 14px}
+.stat .n{font-family:var(--font-display);font-size:2.4rem;line-height:1;color:var(--text-primary)}
+.stat .l{font-size:.86rem;color:var(--text-secondary);margin-top:6px;line-height:1.4}
+.stat.accent .n{color:var(--accent-color)}
+.panelbox{background:var(--card-bg);border:1px solid var(--line-soft);border-radius:10px;padding:18px 20px;margin:0 0 22px}
+.panelbox h2,.panelbox h3{margin-top:0}
+.two{display:grid;grid-template-columns:2fr 1fr;gap:20px}@media (max-width:860px){.two{grid-template-columns:1fr}}
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.chart .bar{fill:var(--series-1)}.chart .bar:hover{fill:var(--series-1-hover)}
+.chart .gap{fill:none;stroke:var(--text-dim);stroke-dasharray:2 3}
+.chart text{fill:var(--text-dim);font-family:var(--font-mono);font-size:10px}
+.chart .grid{stroke:var(--line-soft)}
+.chart .val{fill:var(--text-secondary);font-size:10px}
+.tip{position:fixed;z-index:2000;pointer-events:none;background:var(--card-bg);border:1px solid var(--line-color);border-radius:6px;
+padding:6px 9px;font-size:.82rem;color:var(--text-primary);box-shadow:0 6px 20px rgba(0,0,0,.3)}
+:root{--series-1:#e34948;--series-1-hover:#c73433}html.light-mode{--series-1:#d23b3a;--series-1-hover:#a82a29}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0 18px}
+.chip{font:inherit;font-size:.84rem;cursor:pointer;border:1px solid var(--line-color);background:none;color:var(--text-secondary);
+border-radius:999px;padding:4px 12px}
+.chip.on,.chip:hover{background:var(--accent-color);color:var(--darker-bg);border-color:var(--accent-color)}
+.filters input{font:inherit;font-size:.88rem;padding:6px 10px;border-radius:8px;border:1px solid var(--line-color);
+background:var(--card-bg-alt);color:var(--text-primary);min-width:220px}
+.events{display:grid;gap:12px}
+.event{display:grid;grid-template-columns:120px 1fr;gap:4px 18px;background:var(--card-bg);border:1px solid var(--line-soft);
+border-radius:10px;padding:14px 16px}
+.event .when{font-family:var(--font-display);font-size:1.25rem;line-height:1.2}
+.event .when small{display:block;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.08em;color:var(--text-dim);margin-top:4px}
+.event .places{font-weight:600;margin-bottom:2px}
+.event .sum{color:var(--text-secondary);font-size:.94rem;margin:2px 0 6px}
+.event details{font-size:.82rem;color:var(--text-dim)}.event details a{word-break:break-all}
+.badge{display:inline-block;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;
+border:1px solid var(--line-color);border-radius:999px;padding:1px 8px;margin-right:6px;color:var(--text-secondary)}
+.badge.dead{border-color:var(--series-1);color:var(--series-1)}
+@media (max-width:560px){.event{grid-template-columns:1fr}}
+/* Outlook page */
+.bigword{font-family:var(--font-display);font-size:clamp(3rem,8vw,5rem);line-height:1;color:var(--lvl)}
+.state-HIGH{--lvl:var(--lvl-high)}.state-ELEVATED{--lvl:var(--lvl-elev)}.state-LOW{--lvl:var(--lvl-low)}
+.periodcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:18px 0 24px}
+.pcard{background:var(--card-bg);border:1px solid var(--line-soft);border-top:4px solid var(--lvl);border-radius:10px;padding:14px 16px}
+.pcard h3{font-family:var(--font-body);font-weight:600;font-size:1rem;margin:0 0 6px}
+.pcard dl{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:.88rem;margin:10px 0 0}
+.pcard dt{color:var(--text-secondary)}.pcard dd{margin:0;text-align:right;font-family:var(--font-mono);font-size:.84rem}
+.meter{height:6px;background:var(--line-soft);border-radius:999px;overflow:hidden;margin-top:2px}
+.meter i{display:block;height:100%;background:var(--lvl)}
+.strip{display:flex;flex-wrap:wrap;gap:3px;margin:8px 0 18px}
+.strip a{width:14px;height:22px;border-radius:3px;display:block}
+.strip a.LOW{background:var(--lvl-low)}.strip a.ELEVATED{background:var(--lvl-elev)}.strip a.HIGH{background:var(--lvl-high)}
+/* Flow diagram (How it works) */
+.flow{display:grid;grid-template-columns:repeat(3,1fr) auto 1fr;gap:12px;align-items:stretch;margin:18px 0 26px}
+.flow .step{background:var(--card-bg);border:1px solid var(--line-soft);border-radius:10px;padding:14px}
+.flow .step b{display:block;font-family:var(--font-display);font-weight:500;font-size:1.15rem;margin-bottom:4px}
+.flow .step span{font-size:.86rem;color:var(--text-secondary)}
+.flow .arrow{align-self:center;font-size:1.6rem;color:var(--accent-color)}
+.flow .out{border-color:var(--accent-color)}
+@media (max-width:860px){.flow{grid-template-columns:1fr}.flow .arrow{transform:rotate(90deg);justify-self:center}}
+/* Analysis pages: article layout with a contents list */
+.doc{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:40px}
+.doc .toc{position:sticky;top:90px;align-self:start;font-size:.84rem;border-left:1px solid var(--line-soft);padding-left:14px}
+.doc .toc b{display:block;font-family:var(--font-mono);font-weight:400;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+color:var(--text-dim);margin-bottom:8px}
+.doc .toc a{display:block;color:var(--text-secondary);text-decoration:none;padding:3px 0;line-height:1.35}
+.doc .toc a:hover{color:var(--accent-color)}
+.doc article>p,.doc article>ul,.doc article>ol,.doc article>blockquote{max-width:760px}
+.doc article h1+p em,.doc article>p:first-of-type em{color:var(--text-dim)}
+.doc article h2{padding-top:10px;border-top:1px solid var(--line-soft)}
+.doc article img{display:block;margin:10px 0 4px;background:#fff}
+.doc article img+em,.doc article p:has(>img)+p>em:only-child{display:block;font-size:.86rem;color:var(--text-dim)}
+.doc article table{font-size:.88rem}
+.doc article tbody tr:nth-child(odd){background:var(--card-bg-alt)}
+.doc article tbody tr:hover{background:var(--line-soft)}
+.doc article thead th{position:sticky;top:0;background:var(--card-bg)}
+@media (max-width:980px){.doc{grid-template-columns:1fr}.doc .toc{position:static;border-left:0;padding:0 0 12px;
+border-bottom:1px solid var(--line-soft)}}
 @media (max-width:640px){header.bar .wrap{gap:6px 14px}.brand{font-size:1.25rem}.tagline{font-size:.62rem;letter-spacing:.1em}.theme-toggle{order:1;width:36px;height:36px}
 nav{order:2;width:100%;gap:2px 14px}nav a{font-size:.86rem}}
 """
@@ -199,6 +275,23 @@ def _blank_before_lists(text: str) -> str:
         out.append(line)
         prev = line
     return "\n".join(out) + "\n"
+
+
+def _doc(path: Path, target: str) -> str:
+    """A markdown doc as an article with a contents list built from its section headings."""
+    page = _md(path, target)
+    heads = []
+
+    def anchor(m: re.Match) -> str:
+        text = re.sub(r"<[^>]+>", "", m.group(1))
+        slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-") or f"s{len(heads)}"
+        heads.append((slug, text))
+        return f'<h2 id="{slug}">{m.group(1)}</h2>'
+
+    page = re.sub(r"<h2>(.*?)</h2>", anchor, page)
+    toc = "".join(f'<a href="#{slug}">{html.escape(html.unescape(text))}</a>' for slug, text in heads)
+    return (f'<div class="doc"><article>{page}</article>'
+            + (f'<aside class="toc" aria-label="On this page"><b>On this page</b>{toc}</aside>' if heads else "") + "</div>")
 
 
 def _md(path: Path, target: str | None = None) -> str:
@@ -381,45 +474,187 @@ def _redirect(to: str) -> str:
             f'<link rel="canonical" href="{to}"><title>{TITLE}</title></head><body><a href="{to}">{TITLE}</a></body></html>')
 
 
+TIP_SCRIPT = """<div id="tip" class="tip" hidden></div><script>(function(){var t=document.getElementById('tip');
+document.addEventListener('mousemove',function(e){var el=e.target.closest&&e.target.closest('[data-tip]');
+if(!el){t.hidden=true;return}t.hidden=false;t.textContent=el.getAttribute('data-tip');
+var x=Math.min(e.clientX+12,innerWidth-t.offsetWidth-8);t.style.left=x+'px';t.style.top=(e.clientY+14)+'px'})})();</script>"""
+
+
+def _bar_chart(items: list[tuple[str, int, str]], label_every: int = 1, height: int = 170, width: int = 760) -> str:
+    """A single-series bar chart as SVG. items: (label, value, tooltip). Zero
+    values are drawn as a dashed outline when their tooltip says why."""
+    top, bottom, left = 14, 24, 26
+    n = len(items)
+    peak = max(1, max(v for _, v, _ in items))
+    step = (width - left) / n
+    bw = max(4, step * 0.62)
+    scale = (height - top - bottom) / peak
+    parts = [f'<svg class="chart" viewBox="0 0 {width} {height}" role="img">']
+    for g in range(0, peak + 1, max(1, peak // 3)):
+        y = height - bottom - g * scale
+        parts.append(f'<line class="grid" x1="{left}" x2="{width}" y1="{y:.1f}" y2="{y:.1f}"/>'
+                     f'<text x="{left - 6}" y="{y + 3:.1f}" text-anchor="end">{g}</text>')
+    for i, (lab, v, tip) in enumerate(items):
+        x = left + i * step + (step - bw) / 2
+        base = height - bottom
+        if v > 0:
+            h = v * scale
+            r = min(4, bw / 2, h)
+            parts.append(f'<path class="bar" data-tip="{html.escape(tip)}" d="M{x:.1f},{base} V{base - h + r:.1f} '
+                         f'Q{x:.1f},{base - h:.1f} {x + r:.1f},{base - h:.1f} H{x + bw - r:.1f} '
+                         f'Q{x + bw:.1f},{base - h:.1f} {x + bw:.1f},{base - h + r:.1f} V{base} Z"/>')
+        elif tip:
+            parts.append(f'<rect class="gap" data-tip="{html.escape(tip)}" x="{x:.1f}" y="{base - 3 * scale * 0.6:.1f}" '
+                         f'width="{bw:.1f}" height="{3 * scale * 0.6:.1f}" rx="2"/>')
+        if i % label_every == 0:
+            parts.append(f'<text x="{x + bw / 2:.1f}" y="{height - 8}" text-anchor="middle">{html.escape(lab)}</text>')
+    parts.append("</svg>")
+    return "".join(parts)
+
+
+FLOODS_SCRIPT = """<script>(function(){var cards=[].slice.call(document.querySelectorAll('.event')),kind='all',
+q=document.getElementById('fq'),yr=document.getElementById('fy'),count=document.getElementById('fcount');
+function apply(){var t=q.value.trim().toLowerCase(),y=yr.value,n=0;cards.forEach(function(c){
+var ok=(kind==='all'||(kind==='deadly'?c.dataset.dead==='1':c.dataset.kind===kind))&&(!y||c.dataset.year===y)&&
+(!t||c.textContent.toLowerCase().indexOf(t)>=0);c.hidden=!ok;if(ok)n++});count.textContent=n+' of '+cards.length+' floods'}
+[].forEach.call(document.querySelectorAll('.chip[data-kind]'),function(b){b.addEventListener('click',function(){
+kind=b.dataset.kind;[].forEach.call(document.querySelectorAll('.chip[data-kind]'),function(o){o.classList.toggle('on',o===b)});apply()})});
+q.addEventListener('input',apply);yr.addEventListener('change',apply);apply()})();</script>"""
+
+
 def _floods_page() -> str:
     cat = events.load_catalogue().sort_values("date", ascending=False)
-    rows = []
+    years = range(2007, int(cat["date"].dt.year.max()) + 1)
+    by_year = cat.groupby(cat["date"].dt.year).size()
+    year_items = [(f"'{y % 100:02d}", int(by_year.get(y, 0)),
+                   f"{y}: {int(by_year.get(y, 0))} flood{'s' if by_year.get(y, 0) != 1 else ''}"
+                   if by_year.get(y, 0) else f"{y}: no flood reports found online yet") for y in years]
+    months = ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"]
+    by_month = cat.groupby(cat["date"].dt.month).size()
+    month_items = [(m, int(by_month.get(i, 0)), f"{m}: {int(by_month.get(i, 0))} floods") for i, m in enumerate(months, 5)]
+    deaths = int(cat["deaths"].fillna(0).sum())
+    worst = cat.loc[cat["deaths"].fillna(0).idxmax()]
+    place_counts = pd.Series([pl for locs in cat["locations"] for pl in locs]).value_counts()
+    top_place, top_n = place_counts.index[0], int(place_counts.iloc[0])
+    aug = int(by_month.get(8, 0))
+    cards = []
     for _, e in cat.iterrows():
-        when = f"{e['date']:%d %b %Y}" if e["date_confidence"] != "month_only" else f"{e['date']:%b %Y}"
-        deaths = "" if pd.isna(e["deaths"]) else int(e["deaths"])
-        src = " ".join(f'<a href="{html.escape(u)}">[{i}]</a>' for i, u in enumerate(e["sources"], 1))
-        rows.append(f"<tr><td>{when}</td><td>{html.escape(e['type'].replace('_', ' '))}</td>"
-                    f"<td>{html.escape(', '.join(e['locations']))}</td><td>{deaths}</td>"
-                    f"<td>{html.escape(str(e['summary']))}</td><td>{src}</td></tr>")
-    body = f"""<p class="eyebrow">Record</p><h1>Flood <em>history</em></h1>
-<p>{len(cat)} floods on the Freetown peninsula, 2007-2026, each from public sources (news, NDMA, Red Cross/IFRC, OCHA).
-The list is incomplete, especially before 2015 and for small floods. Know of a flood that is missing? Open an issue on
-<a href="https://github.com/moseskolleh/Lion_Eyes/issues">GitHub</a>.</p>
-<table><thead><tr><th>Date</th><th>Type</th><th>Places</th><th>Deaths</th><th>Summary</th><th>Sources</th></tr></thead>
-<tbody>{''.join(rows)}</tbody></table>"""
+        month_only = e["date_confidence"] == "month_only"
+        when = f"{e['date']:%b %Y}" if month_only else f"{e['date']:%d %b %Y}"
+        dead = 0 if pd.isna(e["deaths"]) else int(e["deaths"])
+        kind = "flash_flood" if e["type"] == "flash_flood" else "other"
+        kind_label = {"flash_flood": "flash flood", "landslide": "landslide", "mixed": "flood and collapse"}.get(e["type"], e["type"])
+        srcs = "".join(f'<li><a href="{html.escape(u)}" rel="noopener">{html.escape(u.split("//")[-1][:70])}</a></li>'
+                       for u in e["sources"])
+        time = "" if pd.isna(e["time_of_day"]) else f"<small>{html.escape(str(e['time_of_day'])[:40])}</small>"
+        cards.append(
+            f'<div class="event" data-kind="{kind}" data-dead="{1 if dead else 0}" data-year="{e["date"].year}">'
+            f'<div class="when">{when}{time}</div><div>'
+            f'<div class="places">{html.escape(", ".join(e["locations"][:6]))}</div>'
+            f'<span class="badge">{kind_label}</span>' + (f'<span class="badge dead">{dead} dead</span>' if dead else "")
+            + f'<p class="sum">{html.escape(str(e["summary"]))}</p>'
+            f'<details><summary>{len(e["sources"])} source{"s" if len(e["sources"]) != 1 else ""}</summary><ul>{srcs}</ul></details>'
+            "</div></div>")
+    year_opts = "".join(f'<option value="{y}">{y}</option>' for y in sorted(set(cat["date"].dt.year), reverse=True))
+    body = f"""<div class="hero"><p class="eyebrow">Flood history</p><h1>Every flood we could <em>find</em></h1>
+<p class="lede">Floods on the Freetown peninsula since 2007, each from public sources: news, the National Disaster
+Management Agency, the Red Cross and the UN, and residents' posts. This record is what Lion Eyes learns from. It is
+incomplete, above all before 2015 and for small floods. <a href="https://github.com/moseskolleh/Lion_Eyes/issues">Tell us
+about a flood that is missing</a>.</p></div>
+<div class="stats">
+<div class="stat"><div class="n">{len(cat)}</div><div class="l">floods recorded, 2007-{int(cat['date'].dt.year.max())}</div></div>
+<div class="stat"><div class="n">{deaths:,}</div><div class="l">deaths reported; {int(worst['deaths']):,} in the {worst['date']:%B %Y} Regent mudslide</div></div>
+<div class="stat"><div class="n">{aug}</div><div class="l">in August, the worst month; July and September follow</div></div>
+<div class="stat"><div class="n">{top_n}</div><div class="l">floods at {html.escape(top_place)}, the most-hit place</div></div>
+</div>
+<div class="two">
+<div class="panelbox"><h3>Floods per year</h3>{_bar_chart(year_items, label_every=2)}
+<p class="small muted">Dashed: no flood reports found online for that year. That is a gap in the record, not a dry year.</p></div>
+<div class="panelbox"><h3>By month</h3>{_bar_chart(month_items, width=340, height=200)}
+<p class="small muted">The rainy season runs May to November.</p></div>
+</div>
+<div class="filters"><button class="chip on" data-kind="all" type="button">All</button>
+<button class="chip" data-kind="flash_flood" type="button">Flash floods</button>
+<button class="chip" data-kind="other" type="button">Landslides and collapses</button>
+<button class="chip" data-kind="deadly" type="button">With deaths</button>
+<select id="fy" class="chip" aria-label="Year"><option value="">Any year</option>{year_opts}</select>
+<input id="fq" type="search" placeholder="Search places or words" aria-label="Search the flood history">
+<span id="fcount" class="small muted"></span></div>
+<div class="events">{''.join(cards)}</div>
+{TIP_SCRIPT}{FLOODS_SCRIPT}"""
     return _shell("Flood history", body, path="floods.html")
+
+
+COPY_SCRIPT = """<script>(function(){var b=document.getElementById('copy');if(!b)return;b.addEventListener('click',function(){
+var t=document.getElementById('smstext').textContent;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(
+function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1500)},function(){})})})();</script>"""
+
+
+def _period_card(d: dict, label: str) -> str:
+    tides = ", ".join(d["high_tides"]) or "none above 1.1 m"
+    return (f'<div class="pcard state-{d["level"]}"><h3>{html.escape(label)}</h3>'
+            f'<span class="lvl {d["level"]}">{d["level"]}</span> <span class="small muted">{LEVEL_WORD[d["level"]]}</span>'
+            f'<dl><dt>Chance of a wet {"period" if d.get("start", "").endswith("12:00:00") else "day"}</dt><dd>{d["p_wet"]:.0%}</dd>'
+            f'<dd style="grid-column:1/-1"><div class="meter"><i style="width:{d["p_wet"] * 100:.0f}%"></i></div></dd>'
+            f'<dt>Chance of a very wet one</dt><dd>{d["p_very_wet"]:.0%}</dd>'
+            f'<dd style="grid-column:1/-1"><div class="meter"><i style="width:{d["p_very_wet"] * 100:.0f}%"></i></div></dd>'
+            f'<dt>Most likely rain</dt><dd>{d["median_mm"]:.0f} mm</dd>'
+            f'<dt>Rain in the days before</dt><dd>{d["prior_3d_mm"]:.0f} mm</dd>'
+            f'</dl><p class="small muted" style="margin:10px 0 0">High tides: {html.escape(tides)}</p></div>')
 
 
 def _outlook_page() -> str:
     found = _outlooks()
-    items = []
-    for stem, o in found:
-        levels = " ".join(f"<span class='lvl {d['level']}'>{html.escape(_period(d))}</span>" for d in o["days"])
-        items.append(f"<tr><td class='nowrap'><a href='{stem}.html'>{o['issued']}</a> {o.get('edition', 'morning')}</td>"
-                     f"<td>{levels}</td></tr>")
-    latest = _outlook_card(found[0][1], up="../") if found else ""
-    body = f"""<p class="eyebrow">Outlook</p><h1>Freetown flood <em>outlook</em></h1>
-<p class="lede">Issued every morning (about 08:15) and evening (about 21:00), Freetown time, for the next three days or
-periods. <strong>HIGH</strong> means act, <strong>ELEVATED</strong> means watch. The short message can be forwarded as it is by
-SMS or WhatsApp.</p>
-{latest}
+    if not found:
+        return _shell("Outlook", "<h1>Outlook</h1><p>No outlook has been issued yet.</p>", depth=1, path="outlook/index.html")
+    stem, o = found[0]
+    worst = _worst(o)
+    level, evening = worst["level"], o.get("edition") == "evening"
+    when = pd.Timestamp(_issued_key(o).replace("Z", ""))
+    cards = "".join(_period_card(d, _period(d)) for d in o["days"])
+    wet = o.get("observed_rain_last_3_days_mm")
+    wet_text = (f"{wet:.0f} mm of rain fell in {o.get('observed_period', 'the last 3 days')} (satellite)."
+                if wet is not None else "Recent rain is not available.")
+    strip = "".join(
+        f'<a class="{_worst(x)["level"]}" href="{st}.html" data-tip="{x["issued"]} {x.get("edition", "morning")}: '
+        f'{LEVEL_WORD[_worst(x)["level"]]}" aria-label="{x["issued"]} {x.get("edition", "morning")}"></a>'
+        for st, x in reversed(found[:90]))
+    rows = "".join(
+        f"<tr><td class='nowrap'><a href='{st}.html'>{x['issued']}</a> {x.get('edition', 'morning')}</td><td>"
+        + " ".join(f"<span class='lvl {d['level']}'>{html.escape(_period(d))}</span>" for d in x["days"]) + "</td></tr>"
+        for st, x in found)
+    body = f"""<div class="hero state-{level}"><p class="eyebrow">Latest outlook · {'evening' if evening else 'morning'} ·
+{when:%a %d %b %Y, %H:%M}</p>
+<div class="bigword">{LEVEL_WORD[level]}</div>
+<p class="lede" style="margin-top:10px">{html.escape(_what_to_do(o))}</p></div>
+<div class="periodcards">{cards}</div>
+<div class="two">
+<div class="panelbox"><h3>Short message</h3><p class="small muted">Forward it as it is, by SMS or WhatsApp.</p>
+<p id="smstext" class="mono">{html.escape(outlook.sms_text(o))}</p><button id="copy" class="chip" type="button">Copy</button></div>
+<div class="panelbox"><h3>Behind this outlook</h3><p class="small">{html.escape(wet_text)} Forecast: the European
+weather centre's 51-member ensemble, run {html.escape(o['forecast_run'])}. <a href="{stem}.html">Full bulletin</a>.</p></div>
+</div>
+<div class="panelbox"><h3>What the levels mean</h3><p class="small">{outlook.level_meaning(("<strong>", "</strong>"))}</p></div>
 <h2>Earlier <em>outlooks</em></h2>
-<table><thead><tr><th>Issued</th><th>Levels</th></tr></thead><tbody>{''.join(items)}</tbody></table>"""
+<p class="small muted">One block per issue, oldest on the left; the colour is its highest level. Issued every morning
+(about 08:15) and evening (about 21:00), Freetown time.</p>
+<div class="strip">{strip}</div>
+<table><thead><tr><th>Issued</th><th>Levels</th></tr></thead><tbody>{rows}</tbody></table>
+{TIP_SCRIPT}{COPY_SCRIPT}"""
     return _shell("Outlook", body, depth=1, path="outlook/index.html")
 
 
 def _about_page() -> str:
     rates = outlook.level_rates()
+    zones_df = pd.read_csv(config.DERIVED_DIR / "zones.csv")
+    n_floods = len(events.load_catalogue())
+    stats = f"""<div class="stats">
+<div class="stat"><div class="n">{n_floods}</div><div class="l">past floods in the record the outlook is tested on</div></div>
+<div class="stat accent"><div class="n">{rates['floods_any'] if rates else '-'} of {rates['floods_of'] if rates else '-'}</div>
+<div class="l">recent floods warned of in time (2024-2026 replay)</div></div>
+<div class="stat"><div class="n">{round(zones_df['people_low_ground'].sum(), -3):,.0f}</div><div class="l">people living on low ground near streams or the shore</div></div>
+<div class="stat"><div class="n">{round(zones_df['people_steep'].sum(), -3):,.0f}</div><div class="l">people living on steep slopes</div></div>
+</div>"""
     skill = ""
     if rates:
         skill = (f"<p>Replayed on 2024-2026 forecasts, with both daily issues, the Outlook gave a warning in time before "
@@ -438,18 +673,21 @@ def _about_page() -> str:
         f'<div class="card"><h3><a href="{href}">{title}</a></h3><p class="small">{text}</p>'
         + (f'<a href="{href}"><img src="{img}" alt="{title}"></a>' if img else "") + "</div>"
         for href, title, text, img in cards)
-    body = f"""<p class="eyebrow">How it works</p><h1>Watching the <em>mountains</em></h1>
+    body = f"""<div class="hero"><p class="eyebrow">How it works</p><h1>Watching the <em>mountains</em></h1>
 <p class="lede">Sierra Leone is named after the Lion Mountains, the peninsula hills above Freetown. When heavy rain falls on
 them, the streams reach the low neighbourhoods within the hour. Lion Eyes watches that rain from satellites and weather
-forecasts, and turns it into a simple outlook twice a day.</p>
-<div class="grid">
-<div class="card"><h3>1 · Rain on the way</h3><p class="small">The European weather centre's (ECMWF) 51-member forecast says
-how likely a wet or very wet day is, over the next three days.</p></div>
-<div class="card"><h3>2 · Ground already wet</h3><p class="small">NASA satellite rain (IMERG) shows how much fell in the days
-before. Soaked ground floods and slides with less rain.</p></div>
-<div class="card"><h3>3 · Who is in the way</h3><p class="small">Stream catchments traced from elevation data, and the people
-living on low ground and steep slopes in each, say where to act first.</p></div>
+forecasts, and turns it into a simple outlook twice a day.</p></div>
+<div class="flow">
+<div class="step"><b>Rain on the way</b><span>The European weather centre's 51-member forecast: how likely a wet or very
+wet day is, over the next three days.</span></div>
+<div class="step"><b>Ground already wet</b><span>NASA satellite rain from the days before. Soaked ground floods and slides
+with less rain.</span></div>
+<div class="step"><b>Who is in the way</b><span>94 stream catchments traced from elevation data, with the people on low
+ground and steep slopes in each.</span></div>
+<div class="arrow" aria-hidden="true">&rarr;</div>
+<div class="step out"><b>Act · Watch · Normal</b><span>Twice a day, on the map, as a short message and as a feed.</span></div>
 </div>
+{stats}
 <h2>How good is it?</h2>
 {skill}
 <p>It cannot see short local downpours, which still cause some floods; storm tracking from geostationary satellites and
@@ -533,7 +771,7 @@ def build(out: Path = OUT) -> Path:
     (out / "floods.html").write_text(_floods_page())
     for src, target, label in PAGES:
         depth = target.count("/")
-        (out / target).write_text(_shell(label, _md(src, target), depth=depth, path=target))
+        (out / target).write_text(_shell(label, _doc(src, target), depth=depth, path=target))
     for f in sorted((config.DATA_DIR / "outlook").glob("*.md")):
         (out / "outlook" / f"{f.stem}.html").write_text(_shell(f"Outlook {f.stem}", _md(f), depth=1,
                                                                 path=f"outlook/{f.stem}.html"))

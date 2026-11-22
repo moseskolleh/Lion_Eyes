@@ -61,6 +61,7 @@ floodwatch exposure         # buildings and people per zone (after zones)
 floodwatch subdaily         # half-hourly NASA IMERG around past floods (needs Earthdata token)
 floodwatch backtest         # replay the Outlook on 2024-2026 ECMWF forecasts (~20 GB first time)
 floodwatch backtest --evening   # the same for the evening issue (after the morning backtest)
+floodwatch layers           # map layers for the website -> site_assets/layers/ (once; inputs are static)
 floodwatch outlook          # 3-day outlook (morning or evening issue, by the clock) -> data/outlook/
 floodwatch site             # build the website into _site/
 pytest
@@ -90,6 +91,7 @@ src/floodwatch/
   backtest.py                the Outlook replayed on past forecasts and scored
   sources/imerg.py           NASA IMERG half-hourly and daily (OPeNDAP)
   sources/ecmwf.py           ECMWF open-data ensemble rain (byte-range GRIB)
+  maplayers.py               map layers: hills, low ground, steep slopes, streams, people, buildings, roads, facilities
   site.py                    static website for GitHub Pages
 site_assets/leaflet/         Leaflet 1.9.4 (BSD-2), vendored for the map page
 site_assets/fonts/           Newsreader, Inter, IBM Plex Mono (SIL OFL), from the sustaintheworld site
