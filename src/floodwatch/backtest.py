@@ -28,15 +28,20 @@ import pandas as pd
 
 from floodwatch import config, outlook, subdaily
 from floodwatch.hindcast import auc, auc_interval
-from floodwatch.sources import ecmwf
+from floodwatch.sources import ecmwf, imerg
 
 FIRST_DAY = date(2024, 5, 1)
+FETCH_WORKERS = 6  # parallel requests per run in bulk replays
+BULK_MIRRORS = (ecmwf.GOOGLE, ecmwf.AWS)  # AWS throttles bursts of requests for old runs
 SEASON_DAYS = 214  # 1 May - 30 Nov
 ISSUE_HOUR = 9.5  # the daily job runs at 09:23 UTC; Freetown is on UTC
 LEVELS = ["LOW", "ELEVATED", "HIGH"]
 SAMPLE_CSV = config.DERIVED_DIR / "outlook_backtest_sample.csv"
 DAYS_CSV = config.DERIVED_DIR / "outlook_backtest_days.csv"
 RESULTS_JSON = config.DERIVED_DIR / "outlook_backtest.json"
+EVENING_DAYS_CSV = config.DERIVED_DIR / "outlook_backtest_evening_days.csv"
+EVENING_JSON = config.DERIVED_DIR / "outlook_backtest_evening.json"
+EVENING_HOUR = 20.8  # the evening job runs at 20:47 UTC
 
 
 def observed() -> pd.Series:
@@ -58,7 +63,7 @@ def random_sample(last_issue: date, n: int = 120, seed: int = 11) -> list[date]:
 
 def replay(issue: date, obs: pd.Series) -> list[dict]:
     """The Outlook as it would have been issued on the morning of `issue`."""
-    members = ecmwf.daily_rain(ecmwf.fetch_run(issue, 0))
+    members = ecmwf.daily_rain(ecmwf.fetch_run(issue, 0, workers=FETCH_WORKERS, mirrors=BULK_MIRRORS))
     before = [float(obs.get(pd.Timestamp(issue - timedelta(days=k)), np.nan)) for k in (3, 2, 1)]
     rows = outlook.day_levels(members, issue, before)
     for k, r in enumerate(rows, 1):
@@ -194,4 +199,116 @@ def run(n_random: int = 120) -> dict:
     RESULTS_JSON.write_text(json.dumps(results, indent=2, default=str))
     print(json.dumps({k: v for k, v in results.items() if k != "per_flood"}, indent=2, default=str))
     print(pd.DataFrame(results["per_flood"]).to_string(index=False))
+    return results
+
+
+# --- Evening issue -----------------------------------------------------------
+# The evening Outlook uses the 12 UTC run: periods run noon to noon, the first
+# covering tonight. Wet ground before it = CHIRPS for the 2 previous days plus
+# IMERG for 00-12 UTC of the issue day (CHIRPS has no part-day values).
+
+
+def replay_evening(issue: date, obs: pd.Series) -> list[dict]:
+    members = ecmwf.daily_rain(ecmwf.fetch_run(issue, 12, workers=FETCH_WORKERS, mirrors=BULK_MIRRORS))
+    before = [float(obs.get(pd.Timestamp(issue - timedelta(days=k)), np.nan)) for k in (2, 1)]
+    before.append(imerg.total_until(issue, 12)["mean_mm"])
+    rows = outlook.day_levels(members, issue, before)
+    for k, r in enumerate(rows, 1):
+        r.update(issue=issue, lead_day=k)
+    return rows
+
+
+def _latest_issue(flood: date, when: pd.Timestamp | None) -> tuple[str, date]:
+    """The last Outlook (morning ~09:30 or evening ~20:50) issued before the flood.
+    Unknown time: the evening before (an issue before any hour of the flood day)."""
+    day = pd.Timestamp(flood)
+    if when is not None and when >= day + pd.Timedelta(hours=EVENING_HOUR):
+        return "evening", flood
+    if when is not None and when >= day + pd.Timedelta(hours=ISSUE_HOUR):
+        return "morning", flood
+    return "evening", flood - timedelta(days=1)
+
+
+def run_evening(reported: dict[str, tuple[str, str]] | None = None) -> dict:
+    """Evening issues before each flood and on the frozen random sample of days.
+
+    Compares 'in time' with and without the evening issue, and how often the
+    evening issue raises alerts on ordinary days. Needs the morning backtest
+    (`run`) first, for the morning levels.
+    """
+    reported = subdaily.REPORTED_TIMES if reported is None else reported
+    obs = observed()
+    morning = pd.read_csv(DAYS_CSV, parse_dates=["issue"])
+    morning["issue"] = morning["issue"].dt.date
+    m_at = morning.assign(lvl=morning["level"].map(LEVELS.index)).set_index(["issue", "lead_day"])["lvl"]
+    last_obs = obs.index.max().date()
+    floods = sorted(d.date() for d in subdaily.flood_dates()["date"]
+                    if FIRST_DAY + timedelta(days=2) <= d.date() <= last_obs)
+    sample = random_sample(last_obs - timedelta(days=2))
+    issues = sorted({d - timedelta(days=1) for d in floods} | set(floods) | set(sample))
+    rows = []
+    for i, issue in enumerate(issues, 1):
+        try:
+            rows += replay_evening(issue, obs)
+        except Exception as exc:  # noqa: BLE001
+            print(f"evening {issue}: skipped ({exc})")
+        if i % 10 == 0 or i == len(issues):
+            print(f"{i}/{len(issues)} evening runs", flush=True)
+    days = pd.DataFrame(rows)
+    days.to_csv(EVENING_DAYS_CSV, index=False)
+    e_at = days.assign(lvl=days["level"].map(LEVELS.index)).set_index(["issue", "lead_day"])["lvl"]
+
+    def lvl(at: pd.Series, issue: date, leads: tuple[int, ...]) -> float:
+        vals = [at[(issue, k)] for k in leads if (issue, k) in at.index]
+        return float(max(vals)) if vals else np.nan
+
+    def name(v: float) -> str | None:
+        return None if np.isnan(v) else LEVELS[int(v)]
+
+    per_flood = []
+    for d in floods:
+        t = reported.get(d.isoformat(), (None,))[0]
+        when = pd.Timestamp(t) if t else None
+        m_same = when is not None and when >= pd.Timestamp(d) + pd.Timedelta(hours=ISSUE_HOUR)
+        morning_only = lvl(m_at, d, (1,)) if m_same else lvl(m_at, d - timedelta(days=1), (1, 2))
+        edition, issue = _latest_issue(d, when)
+        if edition == "morning":
+            latest, previous = lvl(m_at, d, (1,)), lvl(e_at, d - timedelta(days=1), (1, 2))
+        else:
+            # Evening issue: tonight's period, plus the next one when the flood is the day after.
+            latest = lvl(e_at, issue, (1,) if issue == d else (1, 2))
+            previous = lvl(m_at, issue, (1, 2))
+        per_flood.append({"flood": d.isoformat(), "reported_time": t, "morning_only_in_time": name(morning_only),
+                          "latest_issue": f"{edition} {issue}", "latest_in_time": name(latest),
+                          "best_of_last_two": name(np.nanmax([latest, previous]))})
+    pf = pd.DataFrame(per_flood)
+
+    def count(col: str, minimum: str) -> int:
+        return int(pf[col].map(lambda v: isinstance(v, str) and LEVELS.index(v) >= LEVELS.index(minimum)).sum())
+
+    s_ok = [i for i in sample if (i, 1) in e_at.index and (i, 1) in m_at.index]
+    ev = np.array([lvl(e_at, i, (1, 2)) for i in s_ok])
+    mo = np.array([lvl(m_at, i, (1, 2)) for i in s_ok])
+    either = np.maximum(ev, mo)
+    ordinary = {
+        "issue_days": len(s_ok),
+        "evening_elevated_or_high": round(float((ev >= 1).mean()), 3),
+        "evening_high": round(float((ev >= 2).mean()), 3),
+        "morning_elevated_or_high": round(float((mo >= 1).mean()), 3),
+        "morning_high": round(float((mo >= 2).mean()), 3),
+        "days_with_any_elevated_or_high_per_season": round(float((either >= 1).mean()) * SEASON_DAYS),
+        "days_with_any_high_per_season": round(float((either >= 2).mean()) * SEASON_DAYS),
+        "morning_only_high_days_per_season": round(float((mo >= 2).mean()) * SEASON_DAYS),
+        "morning_only_elevated_or_high_days_per_season": round(float((mo >= 1).mean()) * SEASON_DAYS),
+    }
+    results = {
+        "floods": len(pf),
+        "in_time": {col: {"elevated_or_high": count(col, "ELEVATED"), "high": count(col, "HIGH")}
+                    for col in ("morning_only_in_time", "latest_in_time", "best_of_last_two")},
+        "ordinary_days": ordinary,
+        "per_flood": per_flood,
+    }
+    EVENING_JSON.write_text(json.dumps(results, indent=2, default=str))
+    print(pf.to_string(index=False))
+    print(json.dumps({k: v for k, v in results.items() if k != "per_flood"}, indent=2))
     return results

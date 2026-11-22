@@ -29,3 +29,15 @@ def test_score_counts_warnings_before_floods_and_on_ordinary_days():
     assert r["per_flood"][0]["in_time_from"] == "day before" and r["per_flood"][0]["in_time"] == "HIGH"
     assert r["ordinary_days"]["elevated_or_high"] == 0.5
     assert r["ordinary_days"]["alerts_from_forecast"] == 1
+
+
+def test_latest_issue_before_a_flood():
+    flood = date(2025, 7, 31)
+    # Pre-dawn flood: the evening issue the day before.
+    assert backtest._latest_issue(flood, pd.Timestamp("2025-07-31 06:00")) == ("evening", date(2025, 7, 30))
+    # Afternoon flood: that morning's issue.
+    assert backtest._latest_issue(flood, pd.Timestamp("2025-07-31 18:00")) == ("morning", flood)
+    # Late-night flood: that evening's issue.
+    assert backtest._latest_issue(flood, pd.Timestamp("2025-07-31 23:30")) == ("evening", flood)
+    # Unknown time: the evening before, which comes before any hour of the flood day.
+    assert backtest._latest_issue(flood, None) == ("evening", date(2025, 7, 30))

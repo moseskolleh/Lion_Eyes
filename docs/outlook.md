@@ -1,26 +1,41 @@
-# Daily 3-day Outlook (v0)
+# 3-day Outlook (v0), morning and evening
 
 `floodwatch outlook` produces the **Outlook** level of the warning system: a
-daily call for the next three days. It is built only from data that is free and
-available remotely every day:
+call for the next three days, issued twice a day. It is built only from data
+that is free and available remotely every day:
 
 | Input | Source | Delay |
 |---|---|---|
-| Rain forecast, days 1-3 | ECMWF ensemble (50 members, 0.25°), open data on AWS | Runs at 00 and 12 UTC, published within hours |
-| Rain in the last 3 days | NASA IMERG near-real-time daily (Late run, Early as fallback) | ~14 h (Late), ~4 h (Early) |
+| Rain forecast, next 3 periods | ECMWF ensemble (50 members, 0.25°), open data on AWS | 00 UTC run published ~07:40 UTC, 12 UTC run ~19:40 UTC |
+| Rain before the first period | NASA IMERG near-real-time: daily totals (Late run, Early as fallback), and half-hourly for this morning (Final, Late or Early) | ~14 h (Late), ~4 h (Early) |
 | High tides | Harmonic tide model (`floodwatch.tides`) | Predicted, no delay |
 | Who is exposed | Warning zones (`data/derived/zones.csv`) | Static |
 
+## Two issues a day
+
+| Issue | Time (Freetown = UTC) | Forecast run | Periods | Wet ground counted before the first period |
+|---|---|---|---|---|
+| Morning | ~09:30 | 00 UTC | Calendar days: today, tomorrow, the day after | The 3 previous days |
+| Evening | ~21:00 | 12 UTC | Noon to noon: tonight (from noon today) to noon tomorrow, then the next two | The 2 previous days plus this morning |
+
+The evening issue exists because most Freetown floods come at night or before
+dawn, after the morning issue. Its first period puts a fresh, short-range
+forecast on the night ahead, and the backtest shows the forecast is much better
+for the next 24 hours than for the day after.
+
 ## Levels
 
-| Level | When |
-|---|---|
-| **HIGH** | A very wet day (>= 50 mm peninsula average) is likely (>= 30% of members), *or* a wet day (>= 30 mm) is likely on ground that already had >= 100 mm in the previous 3 days |
-| **ELEVATED** | A wet day is likely, *or* the ground is already saturated |
-| **LOW** | Neither |
+| Level | Meaning | When |
+|---|---|---|
+| **HIGH** | **Act** | A very wet period (>= 50 mm peninsula average) is likely (>= 30% of members), *or* a wet period (>= 30 mm) is likely on ground that already had >= 100 mm in the 3 days before |
+| **ELEVATED** | **Watch** | A wet period is likely, *or* the ground is already saturated |
+| **LOW** | Normal | Neither |
 
-The bulletin names the low ground at stream mouths and the shore, and the steep
-hillside zones, with plain-language actions and the day's spring high tides.
+At HIGH, the bulletin names the low ground at stream mouths and the shore, and
+the steep hillside zones, with plain-language actions and the spring high tides.
+At ELEVATED it gives a short "watch" message and points to the next issue,
+because most days at that level pass without flooding. Each bulletin also says
+how often each level has come up (from the backtest).
 
 ## Why these rules
 
@@ -43,18 +58,21 @@ flood history and residents' reports.
 ## How well it works (backtest)
 
 Replaying the Outlook on ECMWF's 2024-2026 forecasts (`floodwatch backtest`,
-[write-up](analysis/outlook-backtest-v0.md)):
+[write-up](analysis/outlook-backtest-v0.md)), counting the morning and evening
+issues together:
 
-| Level | Rainy-season mornings with this level for today or tomorrow | Floods with this level in time (of 9) |
+| Level | Rainy-season days with this level in an issue (today or tomorrow) | Floods with this level in time (of 9) |
 |---|---|---|
-| HIGH | ~11% (~23 a season) | 4 |
-| ELEVATED or HIGH | ~37% (~78 a season) | 5 |
+| HIGH | ~17% (~36 days a season) | 5 |
+| ELEVATED or HIGH | ~41% (~87 days a season) | 7 |
+
+With the morning issue alone, these were 11% / 4 floods and 37% / 5 floods.
+The evening issue added warnings before the night-time floods, for about 9 more
+alert days a season.
 
 So **HIGH is the action level and ELEVATED is a watch level.** Today's forecast
-is useful. Tomorrow's misses most heavy days. Most floods come at night,
-after the morning issue, so an evening issue from the 12 UTC run is the next
-improvement. The thresholds stay as they are until there are more floods to test
-changes on.
+is useful, but tomorrow's misses most heavy days. The thresholds stay as they
+are until there are more floods to test changes on.
 
 ## Running it
 
@@ -65,7 +83,8 @@ floodwatch outlook        # writes data/outlook/YYYY-MM-DD.md and .json
 It needs a NASA Earthdata token for the observed rain. In the cloud environment
 the network proxy adds it; elsewhere set `EARTHDATA_TOKEN`.
 
-It runs every day at 09:23 UTC from GitHub Actions
-(`.github/workflows/outlook-and-site.yml`). The workflow commits the bulletin
-and the forecast archive, and republishes the website. See the README for the
-one-time repository settings.
+It runs every day at 09:23 and 20:47 UTC from GitHub Actions
+(`.github/workflows/outlook-and-site.yml`); the issue (morning or evening) is
+chosen by the clock. The workflow commits the bulletin and the forecast
+archive, and republishes the website. See the README for the one-time
+repository settings.

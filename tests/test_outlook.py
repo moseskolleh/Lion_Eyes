@@ -40,7 +40,7 @@ def test_bulletin_names_zones_and_people_when_not_low():
         "people_low_ground": 5353, "people_steep": 722,
     }
     text = outlook.to_text(o)
-    assert "**HIGH**" in text and "Kroo Bay, Portor" in text
+    assert "**HIGH (act)**" in text and "**Act.**" in text and "Kroo Bay, Portor" in text
     assert "about 5,353 people" in text and "about 722 people on steep slopes" in text
 
 
@@ -67,3 +67,27 @@ def test_day_levels_chains_observed_rain_into_forecast_medians():
     assert days[0]["prior_3d_mm"] == 105.0 and days[0]["level"] == "HIGH"
     # Day 2: the 3 days before are 30 + 25 observed + 40 forecast = 95 mm -> not saturated, dry -> LOW.
     assert days[1]["prior_3d_mm"] == 95.0 and days[1]["level"] == "LOW"
+
+
+def test_evening_periods_run_noon_to_noon():
+    start = pd.Timestamp("2027-08-02 12:00")
+    assert outlook._period_label(start, start + pd.Timedelta(days=1), first=True) == "Tonight to noon Tue 03 Aug"
+    later = start + pd.Timedelta(days=1)
+    assert outlook._period_label(later, later + pd.Timedelta(days=1), first=False) == "Noon Tue 03 to noon Wed 04 Aug"
+    midnight = pd.Timestamp("2027-08-03")
+    assert outlook._period_label(midnight, midnight + pd.Timedelta(days=1), first=True) == "Tue 03 Aug"
+
+
+def test_evening_bulletin_says_watch_and_points_to_next_issue():
+    o = {
+        "issued": "2027-08-02", "edition": "evening", "forecast_run": "2027-08-02 12:00 UTC",
+        "observed_rain_last_3_days_mm": 40.0, "observed_period": "the last 2½ days", "observed_days": [{}, {}, {}],
+        "days": [{"day": "2027-08-02", "start": "2027-08-02T12:00:00", "label": "Tonight to noon Tue 03 Aug",
+                  "level": "ELEVATED", "p_wet": 0.4, "p_very_wet": 0.1, "median_mm": 25.0, "prior_3d_mm": 40.0,
+                  "high_tides": []}],
+        "low_ground_zones": ["Kroo Bay"], "steep_zones": ["Bathurst"],
+    }
+    text = outlook.to_text(o)
+    assert "evening of 2027-08-02" in text and "Tonight to noon Tue 03 Aug" in text
+    assert "**ELEVATED (watch)**" in text and "**Watch.**" in text and "tomorrow morning's update" in text
+    assert "noon to noon" in text and "What the levels mean" in text

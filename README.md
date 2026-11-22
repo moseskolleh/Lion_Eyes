@@ -17,9 +17,9 @@ residents. Physical sensors come later and plug in as extra inputs.
 
 Read the full idea in [docs/concept.md](docs/concept.md).
 
-**Website:** https://moseskolleh.github.io/Maji/ (today's Outlook, the zone map,
+**Website:** https://moseskolleh.github.io/Maji/ (the latest Outlook, the zone map,
 the flood history and all the analysis). Built and published by GitHub Actions,
-and refreshed daily with the new Outlook.
+and refreshed with each Outlook, morning and evening.
 
 ## Status
 
@@ -30,12 +30,12 @@ and refreshed daily with the new Outlook.
 | Tide | Harmonic tide fitted to 2023-2026 modelled sea level, predicted back to 2000 (4.7 cm error on a held-out year) |
 | Hindcast (do rain/tide rules flag past floods?) | v0, daily: 2008-2026, 28 floods: flood days clearly wetter (AUC 0.82); daily rules catch ~half of floods at ~3 false alarms per season; misses cluster in May/October. See [docs/analysis/hindcast-v0.md](docs/analysis/hindcast-v0.md) |
 | Half-hourly satellite rain (NASA IMERG) | Floods follow 1-6 h of heavy rain; satellite misses local cloudbursts; short bursts add no skill over daily totals, and no rain measure separates floods from the very wettest no-flood days. See [docs/analysis/subdaily-v0.md](docs/analysis/subdaily-v0.md) |
-| Outlook backtest (2024-2026 ECMWF forecasts) | Replaying the Outlook: HIGH in time before 4 of 9 floods, on ~23 of ~214 rainy-season mornings; ELEVATED on over a third of mornings; today's forecast is useful, tomorrow's misses most heavy days. See [docs/analysis/outlook-backtest-v0.md](docs/analysis/outlook-backtest-v0.md) |
+| Outlook backtest (2024-2026 ECMWF forecasts) | Replaying the Outlook (morning and evening issues): 7 of 9 floods had ELEVATED or HIGH in time, 5 at HIGH; HIGH on ~17% of rainy-season days, ELEVATED or HIGH on ~41%; today's forecast is useful, tomorrow's misses most heavy days. The evening issue added the night-time catches. See [docs/analysis/outlook-backtest-v0.md](docs/analysis/outlook-backtest-v0.md) |
 | Hourly model rain (ERA5, ECMWF 9 km) | Code ready; blocked by the free API's daily quota |
 | Terrain and flood places | v0 map of streams and past flood places (two groups: stream mouths/shoreline and hillsides); street level next |
 | Warning zones | v0: 94 catchment zones (21 in the city), each with low-ground and steep-slope measures and CHIRPS weights. See [docs/analysis/zones-v0.md](docs/analysis/zones-v0.md) |
 | Exposure | ~72,600 people (23,300 buildings) on low ground near streams and the shore, ~44,200 on steep slopes; per zone from Overture buildings and Meta HRSL population (`floodwatch exposure`) |
-| Daily 3-day Outlook | v0 running on live data (ECMWF ensemble + IMERG + tide), provisional thresholds, forecasts archived for calibration. Issued daily by GitHub Actions. See [docs/outlook.md](docs/outlook.md) |
+| 3-day Outlook | v0 running on live data (ECMWF ensemble + IMERG + tide), issued twice a day by GitHub Actions: morning (00 UTC run, calendar days) and evening (12 UTC run, noon-to-noon periods covering the night). Levels read HIGH = act, ELEVATED = watch; provisional thresholds, forecasts archived for calibration. See [docs/outlook.md](docs/outlook.md) |
 | Website | Static site on GitHub Pages: Outlook, interactive zone map (Leaflet), flood history, analysis pages (`floodwatch site`); styled with the sustaintheworld theme (dark/light, Newsreader / Inter / IBM Plex Mono) |
 | Nowcast (hours), resident reporting, warning delivery | Planned for April-May 2027 |
 
@@ -55,7 +55,8 @@ floodwatch zones            # warning zones (after terrain)
 floodwatch exposure         # buildings and people per zone (after zones)
 floodwatch subdaily         # half-hourly NASA IMERG around past floods (needs Earthdata token)
 floodwatch backtest         # replay the Outlook on 2024-2026 ECMWF forecasts (~20 GB first time)
-floodwatch outlook          # today's 3-day outlook -> data/outlook/
+floodwatch backtest --evening   # the same for the evening issue (after the morning backtest)
+floodwatch outlook          # 3-day outlook (morning or evening issue, by the clock) -> data/outlook/
 floodwatch site             # build the website into _site/
 pytest
 ```
@@ -80,22 +81,22 @@ src/floodwatch/
   zones.py                   warning zones (catchments), zone rainfall
   population.py              buildings (Overture) and people (Meta HRSL) per zone
   subdaily.py                half-hourly rain timing and intensity around floods
-  outlook.py                 daily 3-day outlook
+  outlook.py                 3-day outlook, morning and evening issues
   backtest.py                the Outlook replayed on past forecasts and scored
   sources/imerg.py           NASA IMERG half-hourly and daily (OPeNDAP)
   sources/ecmwf.py           ECMWF open-data ensemble rain (byte-range GRIB)
   site.py                    static website for GitHub Pages
 site_assets/leaflet/         Leaflet 1.9.4 (BSD-2), vendored for the map page
 site_assets/fonts/           Newsreader, Inter, IBM Plex Mono (SIL OFL), from the sustaintheworld site
-data/outlook/                daily Outlook bulletins (committed by the daily workflow)
+data/outlook/                Outlook bulletins, YYYY-MM-DD(-evening) (committed by the workflow)
 data/archive/ecmwf/          forecast archive for calibrating Outlook thresholds
-.github/workflows/           daily Outlook + website deploy; tests on pull requests
+.github/workflows/           twice-daily Outlook + website deploy; tests on pull requests
 tests/
 ```
 
 ## Daily Outlook and website: one-time setup
 
-The workflow `.github/workflows/outlook-and-site.yml` runs every day at 09:23 UTC. It:
+The workflow `.github/workflows/outlook-and-site.yml` runs every day at 09:23 and 20:47 UTC. It:
 1. issues the Outlook;
 2. commits the bulletin and forecast archive to `main`;
 3. rebuilds the website and publishes it.

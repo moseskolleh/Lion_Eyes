@@ -100,7 +100,10 @@ def _exposure(args: argparse.Namespace) -> None:
 def _backtest(args: argparse.Namespace) -> None:
     from floodwatch import backtest
 
-    backtest.run()
+    if args.evening:
+        backtest.run_evening()
+    else:
+        backtest.run()
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -120,7 +123,9 @@ def main(argv: list[str] | None = None) -> None:
     sub.add_parser("zones", help="warning zones (one per catchment) and their maps").set_defaults(func=_zones)
     sub.add_parser("exposure", help="buildings and people per zone (after zones)").set_defaults(func=_exposure)
     sub.add_parser("subdaily", help="half-hourly IMERG rain around past floods (needs Earthdata token)").set_defaults(func=_subdaily)
-    sub.add_parser("backtest", help="replay the Outlook on past ECMWF forecasts and score it").set_defaults(func=_backtest)
+    bt = sub.add_parser("backtest", help="replay the Outlook on past ECMWF forecasts and score it")
+    bt.add_argument("--evening", action="store_true", help="evening issues before each flood (after the morning run)")
+    bt.set_defaults(func=_backtest)
     sub.add_parser("outlook", help="today's 3-day flood outlook (ECMWF ensemble + IMERG + tide)").set_defaults(func=_outlook)
     sub.add_parser("site", help="build the static website into _site/").set_defaults(func=_site)
     args = parser.parse_args(argv)
