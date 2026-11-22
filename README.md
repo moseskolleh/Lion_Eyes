@@ -33,6 +33,7 @@ and refreshed daily with the new Outlook.
 | Hourly model rain (ERA5, ECMWF 9 km) | Code ready; blocked by the free API's daily quota |
 | Terrain and flood places | v0 map of streams and past flood places (two groups: stream mouths/shoreline and hillsides); street level next |
 | Warning zones | v0: 94 catchment zones (21 in the city), each with low-ground and steep-slope measures and CHIRPS weights. See [docs/analysis/zones-v0.md](docs/analysis/zones-v0.md) |
+| Exposure | ~72,600 people (23,300 buildings) on low ground near streams and the shore, ~44,200 on steep slopes; per zone from Overture buildings and Meta HRSL population (`floodwatch exposure`) |
 | Daily 3-day Outlook | v0 running on live data (ECMWF ensemble + IMERG + tide), provisional thresholds, forecasts archived for calibration. Issued daily by GitHub Actions. See [docs/outlook.md](docs/outlook.md) |
 | Website | Static site on GitHub Pages: Outlook, interactive zone map (Leaflet), flood history, analysis pages (`floodwatch site`) |
 | Nowcast (hours), resident reporting, warning delivery | Planned for April-May 2027 |
@@ -50,6 +51,7 @@ floodwatch catalogue data/events/research/*.jsonl   # rebuild the flood history
 floodwatch hindcast --from 2008   # score warning rules; writes data/derived/
 floodwatch terrain          # streams, flood places, map
 floodwatch zones            # warning zones (after terrain)
+floodwatch exposure         # buildings and people per zone (after zones)
 floodwatch subdaily         # half-hourly NASA IMERG around past floods (needs Earthdata token)
 floodwatch outlook          # today's 3-day outlook -> data/outlook/
 floodwatch site             # build the website into _site/
@@ -74,6 +76,7 @@ src/floodwatch/
   hindcast.py                scoring: hits, misses, false alarms, AUC
   terrain.py, exposure.py    streams, height above stream, flood places on the terrain
   zones.py                   warning zones (catchments), zone rainfall
+  population.py              buildings (Overture) and people (Meta HRSL) per zone
   subdaily.py                half-hourly rain timing and intensity around floods
   outlook.py                 daily 3-day outlook
   sources/imerg.py           NASA IMERG half-hourly and daily (OPeNDAP)
@@ -109,4 +112,6 @@ You can also run it at any time from the **Actions** tab (*Daily outlook and web
 | Ensemble rain forecasts, 0.25 deg | ECMWF open data (AWS copy) | Free, CC BY 4.0 |
 | Elevation, 30 m | Copernicus DEM GLO-30 (AWS) | Free, attribution |
 | Place names, map tiles | OpenStreetMap contributors | ODbL |
+| Building footprints | Overture Maps Foundation (AWS) | ODbL / CDLA, attribution |
+| Population, 30 m | Meta & CIESIN High Resolution Settlement Layer (AWS) | CC BY 4.0 |
 | Flood reports | News, NDMA, IFRC/Red Cross, OCHA (URLs per event) | Cited per row |

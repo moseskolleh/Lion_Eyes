@@ -37,6 +37,7 @@ LIKELY = 0.30  # share of ensemble members needed to call something "likely"
 # rubbish in drains, loose slopes): lower thresholds then. Weak evidence (4 events).
 TRANSITION_FACTOR = {5: 0.6, 6: 0.8, 10: 0.8, 11: 0.8}
 HIGH_TIDE_M = 1.1  # a spring-tide high water at Freetown (M2 ~0.9 m + S2 ~0.3 m)
+MIN_PEOPLE = 500  # a zone is named in the bulletin if at least this many live on its risky ground
 
 
 @dataclass
@@ -107,9 +108,18 @@ def build(run: tuple[date, int] | None = None, today: date | None = None) -> dic
 
     zones = pd.read_csv(config.DERIVED_DIR / "zones.csv")
     city = zones[(zones["zone_id"] > 0) & zones["in_city"]]
-    low = city.sort_values("low_ground_km2", ascending=False)
-    low = low[low["low_ground_km2"] >= 0.1]["name"].tolist()
-    steep = city[city["steep_share"] >= 0.15].sort_values("area_km2", ascending=False)["name"].tolist()
+    # With exposure counts (`floodwatch exposure`), pick zones by how many
+    # people live on the risky ground; otherwise fall back to land area.
+    has_people = "people_low_ground" in city
+    if has_people:
+        low = city[city["people_low_ground"] >= MIN_PEOPLE].sort_values("people_low_ground", ascending=False)
+        steep = city[city["people_steep"] >= MIN_PEOPLE].sort_values("people_steep", ascending=False)
+    else:
+        low = city[city["low_ground_km2"] >= 0.1].sort_values("low_ground_km2", ascending=False)
+        steep = city[city["steep_share"] >= 0.15].sort_values("area_km2", ascending=False)
+    people_low = int(low["people_low_ground"].sum()) if has_people else None
+    people_steep = int(steep["people_steep"].sum()) if has_people else None
+    low, steep = low["name"].tolist(), steep["name"].tolist()
 
     out = {
         "issued": today.isoformat(),
@@ -119,6 +129,8 @@ def build(run: tuple[date, int] | None = None, today: date | None = None) -> dic
         "days": [d.__dict__ | {"day": d.day.isoformat()} for d in days],
         "low_ground_zones": low,
         "steep_zones": steep,
+        "people_low_ground": people_low,
+        "people_steep": people_steep,
         "thresholds": {"wet_mm": WET_DAY_MM, "very_wet_mm": VERY_WET_DAY_MM,
                        "saturated_3d_mm": SATURATED_3D_MM, "likely": LIKELY, "provisional": True},
     }
@@ -156,12 +168,14 @@ def to_text(o: dict) -> str:
         lines.append("No action needed. Normal monitoring.")
     else:
         lines.append(
-            f"- **Low ground at stream mouths and the shore** ({', '.join(o['low_ground_zones'][:8])}): "
-            "be ready to move people from the lowest homes, especially around the high tides listed."
+            f"- **Low ground at stream mouths and the shore** ({', '.join(o['low_ground_zones'][:8])})"
+            + (f", about {o['people_low_ground']:,} people" if o.get("people_low_ground") else "")
+            + ": be ready to move people from the lowest homes, especially around the high tides listed."
         )
         lines.append(
-            f"- **Steep hillsides** ({', '.join(o['steep_zones'][:6])}): watch for runoff, cracks and leaning walls; "
-            "after several wet days, landslide risk rises."
+            f"- **Steep hillsides** ({', '.join(o['steep_zones'][:6])})"
+            + (f", about {o['people_steep']:,} people on steep slopes" if o.get("people_steep") else "")
+            + ": watch for runoff, cracks and leaning walls; after several wet days, landslide risk rises."
         )
     lines += ["", "*v0: rain thresholds are provisional until calibrated against a season of archived forecasts.*"]
     return "\n".join(lines) + "\n"

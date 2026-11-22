@@ -134,7 +134,7 @@ def _map_page(o: dict | None) -> str:
 <div id="map"></div>
 <div id="legend" class="legend"></div>
 <p class="small muted">Zones are stream catchments traced from the Copernicus 30 m elevation model; colour shows what kind
-of flooding to expect. Red circles are places named in past flood reports (bigger = more events); positions are
+of flooding to expect. People counts are estimates from Meta's 30 m population map (HRSL). Red circles are places named in past flood reports (bigger = more events); positions are
 neighbourhood centres, not exact streets. Click anything for details.</p>
 <script src="vendor/leaflet/leaflet.js"></script>
 <script>
@@ -153,8 +153,15 @@ fetch('data/zones.geojson').then(r => r.json()).then(gj => {{
     style: f => ({{color: '#333', weight: 1, fillColor: colours[kind(f.properties)], fillOpacity: 0.28}}),
     onEachFeature: (f, layer) => {{
       const p = f.properties;
+      const fmt = v => {{  // estimates: round to the nearest 100 (or 10 below 1,000)
+        if (v === undefined || v === null) return '?';
+        const step = v >= 1000 ? 100 : 10;
+        return (Math.round(v / step) * step).toLocaleString('en');
+      }};
       layer.bindPopup(`<b>Zone ${{p.zone_id}}: ${{p.name || ''}}</b><br>Area ${{p.area_km2}} km²` +
-        `<br>Low ground near streams: ${{p.low_ground_km2}} km²<br>Steep share: ${{Math.round(p.steep_share*100)}}%` +
+        `<br>People: about ${{fmt(p.people)}}` +
+        `<br>On low ground near streams: about ${{fmt(p.people_low_ground)}} people (${{p.low_ground_km2}} km²)` +
+        `<br>On steep slopes: about ${{fmt(p.people_steep)}} people (${{Math.round(p.steep_share*100)}}% of the zone)` +
         (p.flood_places ? `<br>Past flood places: ${{p.flood_places}}` : ''));
     }}
   }}).addTo(map);
