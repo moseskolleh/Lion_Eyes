@@ -1,0 +1,219 @@
+{
+  "period": "2024-05-01 to 2026-10-05",
+  "ordinary_days": {
+    "issue_days": 120,
+    "elevated_or_high": 0.367,
+    "high": 0.108,
+    "alert_days_per_season": 78,
+    "high_days_per_season": 23,
+    "alerts_from_forecast": 36,
+    "alerts_from_wet_ground_only": 8
+  },
+  "floods": {
+    "in_time": {
+      "elevated_or_high": 5,
+      "high": 4,
+      "of": 9
+    },
+    "same_morning": {
+      "elevated_or_high": 7,
+      "high": 5,
+      "of": 9
+    },
+    "day_before": {
+      "elevated_or_high": 5,
+      "high": 3,
+      "of": 9
+    },
+    "two_days_before": {
+      "elevated_or_high": 5,
+      "high": 3,
+      "of": 9
+    }
+  },
+  "per_flood": [
+    {
+      "flood": "2024-07-16",
+      "same_morning": "HIGH",
+      "same_morning_p_wet": 0.71,
+      "day_before": "LOW",
+      "day_before_p_wet": 0.2,
+      "two_days_before": "LOW",
+      "two_days_before_p_wet": 0.29,
+      "reported_time": null,
+      "in_time_from": "day before",
+      "in_time": "LOW",
+      "prior_obs_day_before": 79.1,
+      "forecast_wet_day_before": false,
+      "observed_mm_d_minus_1_to_d": 15.2
+    },
+    {
+      "flood": "2024-07-20",
+      "same_morning": "HIGH",
+      "same_morning_p_wet": 0.71,
+      "day_before": "ELEVATED",
+      "day_before_p_wet": 0.1,
+      "two_days_before": "ELEVATED",
+      "two_days_before_p_wet": 0.22,
+      "reported_time": "2024-07-20 12:00",
+      "in_time_from": "same morning",
+      "in_time": "HIGH",
+      "prior_obs_day_before": 165.3,
+      "forecast_wet_day_before": false,
+      "observed_mm_d_minus_1_to_d": 92.2
+    },
+    {
+      "flood": "2024-07-27",
+      "same_morning": "HIGH",
+      "same_morning_p_wet": 0.67,
+      "day_before": "HIGH",
+      "day_before_p_wet": 0.49,
+      "two_days_before": "ELEVATED",
+      "two_days_before_p_wet": 0.37,
+      "reported_time": null,
+      "in_time_from": "day before",
+      "in_time": "HIGH",
+      "prior_obs_day_before": 22.8,
+      "forecast_wet_day_before": true,
+      "observed_mm_d_minus_1_to_d": 101.9
+    },
+    {
+      "flood": "2024-08-04",
+      "same_morning": "ELEVATED",
+      "same_morning_p_wet": 0.0,
+      "day_before": "HIGH",
+      "day_before_p_wet": 0.82,
+      "two_days_before": "HIGH",
+      "two_days_before_p_wet": 0.84,
+      "reported_time": "2024-08-04 05:00",
+      "in_time_from": "day before",
+      "in_time": "HIGH",
+      "prior_obs_day_before": 128.1,
+      "forecast_wet_day_before": true,
+      "observed_mm_d_minus_1_to_d": 7.4
+    },
+    {
+      "flood": "2024-10-24",
+      "same_morning": "LOW",
+      "same_morning_p_wet": 0.02,
+      "day_before": "LOW",
+      "day_before_p_wet": 0.0,
+      "two_days_before": "LOW",
+      "two_days_before_p_wet": 0.02,
+      "reported_time": null,
+      "in_time_from": "day before",
+      "in_time": "LOW",
+      "prior_obs_day_before": 36.3,
+      "forecast_wet_day_before": false,
+      "observed_mm_d_minus_1_to_d": 27.2
+    },
+    {
+      "flood": "2025-07-23",
+      "same_morning": "ELEVATED",
+      "same_morning_p_wet": 0.39,
+      "day_before": "ELEVATED",
+      "day_before_p_wet": 0.69,
+      "two_days_before": "HIGH",
+      "two_days_before_p_wet": 0.55,
+      "reported_time": "2025-07-23 18:00",
+      "in_time_from": "same morning",
+      "in_time": "ELEVATED",
+      "prior_obs_day_before": 15.1,
+      "forecast_wet_day_before": true,
+      "observed_mm_d_minus_1_to_d": 30.3
+    },
+    {
+      "flood": "2025-07-31",
+      "same_morning": "HIGH",
+      "same_morning_p_wet": 0.61,
+      "day_before": "LOW",
+      "day_before_p_wet": 0.12,
+      "two_days_before": "LOW",
+      "two_days_before_p_wet": 0.25,
+      "reported_time": "2025-07-31 06:00",
+      "in_time_from": "day before",
+      "in_time": "LOW",
+      "prior_obs_day_before": 10.9,
+      "forecast_wet_day_before": false,
+      "observed_mm_d_minus_1_to_d": 35.8
+    },
+    {
+      "flood": "2026-05-23",
+      "same_morning": "LOW",
+      "same_morning_p_wet": 0.04,
+      "day_before": "LOW",
+      "day_before_p_wet": 0.08,
+      "two_days_before": "LOW",
+      "two_days_before_p_wet": 0.14,
+      "reported_time": "2026-05-23 09:00",
+      "in_time_from": "day before",
+      "in_time": "LOW",
+      "prior_obs_day_before": 3.0,
+      "forecast_wet_day_before": false,
+      "observed_mm_d_minus_1_to_d": 5.3
+    },
+    {
+      "flood": "2026-08-03",
+      "same_morning": "HIGH",
+      "same_morning_p_wet": 1.0,
+      "day_before": "HIGH",
+      "day_before_p_wet": 0.8,
+      "two_days_before": "HIGH",
+      "two_days_before_p_wet": 0.5,
+      "reported_time": "2026-08-03 04:00",
+      "in_time_from": "day before",
+      "in_time": "HIGH",
+      "prior_obs_day_before": 86.5,
+      "forecast_wet_day_before": true,
+      "observed_mm_d_minus_1_to_d": 47.6
+    }
+  ],
+  "separation": {
+    "forecast_p_wet": {
+      "auc": 0.64,
+      "auc_90pct": [
+        0.493,
+        0.78
+      ]
+    },
+    "observed_rain_previous_3_days": {
+      "auc": 0.58,
+      "auc_90pct": [
+        0.4,
+        0.763
+      ]
+    }
+  },
+  "forecast_skill": {
+    "day_1": {
+      "n": 120,
+      "rank_correlation_median_vs_observed": 0.72,
+      "observed_wet_days": 19,
+      "wet_days_forecast": 12,
+      "forecast_wet_days_that_were_wet": "12 of 24",
+      "auc_p_wet_for_wet_days": 0.77,
+      "median_forecast_mm_on_wet_days": 26.6,
+      "median_observed_mm_on_wet_days": 36.1
+    },
+    "day_2": {
+      "n": 120,
+      "rank_correlation_median_vs_observed": 0.65,
+      "observed_wet_days": 19,
+      "wet_days_forecast": 4,
+      "forecast_wet_days_that_were_wet": "4 of 20",
+      "auc_p_wet_for_wet_days": 0.65,
+      "median_forecast_mm_on_wet_days": 14.2,
+      "median_observed_mm_on_wet_days": 46.8
+    },
+    "day_3": {
+      "n": 120,
+      "rank_correlation_median_vs_observed": 0.52,
+      "observed_wet_days": 14,
+      "wet_days_forecast": 4,
+      "forecast_wet_days_that_were_wet": "4 of 16",
+      "auc_p_wet_for_wet_days": 0.73,
+      "median_forecast_mm_on_wet_days": 15.2,
+      "median_observed_mm_on_wet_days": 44.0
+    }
+  }
+}

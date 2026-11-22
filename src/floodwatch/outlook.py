@@ -71,6 +71,30 @@ def _high_tides(tide: pd.Series, day: date) -> list[str]:
     return [f"{ts:%H:%M} ({h:.1f} m)" for ts, h in peaks.items()]
 
 
+def day_levels(members: pd.DataFrame, first_day: date, observed: list[float]) -> list[dict]:
+    """Levels for forecast days 1-3 of one ensemble run.
+
+    `members` comes from `ecmwf.daily_rain`; `observed` is the peninsula-mean
+    rain on the days just before `first_day`, oldest first (may be empty).
+    Shared by the live Outlook and the backtest, so both apply the same rules.
+    """
+    median_by_day = members.groupby("day")["mean_mm"].median()
+    # Rain day by day, oldest first: the observed days, then the forecast medians.
+    sequence = list(observed) + [float(median_by_day.loc[k]) for k in (1, 2, 3)]
+    out = []
+    for k in (1, 2, 3):
+        valid = first_day + timedelta(days=k - 1)
+        rain = members.loc[members["day"] == k, "mean_mm"]
+        wet, very_wet = _scaled(valid.month)
+        here = len(observed) + k - 1  # position of this day in `sequence`
+        prior = sum(sequence[max(0, here - 3) : here])  # the 3 days before it
+        p_wet, p_very = float((rain >= wet).mean()), float((rain >= very_wet).mean())
+        out.append({"day": valid, "p_wet": round(p_wet, 2), "p_very_wet": round(p_very, 2),
+                    "median_mm": round(float(rain.median()), 1), "prior_3d_mm": round(prior, 1),
+                    "level": classify(p_wet, p_very, prior)})
+    return out
+
+
 def build(run: tuple[date, int] | None = None, today: date | None = None) -> dict:
     today = today or datetime.now(timezone.utc).date()
     run = run or ecmwf.latest_run()
@@ -89,22 +113,8 @@ def build(run: tuple[date, int] | None = None, today: date | None = None) -> dic
 
     tide = tides.predict(tides.model(), pd.date_range(pd.Timestamp(today), periods=4 * 24 * 6, freq="10min"))
 
-    days: list[DayOutlook] = []
-    median_by_day = members.groupby("day")["mean_mm"].median()
-    # Rain day by day, oldest first: 3 observed days, then the forecast medians.
-    sequence = [o["mean_mm"] for o in observed] + [float(median_by_day.loc[k]) for k in (1, 2, 3)]
-    n_obs = len(observed)
-    for k in (1, 2, 3):
-        valid = (run_start + pd.Timedelta(days=k - 1)).date()
-        rain = members.loc[members["day"] == k, "mean_mm"]
-        wet, very_wet = _scaled(valid.month)
-        here = n_obs + k - 1  # position of this day in `sequence`
-        prior = sum(sequence[max(0, here - 3) : here])  # the 3 days before it
-        p_wet, p_very = float((rain >= wet).mean()), float((rain >= very_wet).mean())
-        days.append(
-            DayOutlook(valid, round(p_wet, 2), round(p_very, 2), round(float(rain.median()), 1),
-                       round(prior, 1), classify(p_wet, p_very, prior), _high_tides(tide, valid))
-        )
+    days = [DayOutlook(**d, high_tides=_high_tides(tide, d["day"]))
+            for d in day_levels(members, run_start.date(), [o["mean_mm"] for o in observed])]
 
     zones = pd.read_csv(config.DERIVED_DIR / "zones.csv")
     city = zones[(zones["zone_id"] > 0) & zones["in_city"]]

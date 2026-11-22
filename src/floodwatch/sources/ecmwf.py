@@ -10,6 +10,9 @@ and keep the four grid points over the peninsula.
 from __future__ import annotations
 
 import json
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timedelta, timezone
 
 import numpy as np
@@ -65,25 +68,51 @@ def _decode_points(message: bytes) -> np.ndarray:
     return np.array(out)
 
 
-def fetch_run(run_day: date, hour: int) -> pd.DataFrame:
+_local = threading.local()
+
+
+def _get(url: str, headers: dict | None = None, tries: int = 7) -> requests.Response:
+    """GET with back-off: the archive answers 503 "SlowDown" when busy."""
+    if not hasattr(_local, "session"):
+        _local.session = requests.Session()
+        _local.session.headers["User-Agent"] = USER_AGENT
+    for attempt in range(tries):
+        try:
+            r = _local.session.get(url, headers=headers, timeout=120)
+            if r.status_code in (200, 206):
+                return r
+            if r.status_code in (403, 404):
+                r.raise_for_status()  # not there: no point retrying
+        except (requests.ConnectionError, requests.exceptions.ChunkedEncodingError, requests.Timeout):
+            if attempt == tries - 1:  # dropped or cut-off transfers are worth retrying
+                raise
+        time.sleep(min(60, 2 * 2**attempt))
+    raise RuntimeError(f"ECMWF open data did not answer: {url}")
+
+
+def fetch_run(run_day: date, hour: int, workers: int = 8) -> pd.DataFrame:
     """Accumulated tp (mm) at each peninsula point for every member and step."""
     CACHE.mkdir(parents=True, exist_ok=True)
     path = CACHE / f"{run_day:%Y%m%d}{hour:02d}.csv"
     if path.exists():
         return pd.read_csv(path)
-    s = requests.Session()
-    s.headers["User-Agent"] = USER_AGENT
-    rows = []
+    jobs = []
     for step in STEPS:
         base = _base(run_day, hour, step)
-        index = [json.loads(line) for line in s.get(base + ".index", timeout=60).text.splitlines() if line.strip()]
-        for entry in (e for e in index if e.get("param") == "tp"):
-            start, length = entry["_offset"], entry["_length"]
-            msg = s.get(base + ".grib2", headers={"Range": f"bytes={start}-{start + length - 1}"}, timeout=120).content
-            member = 0 if entry["type"] == "cf" else int(entry["number"])
-            for (lat, lon), tp in zip(POINTS, _decode_points(msg)):
-                rows.append((member, step, lat, lon, round(float(tp), 2)))
+        index = [json.loads(line) for line in _get(base + ".index").text.splitlines() if line.strip()]
+        jobs += [(base, step, e) for e in index if e.get("param") == "tp"]
+
+    def one(job: tuple) -> list[tuple]:
+        base, step, entry = job
+        start, length = entry["_offset"], entry["_length"]
+        msg = _get(base + ".grib2", headers={"Range": f"bytes={start}-{start + length - 1}"}).content
+        member = 0 if entry["type"] == "cf" else int(entry["number"])
+        return [(member, step, lat, lon, round(float(tp), 2)) for (lat, lon), tp in zip(POINTS, _decode_points(msg))]
+
+    with ThreadPoolExecutor(workers) as pool:
+        rows = [row for rows in pool.map(one, jobs) for row in rows]
     df = pd.DataFrame(rows, columns=["member", "step_h", "lat", "lon", "tp_mm"])
+    df = df.sort_values(["step_h", "member", "lat", "lon"], ascending=[True, True, False, True])
     df.to_csv(path, index=False)
     return df
 
