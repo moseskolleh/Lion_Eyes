@@ -22,7 +22,12 @@ import requests
 from floodwatch.config import DATA_DIR
 from floodwatch.sources.http import USER_AGENT
 
-BUCKET = "https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com"
+# The same files are published on AWS and on Google Cloud. AWS answers bursts
+# of requests for old runs with "SlowDown", so bulk replays start with Google.
+AWS = "https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com"
+GOOGLE = "https://storage.googleapis.com/ecmwf-open-data"
+MIRRORS = (AWS, GOOGLE)
+BUCKET = AWS
 # 0.25 deg grid points covering the peninsula (city, east, south, Waterloo).
 POINTS = ((8.5, -13.25), (8.5, -13.0), (8.25, -13.25), (8.25, -13.0))
 STEPS = (24, 48, 72)
@@ -30,8 +35,8 @@ STEPS = (24, 48, 72)
 CACHE = DATA_DIR / "archive" / "ecmwf"
 
 
-def _base(run_day: date, hour: int, step: int) -> str:
-    return f"{BUCKET}/{run_day:%Y%m%d}/{hour:02d}z/ifs/0p25/enfo/{run_day:%Y%m%d}{hour:02d}0000-{step}h-enfo-ef"
+def _base(run_day: date, hour: int, step: int, bucket: str = BUCKET) -> str:
+    return f"{bucket}/{run_day:%Y%m%d}/{hour:02d}z/ifs/0p25/enfo/{run_day:%Y%m%d}{hour:02d}0000-{step}h-enfo-ef"
 
 
 def latest_run(now: datetime | None = None) -> tuple[date, int]:
@@ -41,9 +46,12 @@ def latest_run(now: datetime | None = None) -> tuple[date, int]:
     for back in range(0, 4 * 12, 12):
         t = now - timedelta(hours=back)
         hour = 12 if t.hour >= 12 else 0
-        r = s.head(_base(t.date(), hour, STEPS[-1]) + ".index", timeout=30)
-        if r.status_code == 200:
-            return t.date(), hour
+        for bucket in MIRRORS:
+            try:
+                if s.head(_base(t.date(), hour, STEPS[-1], bucket) + ".index", timeout=30).status_code == 200:
+                    return t.date(), hour
+            except requests.RequestException:
+                continue
     raise RuntimeError("No recent ECMWF ensemble run found")
 
 
@@ -90,16 +98,32 @@ def _get(url: str, headers: dict | None = None, tries: int = 10) -> requests.Res
     raise RuntimeError(f"ECMWF open data did not answer: {url}")
 
 
-def fetch_run(run_day: date, hour: int, workers: int = 8) -> pd.DataFrame:
-    """Accumulated tp (mm) at each peninsula point for every member and step."""
+def fetch_run(run_day: date, hour: int, workers: int = 8, mirrors: tuple[str, ...] = MIRRORS) -> pd.DataFrame:
+    """Accumulated tp (mm) at each peninsula point for every member and step.
+
+    Tries each mirror in turn; a run is cached once fetched.
+    """
     CACHE.mkdir(parents=True, exist_ok=True)
     path = CACHE / f"{run_day:%Y%m%d}{hour:02d}.csv"
     if path.exists():
         return pd.read_csv(path)
+    errors = []
+    for bucket in mirrors:
+        try:
+            df = _fetch_from(bucket, run_day, hour, workers)
+        except (requests.RequestException, RuntimeError) as exc:
+            errors.append(f"{bucket}: {exc}")
+            continue
+        df.to_csv(path, index=False)
+        return df
+    raise RuntimeError("ECMWF run not available from any mirror: " + " | ".join(errors))
+
+
+def _fetch_from(bucket: str, run_day: date, hour: int, workers: int) -> pd.DataFrame:
     jobs = []
     for step in STEPS:
-        base = _base(run_day, hour, step)
-        index = [json.loads(line) for line in _get(base + ".index").text.splitlines() if line.strip()]
+        base = _base(run_day, hour, step, bucket)
+        index = [json.loads(line) for line in _get(base + ".index", tries=6).text.splitlines() if line.strip()]
         jobs += [(base, step, e) for e in index if e.get("param") == "tp"]
 
     def one(job: tuple) -> list[tuple]:
@@ -112,9 +136,7 @@ def fetch_run(run_day: date, hour: int, workers: int = 8) -> pd.DataFrame:
     with ThreadPoolExecutor(workers) as pool:
         rows = [row for rows in pool.map(one, jobs) for row in rows]
     df = pd.DataFrame(rows, columns=["member", "step_h", "lat", "lon", "tp_mm"])
-    df = df.sort_values(["step_h", "member", "lat", "lon"], ascending=[True, True, False, True])
-    df.to_csv(path, index=False)
-    return df
+    return df.sort_values(["step_h", "member", "lat", "lon"], ascending=[True, True, False, True])
 
 
 def daily_rain(run: pd.DataFrame) -> pd.DataFrame:

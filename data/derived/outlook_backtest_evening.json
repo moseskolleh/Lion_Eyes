@@ -1,0 +1,102 @@
+{
+  "floods": 9,
+  "in_time": {
+    "morning_only_in_time": {
+      "elevated_or_high": 5,
+      "high": 4
+    },
+    "latest_in_time": {
+      "elevated_or_high": 7,
+      "high": 3
+    },
+    "best_of_last_two": {
+      "elevated_or_high": 7,
+      "high": 5
+    }
+  },
+  "ordinary_days": {
+    "issue_days": 120,
+    "evening_elevated_or_high": 0.283,
+    "evening_high": 0.125,
+    "morning_elevated_or_high": 0.367,
+    "morning_high": 0.108,
+    "days_with_any_elevated_or_high_per_season": 87,
+    "days_with_any_high_per_season": 36,
+    "morning_only_high_days_per_season": 23,
+    "morning_only_elevated_or_high_days_per_season": 78
+  },
+  "per_flood": [
+    {
+      "flood": "2024-07-16",
+      "reported_time": null,
+      "morning_only_in_time": "LOW",
+      "latest_issue": "evening 2024-07-15",
+      "latest_in_time": "HIGH",
+      "best_of_last_two": "HIGH"
+    },
+    {
+      "flood": "2024-07-20",
+      "reported_time": "2024-07-20 12:00",
+      "morning_only_in_time": "HIGH",
+      "latest_issue": "morning 2024-07-20",
+      "latest_in_time": "HIGH",
+      "best_of_last_two": "HIGH"
+    },
+    {
+      "flood": "2024-07-27",
+      "reported_time": null,
+      "morning_only_in_time": "HIGH",
+      "latest_issue": "evening 2024-07-26",
+      "latest_in_time": "ELEVATED",
+      "best_of_last_two": "HIGH"
+    },
+    {
+      "flood": "2024-08-04",
+      "reported_time": "2024-08-04 05:00",
+      "morning_only_in_time": "HIGH",
+      "latest_issue": "evening 2024-08-03",
+      "latest_in_time": "ELEVATED",
+      "best_of_last_two": "HIGH"
+    },
+    {
+      "flood": "2024-10-24",
+      "reported_time": null,
+      "morning_only_in_time": "LOW",
+      "latest_issue": "evening 2024-10-23",
+      "latest_in_time": "LOW",
+      "best_of_last_two": "LOW"
+    },
+    {
+      "flood": "2025-07-23",
+      "reported_time": "2025-07-23 18:00",
+      "morning_only_in_time": "ELEVATED",
+      "latest_issue": "morning 2025-07-23",
+      "latest_in_time": "ELEVATED",
+      "best_of_last_two": "ELEVATED"
+    },
+    {
+      "flood": "2025-07-31",
+      "reported_time": "2025-07-31 06:00",
+      "morning_only_in_time": "LOW",
+      "latest_issue": "evening 2025-07-30",
+      "latest_in_time": "ELEVATED",
+      "best_of_last_two": "ELEVATED"
+    },
+    {
+      "flood": "2026-05-23",
+      "reported_time": "2026-05-23 09:00",
+      "morning_only_in_time": "LOW",
+      "latest_issue": "evening 2026-05-22",
+      "latest_in_time": "LOW",
+      "best_of_last_two": "LOW"
+    },
+    {
+      "flood": "2026-08-03",
+      "reported_time": "2026-08-03 04:00",
+      "morning_only_in_time": "HIGH",
+      "latest_issue": "evening 2026-08-02",
+      "latest_in_time": "HIGH",
+      "best_of_last_two": "HIGH"
+    }
+  ]
+}

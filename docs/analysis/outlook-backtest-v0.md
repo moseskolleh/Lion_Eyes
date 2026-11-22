@@ -1,6 +1,6 @@
 # Outlook backtest v0: would the forecasts have warned?
 
-*November 2026. Reproduce with `floodwatch backtest`. The first run downloads about 20 GB of forecasts; each run's result is then kept in `data/archive/ecmwf/`.*
+*November 2026. Reproduce with `floodwatch backtest`, then `floodwatch backtest --evening`. The first run downloads about 20 GB of forecasts; each run's result is then kept in `data/archive/ecmwf/`.*
 
 The hindcast scored floods against rain that had **already fallen**. The daily
 Outlook has to work from a **forecast**. This analysis replays the Outlook on
@@ -96,12 +96,45 @@ These are recomputed from the same 146 forecast runs. They are **tuned on the sa
 
 Raising "likely" to 50% halves the ELEVATED mornings but loses most HIGH hits, because forecast probabilities for heavy rain are rarely high. The current HIGH rule is worth keeping. The question is what ELEVATED should mean.
 
+## 6. Adding an evening issue
+
+Because so many floods come at night, the Outlook now also goes out in the
+evening, at about 21:00. That issue uses ECMWF's 12 UTC run, and its periods
+run noon to noon, so the first one covers the night ahead with a fresh
+forecast. It was replayed the same way: on the evenings before and of each
+flood, and on the same 120 random days (`floodwatch backtest --evening`).
+
+| Flood | Reported time | Morning issue only, in time | With evening issue: latest issue before the flood | Higher of the last two issues |
+|---|---|---|---|---|
+| 16 Jul 2024 | not given | LOW | HIGH (evening before) | HIGH |
+| 20 Jul 2024 | 12:00 | HIGH | HIGH (same morning) | HIGH |
+| 27 Jul 2024 | night | HIGH | ELEVATED (evening before) | HIGH |
+| 4 Aug 2024 | ~05:00 | HIGH | ELEVATED (evening before) | HIGH |
+| 24 Oct 2024 | not given | LOW | LOW | LOW |
+| 23 Jul 2025 | ~18:00 | ELEVATED | ELEVATED (same morning) | ELEVATED |
+| 31 Jul 2025 (Kroo Bay) | early hours | LOW | **ELEVATED** (evening before) | ELEVATED |
+| 23 May 2026 | morning | LOW | LOW | LOW |
+| 3 Aug 2026 | ~04:00 | HIGH | HIGH (evening before) | HIGH |
+
+| | Morning issue only | Morning and evening issues |
+|---|---|---|
+| Floods with ELEVATED or HIGH in time (of 9) | 5 | **7** |
+| Floods with HIGH in time, higher of the last two issues (of 9) | 4 | **5** |
+| Rainy-season days with ELEVATED or HIGH in an issue | ~78 a season (37%) | ~87 a season (41%) |
+| Rainy-season days with HIGH in an issue | ~23 a season (11%) | ~36 a season (17%) |
+
+What this shows:
+- **More floods get a warning in time.** The gain is in the night: before the pre-dawn Kroo Bay flood of 31 July 2025, the morning issue the day before said LOW, but the evening issue said ELEVATED. Before 16 July 2024, the evening issue went to HIGH.
+- **It costs more alert days.** Counting both issues, HIGH comes up on about 36 days a season instead of 23. HIGH is still about 3 times more frequent before floods (5 of 9) than on ordinary days (17%). That is a little less sharp than the morning issue alone, which was about 4 times.
+- **The evening issue sometimes lowers the level.** Before 27 July and 4 August 2024, it gave ELEVATED where that morning's issue gave HIGH. Its fresher forecast saw less rain coming, and on 4 August little did fall: the wall collapsed on ground already soaked by 128 mm. So read the two issues together: **the higher of the day's two levels** caught 5 of 9 floods at HIGH.
+- **An idea to test, not adopted:** keep a morning HIGH through the night when the ground is saturated. It would have helped on 4 August 2024, but it was suggested by these same few floods.
+
 ## What this means for the product
 
 1. **HIGH is the action level.** In time before 4 of 9 floods, given on ~23 mornings a season.
 2. **ELEVATED should be presented as "watch", not "act".** Alternatively it could be made stricter. The bulletin should say how often each level occurs, so readers know HIGH is rare and ELEVATED is common.
 3. **Use the forecast mostly for today.** Tomorrow's and the day after's levels rest on wet ground and the occasional strong forecast signal, not on reliable rain amounts.
-4. **Add an evening Outlook.** Most floods come at night or before dawn, after the morning Outlook and before the next one. ECMWF's 12 UTC run is published in the evening and covers the night with a fresher forecast. An evening issue is the cheapest way to put more floods "in time".
+4. **Keep the evening Outlook (now running).** Most floods come at night or before dawn. The evening issue put 2 more of the 9 floods "in time" (section 6), for about 9 more alert days a season. Read the morning and evening issues together.
 5. **Short local downpours need other signals.** These are floods like 24 Oct 2024 and 23 May 2026. Only storm tracking from geostationary satellites (EUMETSAT) or residents' reports will catch them.
 
 ## Limitations

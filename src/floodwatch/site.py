@@ -255,8 +255,8 @@ floods: heavy rain usually comes 1-6 hours before a flood is reported.</p><a hre
 flood days were clearly wetter (AUC 0.82). Daily rules catch about half of floods at about 3 false alarms per season.</p>
 <a href="analysis/hindcast.html"><img src="figures/streams_and_flood_places.png" alt="Streams and flood places"></a></div>
 <div class="card"><h3><a href="analysis/backtest.html">Would the forecasts have warned?</a></h3><p class="small">Replaying this
-Outlook on 2024-2026 forecasts: HIGH came in time before 4 of 9 floods, but on only about 1 in 9 ordinary rainy-season
-mornings. ELEVATED is common (over a third of mornings), so treat it as "watch".</p></div>
+Outlook on 2024-2026 forecasts, with its morning and evening issues: 7 of 9 floods had a warning in time (5 at HIGH).
+HIGH came up on about 1 rainy-season day in 6. ELEVATED is common, so it means "watch".</p></div>
 </div>"""
     return _shell("Outlook", body, path="index.html")
 

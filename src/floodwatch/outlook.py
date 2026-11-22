@@ -200,13 +200,15 @@ def build(run: tuple[date, int] | None = None, now: datetime | None = None) -> d
 
 
 def level_rates() -> dict | None:
-    """How often each level came up in the backtest, if it has been run."""
+    """How often each level came up in the backtest (both issues a day), if it has been run."""
     try:
-        r = json.loads((config.DERIVED_DIR / "outlook_backtest.json").read_text())
-        od, fl = r["ordinary_days"], r["floods"]["in_time"]
-        return {"high_1_in": round(1 / od["high"]), "elevated_1_in": round(1 / od["elevated_or_high"]),
-                "floods_high": fl["high"], "floods_of": fl["of"]}
-    except (OSError, ValueError, KeyError, ZeroDivisionError):
+        r = json.loads((config.DERIVED_DIR / "outlook_backtest_evening.json").read_text())
+        od, fl = r["ordinary_days"], r["in_time"]["best_of_last_two"]
+        season = 214  # 1 May - 30 Nov
+        return {"high_pct": round(100 * od["days_with_any_high_per_season"] / season),
+                "elevated_pct": round(100 * od["days_with_any_elevated_or_high_per_season"] / season),
+                "floods_high": fl["high"], "floods_of": r["floods"]}
+    except (OSError, ValueError, KeyError):
         return None
 
 
@@ -215,13 +217,13 @@ def level_meaning(bold: tuple[str, str] = ("**", "**")) -> str:
     b0, b1 = bold
     r = level_rates()
     if r:
-        high = (f"rare. In 2024-2026 forecasts it came on about 1 in {r['high_1_in']} rainy-season mornings, "
-                f"and in time before {r['floods_high']} of {r['floods_of']} floods")
-        elevated = f"common, about 1 in {r['elevated_1_in']} rainy-season mornings (counting HIGH)"
+        high = (f"the rarer, stronger signal. Replaying 2024-2026 forecasts, it came up on about {r['high_pct']}% "
+                f"of rainy-season days and in time before {r['floods_high']} of {r['floods_of']} floods")
+        elevated = f"common, on about {r['elevated_pct']}% of rainy-season days (counting HIGH)"
     else:
         high, elevated = "the rarer, stronger signal", "common"
     return (f"{b0}HIGH = act{b1}: {high}. {b0}ELEVATED = watch{b1}: {elevated}; most such days pass "
-            "without flooding. LOW = normal.")
+            "without flooding. LOW = normal. Read the morning and evening issues together.")
 
 
 def to_text(o: dict) -> str:

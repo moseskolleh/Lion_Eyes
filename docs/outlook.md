@@ -58,18 +58,21 @@ flood history and residents' reports.
 ## How well it works (backtest)
 
 Replaying the Outlook on ECMWF's 2024-2026 forecasts (`floodwatch backtest`,
-[write-up](analysis/outlook-backtest-v0.md)):
+[write-up](analysis/outlook-backtest-v0.md)), counting the morning and evening
+issues together:
 
-| Level | Rainy-season mornings with this level for today or tomorrow | Floods with this level in time (of 9) |
+| Level | Rainy-season days with this level in an issue (today or tomorrow) | Floods with this level in time (of 9) |
 |---|---|---|
-| HIGH | ~11% (~23 a season) | 4 |
-| ELEVATED or HIGH | ~37% (~78 a season) | 5 |
+| HIGH | ~17% (~36 days a season) | 5 |
+| ELEVATED or HIGH | ~41% (~87 days a season) | 7 |
+
+With the morning issue alone, these were 11% / 4 floods and 37% / 5 floods.
+The evening issue added warnings before the night-time floods, for about 9 more
+alert days a season.
 
 So **HIGH is the action level and ELEVATED is a watch level.** Today's forecast
-is useful. Tomorrow's misses most heavy days. Most floods come at night,
-after the morning issue, so an evening issue from the 12 UTC run is the next
-improvement. The thresholds stay as they are until there are more floods to test
-changes on.
+is useful, but tomorrow's misses most heavy days. The thresholds stay as they
+are until there are more floods to test changes on.
 
 ## Running it
 
