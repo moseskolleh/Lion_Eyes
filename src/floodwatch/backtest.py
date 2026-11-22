@@ -34,7 +34,7 @@ FIRST_DAY = date(2024, 5, 1)
 FETCH_WORKERS = 6  # parallel requests per run in bulk replays
 BULK_MIRRORS = (ecmwf.GOOGLE, ecmwf.AWS)  # AWS throttles bursts of requests for old runs
 SEASON_DAYS = 214  # 1 May - 30 Nov
-ISSUE_HOUR = 9.5  # the daily job runs at 09:23 UTC; Freetown is on UTC
+ISSUE_HOUR = 8.3  # the morning job runs at 08:13 UTC; Freetown is on UTC
 LEVELS = ["LOW", "ELEVATED", "HIGH"]
 SAMPLE_CSV = config.DERIVED_DIR / "outlook_backtest_sample.csv"
 DAYS_CSV = config.DERIVED_DIR / "outlook_backtest_days.csv"
@@ -219,7 +219,7 @@ def replay_evening(issue: date, obs: pd.Series) -> list[dict]:
 
 
 def _latest_issue(flood: date, when: pd.Timestamp | None) -> tuple[str, date]:
-    """The last Outlook (morning ~09:30 or evening ~20:50) issued before the flood.
+    """The last Outlook (morning ~08:15 or evening ~20:50) issued before the flood.
     Unknown time: the evening before (an issue before any hour of the flood day)."""
     day = pd.Timestamp(flood)
     if when is not None and when >= day + pd.Timedelta(hours=EVENING_HOUR):

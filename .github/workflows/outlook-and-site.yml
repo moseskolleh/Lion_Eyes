@@ -18,7 +18,7 @@ name: Daily outlook and website
 
 on:
   schedule:
-    - cron: "23 9 * * *" # morning issue, 09:23 UTC (Freetown is on UTC)
+    - cron: "13 8 * * *" # morning issue, 08:13 UTC (Freetown is on UTC); the 00 UTC run is out by ~07:40
     - cron: "47 20 * * *" # evening issue, 20:47 UTC
   push:
     branches: [main]
@@ -51,7 +51,11 @@ jobs:
         if: github.event_name != 'push'
         env:
           EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
-        run: floodwatch outlook
+        run: |
+          if [ -z "$EARTHDATA_TOKEN" ]; then
+            echo "::warning title=No NASA Earthdata token::The EARTHDATA_TOKEN repository secret is not set, so the Outlook cannot see recent rain (ground wetness unknown). Add it under Settings > Secrets and variables > Actions."
+          fi
+          floodwatch outlook
 
       - name: Commit the Outlook and forecast archive
         if: github.event_name != 'push'

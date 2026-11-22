@@ -28,6 +28,7 @@ from floodwatch import config, events, outlook
 OUT = config.REPO_ROOT / "_site"
 DOCS = config.REPO_ROOT / "docs"
 TITLE = "FloodWatch Freetown"
+SITE_URL = "https://moseskolleh.github.io/Maji/"  # absolute links in the feed
 
 PAGES = [  # (source markdown, output path, nav label)
     (DOCS / "concept.md", "concept.html", "Concept"),
@@ -148,13 +149,15 @@ def _shell(title: str, body: str, depth: int = 0, extra_head: str = "", path: st
     links = "".join(f'<a href="{up}{href}"{ACTIVE if href == path else ""}>{label}</a>' for href, label in NAV)
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">{THEME_HEAD}
-<title>{html.escape(title)} · {TITLE}</title><link rel="stylesheet" href="{up}style.css">{extra_head}</head>
+<title>{html.escape(title)} · {TITLE}</title><link rel="stylesheet" href="{up}style.css">
+<link rel="alternate" type="application/atom+xml" title="FloodWatch Freetown Outlook" href="{up}feed.xml">{extra_head}</head>
 <body><header class="bar"><div class="wrap"><a class="brand" href="{up}index.html">FloodWatch <em>Freetown</em></a>
 <nav>{links}</nav>{THEME_BUTTON}</div></header>
 <main><div class="wrap">{body}</div></main>
 <footer><div class="wrap"><p class="mono">Prototype · not an official warning service</p>
 <p>Flash-flood early warning for Freetown, Sierra Leone, from open data. Data: ECMWF open data, NASA IMERG, CHIRPS,
-Copernicus DEM, Overture Maps, Meta HRSL, OpenStreetMap contributors. <a href="https://github.com/moseskolleh/Maji">Source code</a>.</p></div></footer>
+Copernicus DEM, Overture Maps, Meta HRSL, OpenStreetMap contributors. <a href="https://github.com/moseskolleh/Maji">Source code</a>.</p>
+<p>Get each Outlook as it is issued: <a href="{up}feed.xml">feed (Atom)</a> · <a href="{up}latest.json">latest.json</a>.</p></div></footer>
 {THEME_SCRIPT}</body></html>"""
 
 
@@ -228,14 +231,16 @@ def _outlook_card(o: dict | None) -> str:
     first_col = "Period" if edition == "evening" else "Day"
     note = (" Periods run noon to noon (Freetown time = UTC); the first began at noon today."
             if edition == "evening" else "")
+    sms = html.escape(o.get("sms") or outlook.sms_text(o))
     return f"""<div class="card"><p class="eyebrow">3-day Outlook · {edition} issue · {o['issued']}</p>
 <p class="muted small">ECMWF ensemble run {o['forecast_run']}. Rain in {o.get('observed_period', 'the last 3 days')}
 (satellite): {wet_text}.{note}</p>
 <table><thead><tr><th>{first_col}</th><th>Level</th><th>Wet chance</th>
 <th>Very wet chance</th><th>Likely rain</th><th>Ground wetness</th><th>High tides</th></tr></thead>
 <tbody>{rows}</tbody></table>
+<p class="small"><span class="muted">Short message (SMS or WhatsApp):</span> <span class="mono">{sms}</span></p>
 <p class="small muted">{outlook.level_meaning(("<strong>", "</strong>"))}
-Issued twice a day, around 09:30 and 21:00 Freetown time. <a href="outlook-method.html">How the Outlook works</a> ·
+Issued twice a day, around 08:15 and 21:00 Freetown time. <a href="outlook-method.html">How the Outlook works</a> ·
 <a href="analysis/backtest.html">how well it has done</a>.</p></div>"""
 
 
@@ -365,6 +370,40 @@ def _archive_page() -> str:
     return _shell("Outlook archive", body, depth=1, path="outlook/index.html")
 
 
+def _atom_time(o: dict) -> str:
+    return pd.Timestamp(_issued_key(o)).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _feed(limit: int = 60) -> str:
+    """Atom feed of the latest Outlooks; each entry's summary is the short message."""
+    entries = []
+    for stem, o in _outlooks()[:limit]:
+        worst = max(o["days"], key=lambda d: ["LOW", "ELEVATED", "HIGH"].index(d["level"]))["level"]
+        url = f"{SITE_URL}outlook/{stem}.html"
+        title = f"{o['issued']} {o.get('edition', 'morning')}: {outlook.LEVEL_WORDS.get(worst, worst)}"
+        entries.append(
+            f"<entry><title>{html.escape(title)}</title><link href=\"{url}\"/><id>{url}</id>"
+            f"<updated>{_atom_time(o)}</updated>"
+            f"<summary>{html.escape(o.get('sms') or outlook.sms_text(o))}</summary></entry>"
+        )
+    updated = _atom_time(_outlooks()[0][1]) if entries else "2026-11-22T00:00:00Z"
+    return (
+        '<?xml version="1.0" encoding="utf-8"?>\n<feed xmlns="http://www.w3.org/2005/Atom">'
+        f"<title>{TITLE} Outlook</title><subtitle>Flash-flood outlook for Freetown, issued morning and evening. "
+        "Prototype, not an official warning service.</subtitle>"
+        f'<link href="{SITE_URL}feed.xml" rel="self"/><link href="{SITE_URL}"/><id>{SITE_URL}</id>'
+        f"<updated>{updated}</updated><author><name>{TITLE}</name></author>" + "".join(entries) + "</feed>\n"
+    )
+
+
+def _latest_json() -> dict | None:
+    found = _outlooks()
+    if not found:
+        return None
+    stem, o = found[0]
+    return o | {"sms": o.get("sms") or outlook.sms_text(o), "bulletin_url": f"{SITE_URL}outlook/{stem}.html"}
+
+
 def _places_geojson() -> dict:
     places = pd.read_csv(config.DERIVED_DIR / "flood_places.csv")
     places = places[places["geocoded"]]
@@ -401,6 +440,9 @@ def build(out: Path = OUT) -> Path:
     for f in sorted((config.DATA_DIR / "outlook").glob("*.md")):
         (out / "outlook" / f"{f.stem}.html").write_text(_shell(f"Outlook {f.stem}", _md(f), depth=1))
     (out / "outlook" / "index.html").write_text(_archive_page())
+    (out / "feed.xml").write_text(_feed())
+    if (latest_json := _latest_json()) is not None:
+        (out / "latest.json").write_text(json.dumps(latest_json, indent=2, default=str))
     (out / ".nojekyll").write_text("")
     print(f"site written to {out}")
     return out

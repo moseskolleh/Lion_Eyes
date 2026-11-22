@@ -18,7 +18,7 @@ rain rather than IMERG, because CHIRPS covers the whole period.
 
 ## 1. Before floods
 
-The Outlook is issued at about 09:30 Freetown time (09:23 UTC). Each cell is the
+The morning Outlook is issued at about 08:15 Freetown time (08:13 UTC; it was 09:23 until late November 2026, which changes none of these results). Each cell is the
 highest level the Outlook gave for the flood day or the day before it.
 
 | Flood | Reported time | 2 days before | Day before | Same morning | **In time** |
@@ -36,7 +36,7 @@ highest level the Outlook gave for the flood day or the day before it.
 **In time** is the latest Outlook issued *before* the flood:
 - If the flood was reported after the morning issue, it is the same-morning Outlook.
 - If it was reported before that issue, it is the day-before Outlook.
-- \* If the time is not given, it is also the day-before Outlook. This is the cautious choice; 16 July 2024 would count as HIGH if that flood came after 09:30.
+- \* If the time is not given, it is also the day-before Outlook. This is the cautious choice; 16 July 2024 would count as HIGH if that flood came after 08:15.
 
 What this shows:
 - **5 of 9 floods had ELEVATED or HIGH in time, and 4 of 9 had HIGH.**
