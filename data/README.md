@@ -35,6 +35,9 @@ ReliefWeb, and resident interviews.
 |---|---|
 | `daily_features_chirps.csv` | One row per day: wettest-cell and peninsula-mean CHIRPS rainfall, rain in the previous 3 and 7 days, predicted highest tide and tidal range |
 | `hindcast_results.json` | Scores from `floodwatch hindcast` |
+| `hindcast_tables.md` | The same scores as Markdown tables, used in the write-up |
+| `flood_places.csv` | Each place named in the flood history, geocoded where possible, with elevation, height above nearest stream and nearby stream size (`floodwatch terrain`) |
+| `exposure_summary.json` | Flood places vs ordinary low-lying land |
 
 ## `raw/` (not committed)
 

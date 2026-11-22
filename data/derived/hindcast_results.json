@@ -1,0 +1,767 @@
+{
+  "tide_fit_check": {
+    "fit_hours": 24887,
+    "test_hours": 8761,
+    "rmse_m": 0.047,
+    "sea_level_std_m": 0.68
+  },
+  "chirps": {
+    "source": "CHIRPS v3 daily (satellite + gauges, IMERG-timed)",
+    "period": [
+      "2013-04-01",
+      "2026-10-08"
+    ],
+    "seasons": 14,
+    "floods_scored": [
+      "2014-05-04",
+      "2015-09-16",
+      "2017-08-14",
+      "2017-08-26",
+      "2019-08-02",
+      "2019-08-15",
+      "2020-07-14",
+      "2020-08-25",
+      "2021-07-26",
+      "2022-08-17",
+      "2022-08-28",
+      "2023-05-09",
+      "2024-07-16",
+      "2024-07-20",
+      "2024-10-24",
+      "2025-07-23",
+      "2026-05-23",
+      "2026-08-03"
+    ],
+    "skill": {
+      "day_max": {
+        "auc": 0.771,
+        "auc_90pct_interval": [
+          0.662,
+          0.869
+        ],
+        "median_flood_mm": 93.5,
+        "median_other_mm": 37.3
+      },
+      "day_mean": {
+        "auc": 0.791,
+        "auc_90pct_interval": [
+          0.687,
+          0.88
+        ],
+        "median_flood_mm": 72.1,
+        "median_other_mm": 22.1
+      },
+      "prev_3d": {
+        "auc": 0.756,
+        "auc_90pct_interval": [
+          0.647,
+          0.855
+        ],
+        "median_flood_mm": 106.2,
+        "median_other_mm": 45.5
+      },
+      "prev_7d": {
+        "auc": 0.711,
+        "auc_90pct_interval": [
+          0.588,
+          0.823
+        ],
+        "median_flood_mm": 201.0,
+        "median_other_mm": 95.2
+      },
+      "day_plus_prev_3d": {
+        "auc": 0.758,
+        "auc_90pct_interval": [
+          0.647,
+          0.857
+        ],
+        "median_flood_mm": 158.8,
+        "median_other_mm": 58.9
+      }
+    },
+    "rules": [
+      {
+        "feature": "day_max",
+        "percentile": 90,
+        "threshold_mm": 63.5,
+        "hits": 12,
+        "floods": 18,
+        "false_alarms_per_season": 15.4
+      },
+      {
+        "feature": "day_max",
+        "percentile": 95,
+        "threshold_mm": 88.0,
+        "hits": 9,
+        "floods": 18,
+        "false_alarms_per_season": 8.4
+      },
+      {
+        "feature": "day_max",
+        "percentile": 97.5,
+        "threshold_mm": 107.7,
+        "hits": 8,
+        "floods": 18,
+        "false_alarms_per_season": 4.4
+      },
+      {
+        "feature": "day_max",
+        "percentile": 99,
+        "threshold_mm": 136.4,
+        "hits": 5,
+        "floods": 18,
+        "false_alarms_per_season": 1.7
+      },
+      {
+        "feature": "day_mean",
+        "percentile": 90,
+        "threshold_mm": 40.7,
+        "hits": 12,
+        "floods": 18,
+        "false_alarms_per_season": 16.6
+      },
+      {
+        "feature": "day_mean",
+        "percentile": 95,
+        "threshold_mm": 59.6,
+        "hits": 10,
+        "floods": 18,
+        "false_alarms_per_season": 8.7
+      },
+      {
+        "feature": "day_mean",
+        "percentile": 97.5,
+        "threshold_mm": 76.9,
+        "hits": 9,
+        "floods": 18,
+        "false_alarms_per_season": 4.4
+      },
+      {
+        "feature": "day_mean",
+        "percentile": 99,
+        "threshold_mm": 99.5,
+        "hits": 5,
+        "floods": 18,
+        "false_alarms_per_season": 1.7
+      },
+      {
+        "feature": "prev_3d",
+        "percentile": 90,
+        "threshold_mm": 100.3,
+        "hits": 10,
+        "floods": 18,
+        "false_alarms_per_season": 5.9
+      },
+      {
+        "feature": "prev_3d",
+        "percentile": 95,
+        "threshold_mm": 129.3,
+        "hits": 7,
+        "floods": 18,
+        "false_alarms_per_season": 4.1
+      },
+      {
+        "feature": "prev_3d",
+        "percentile": 97.5,
+        "threshold_mm": 156.9,
+        "hits": 6,
+        "floods": 18,
+        "false_alarms_per_season": 2.0
+      },
+      {
+        "feature": "prev_3d",
+        "percentile": 99,
+        "threshold_mm": 190.0,
+        "hits": 2,
+        "floods": 18,
+        "false_alarms_per_season": 1.1
+      },
+      {
+        "feature": "prev_7d",
+        "percentile": 90,
+        "threshold_mm": 213.3,
+        "hits": 9,
+        "floods": 18,
+        "false_alarms_per_season": 3.7
+      },
+      {
+        "feature": "prev_7d",
+        "percentile": 95,
+        "threshold_mm": 266.8,
+        "hits": 5,
+        "floods": 18,
+        "false_alarms_per_season": 2.7
+      },
+      {
+        "feature": "prev_7d",
+        "percentile": 97.5,
+        "threshold_mm": 305.0,
+        "hits": 4,
+        "floods": 18,
+        "false_alarms_per_season": 1.6
+      },
+      {
+        "feature": "prev_7d",
+        "percentile": 99,
+        "threshold_mm": 358.4,
+        "hits": 1,
+        "floods": 18,
+        "false_alarms_per_season": 1.0
+      },
+      {
+        "feature": "day_plus_prev_3d",
+        "percentile": 90,
+        "threshold_mm": 126.2,
+        "hits": 10,
+        "floods": 18,
+        "false_alarms_per_season": 5.3
+      },
+      {
+        "feature": "day_plus_prev_3d",
+        "percentile": 95,
+        "threshold_mm": 162.0,
+        "hits": 9,
+        "floods": 18,
+        "false_alarms_per_season": 3.2
+      },
+      {
+        "feature": "day_plus_prev_3d",
+        "percentile": 97.5,
+        "threshold_mm": 194.1,
+        "hits": 4,
+        "floods": 18,
+        "false_alarms_per_season": 1.9
+      },
+      {
+        "feature": "day_plus_prev_3d",
+        "percentile": 99,
+        "threshold_mm": 240.1,
+        "hits": 3,
+        "floods": 18,
+        "false_alarms_per_season": 1.0
+      }
+    ],
+    "tide": {
+      "tide_max": {
+        "auc_all": 0.51,
+        "auc_coastal": 0.597,
+        "auc_coastal_90pct_interval": [
+          0.492,
+          0.702
+        ],
+        "auc_inland": 0.44,
+        "auc_inland_90pct_interval": [
+          0.296,
+          0.577
+        ],
+        "n_coastal": 8,
+        "n_inland": 10
+      },
+      "tide_range": {
+        "auc_all": 0.511,
+        "auc_coastal": 0.589,
+        "auc_coastal_90pct_interval": [
+          0.476,
+          0.698
+        ],
+        "auc_inland": 0.449,
+        "auc_inland_90pct_interval": [
+          0.301,
+          0.59
+        ],
+        "n_coastal": 8,
+        "n_inland": 10
+      }
+    },
+    "flood_days": {
+      "2014-05-04": {
+        "day_max": {
+          "mm": 59.0,
+          "percentile": 73.4
+        },
+        "day_mean": {
+          "mm": 37.1,
+          "percentile": 72.0
+        },
+        "prev_3d": {
+          "mm": 37.8,
+          "percentile": 41.1
+        },
+        "prev_7d": {
+          "mm": 44.7,
+          "percentile": 19.0
+        },
+        "day_plus_prev_3d": {
+          "mm": 40.4,
+          "percentile": 33.2
+        }
+      },
+      "2015-09-16": {
+        "day_max": {
+          "mm": 80.5,
+          "percentile": 85.5
+        },
+        "day_mean": {
+          "mm": 65.8,
+          "percentile": 90.0
+        },
+        "prev_3d": {
+          "mm": 104.3,
+          "percentile": 86.6
+        },
+        "prev_7d": {
+          "mm": 167.5,
+          "percentile": 77.6
+        },
+        "day_plus_prev_3d": {
+          "mm": 120.6,
+          "percentile": 84.1
+        }
+      },
+      "2017-08-14": {
+        "day_max": {
+          "mm": 118.8,
+          "percentile": 95.7
+        },
+        "day_mean": {
+          "mm": 78.3,
+          "percentile": 93.9
+        },
+        "prev_3d": {
+          "mm": 108.2,
+          "percentile": 87.5
+        },
+        "prev_7d": {
+          "mm": 188.6,
+          "percentile": 83.3
+        },
+        "day_plus_prev_3d": {
+          "mm": 184.6,
+          "percentile": 95.0
+        }
+      },
+      "2017-08-26": {
+        "day_max": {
+          "mm": 82.6,
+          "percentile": 86.1
+        },
+        "day_mean": {
+          "mm": 57.5,
+          "percentile": 86.2
+        },
+        "prev_3d": {
+          "mm": 163.2,
+          "percentile": 96.8
+        },
+        "prev_7d": {
+          "mm": 258.9,
+          "percentile": 92.4
+        },
+        "day_plus_prev_3d": {
+          "mm": 167.6,
+          "percentile": 93.7
+        }
+      },
+      "2019-08-02": {
+        "day_max": {
+          "mm": 113.6,
+          "percentile": 95.2
+        },
+        "day_mean": {
+          "mm": 91.9,
+          "percentile": 96.5
+        },
+        "prev_3d": {
+          "mm": 129.4,
+          "percentile": 92.2
+        },
+        "prev_7d": {
+          "mm": 301.3,
+          "percentile": 95.8
+        },
+        "day_plus_prev_3d": {
+          "mm": 197.7,
+          "percentile": 96.3
+        }
+      },
+      "2019-08-15": {
+        "day_max": {
+          "mm": 189.3,
+          "percentile": 99.7
+        },
+        "day_mean": {
+          "mm": 123.2,
+          "percentile": 99.3
+        },
+        "prev_3d": {
+          "mm": 168.3,
+          "percentile": 97.2
+        },
+        "prev_7d": {
+          "mm": 313.3,
+          "percentile": 96.5
+        },
+        "day_plus_prev_3d": {
+          "mm": 172.6,
+          "percentile": 94.2
+        }
+      },
+      "2020-07-14": {
+        "day_max": {
+          "mm": 104.5,
+          "percentile": 92.7
+        },
+        "day_mean": {
+          "mm": 81.9,
+          "percentile": 94.4
+        },
+        "prev_3d": {
+          "mm": 112.1,
+          "percentile": 88.5
+        },
+        "prev_7d": {
+          "mm": 213.4,
+          "percentile": 87.6
+        },
+        "day_plus_prev_3d": {
+          "mm": 169.7,
+          "percentile": 94.0
+        }
+      },
+      "2020-08-25": {
+        "day_max": {
+          "mm": 143.5,
+          "percentile": 97.8
+        },
+        "day_mean": {
+          "mm": 107.2,
+          "percentile": 98.2
+        },
+        "prev_3d": {
+          "mm": 158.6,
+          "percentile": 96.5
+        },
+        "prev_7d": {
+          "mm": 253.5,
+          "percentile": 92.1
+        },
+        "day_plus_prev_3d": {
+          "mm": 193.8,
+          "percentile": 95.9
+        }
+      },
+      "2021-07-26": {
+        "day_max": {
+          "mm": 28.6,
+          "percentile": 39.2
+        },
+        "day_mean": {
+          "mm": 14.4,
+          "percentile": 35.7
+        },
+        "prev_3d": {
+          "mm": 85.4,
+          "percentile": 79.4
+        },
+        "prev_7d": {
+          "mm": 163.4,
+          "percentile": 75.9
+        },
+        "day_plus_prev_3d": {
+          "mm": 91.2,
+          "percentile": 71.7
+        }
+      },
+      "2022-08-17": {
+        "day_max": {
+          "mm": 178.7,
+          "percentile": 99.5
+        },
+        "day_mean": {
+          "mm": 115.3,
+          "percentile": 98.6
+        },
+        "prev_3d": {
+          "mm": 215.4,
+          "percentile": 98.9
+        },
+        "prev_7d": {
+          "mm": 324.6,
+          "percentile": 97.1
+        },
+        "day_plus_prev_3d": {
+          "mm": 243.9,
+          "percentile": 98.4
+        }
+      },
+      "2022-08-28": {
+        "day_max": {
+          "mm": 206.7,
+          "percentile": 99.8
+        },
+        "day_mean": {
+          "mm": 164.7,
+          "percentile": 99.9
+        },
+        "prev_3d": {
+          "mm": 211.7,
+          "percentile": 98.8
+        },
+        "prev_7d": {
+          "mm": 358.8,
+          "percentile": 98.2
+        },
+        "day_plus_prev_3d": {
+          "mm": 246.7,
+          "percentile": 98.5
+        }
+      },
+      "2023-05-09": {
+        "day_max": {
+          "mm": 24.0,
+          "percentile": 32.3
+        },
+        "day_mean": {
+          "mm": 18.2,
+          "percentile": 42.5
+        },
+        "prev_3d": {
+          "mm": 15.5,
+          "percentile": 15.6
+        },
+        "prev_7d": {
+          "mm": 28.9,
+          "percentile": 10.7
+        },
+        "day_plus_prev_3d": {
+          "mm": 33.7,
+          "percentile": 26.9
+        }
+      },
+      "2024-07-16": {
+        "day_max": {
+          "mm": 128.4,
+          "percentile": 96.8
+        },
+        "day_mean": {
+          "mm": 88.7,
+          "percentile": 95.8
+        },
+        "prev_3d": {
+          "mm": 79.1,
+          "percentile": 75.9
+        },
+        "prev_7d": {
+          "mm": 134.3,
+          "percentile": 66.8
+        },
+        "day_plus_prev_3d": {
+          "mm": 149.9,
+          "percentile": 90.7
+        }
+      },
+      "2024-07-20": {
+        "day_max": {
+          "mm": 181.3,
+          "percentile": 99.7
+        },
+        "day_mean": {
+          "mm": 134.7,
+          "percentile": 99.6
+        },
+        "prev_3d": {
+          "mm": 173.0,
+          "percentile": 97.4
+        },
+        "prev_7d": {
+          "mm": 323.0,
+          "percentile": 97.1
+        },
+        "day_plus_prev_3d": {
+          "mm": 307.8,
+          "percentile": 99.6
+        }
+      },
+      "2024-10-24": {
+        "day_max": {
+          "mm": 34.2,
+          "percentile": 47.4
+        },
+        "day_mean": {
+          "mm": 27.2,
+          "percentile": 60.2
+        },
+        "prev_3d": {
+          "mm": 58.5,
+          "percentile": 61.7
+        },
+        "prev_7d": {
+          "mm": 99.1,
+          "percentile": 51.8
+        },
+        "day_plus_prev_3d": {
+          "mm": 66.0,
+          "percentile": 55.4
+        }
+      },
+      "2025-07-23": {
+        "day_max": {
+          "mm": 45.8,
+          "percentile": 60.4
+        },
+        "day_mean": {
+          "mm": 30.3,
+          "percentile": 64.3
+        },
+        "prev_3d": {
+          "mm": 54.3,
+          "percentile": 58.5
+        },
+        "prev_7d": {
+          "mm": 83.3,
+          "percentile": 44.0
+        },
+        "day_plus_prev_3d": {
+          "mm": 60.5,
+          "percentile": 50.9
+        }
+      },
+      "2026-05-23": {
+        "day_max": {
+          "mm": 7.7,
+          "percentile": 8.9
+        },
+        "day_mean": {
+          "mm": 5.3,
+          "percentile": 16.1
+        },
+        "prev_3d": {
+          "mm": 8.3,
+          "percentile": 9.0
+        },
+        "prev_7d": {
+          "mm": 10.7,
+          "percentile": 3.5
+        },
+        "day_plus_prev_3d": {
+          "mm": 10.8,
+          "percentile": 7.8
+        }
+      },
+      "2026-08-03": {
+        "day_max": {
+          "mm": 65.0,
+          "percentile": 77.8
+        },
+        "day_mean": {
+          "mm": 47.6,
+          "percentile": 81.3
+        },
+        "prev_3d": {
+          "mm": 86.5,
+          "percentile": 79.9
+        },
+        "prev_7d": {
+          "mm": 243.9,
+          "percentile": 91.0
+        },
+        "day_plus_prev_3d": {
+          "mm": 102.6,
+          "percentile": 77.9
+        }
+      }
+    },
+    "heavy_days_without_reported_flood": [
+      {
+        "date": "2013-08-16",
+        "day_mean_mm": 231.9,
+        "day_max_mm": 284.1,
+        "prev_3d_mm": 35.5
+      },
+      {
+        "date": "2024-07-30",
+        "day_mean_mm": 161.2,
+        "day_max_mm": 220.0,
+        "prev_3d_mm": 129.9
+      },
+      {
+        "date": "2024-08-14",
+        "day_mean_mm": 149.6,
+        "day_max_mm": 170.6,
+        "prev_3d_mm": 100.3
+      },
+      {
+        "date": "2017-07-08",
+        "day_mean_mm": 135.0,
+        "day_max_mm": 172.9,
+        "prev_3d_mm": 47.3
+      },
+      {
+        "date": "2023-07-29",
+        "day_mean_mm": 134.5,
+        "day_max_mm": 202.1,
+        "prev_3d_mm": 120.7
+      },
+      {
+        "date": "2015-05-18",
+        "day_mean_mm": 133.5,
+        "day_max_mm": 160.1,
+        "prev_3d_mm": 11.6
+      },
+      {
+        "date": "2013-08-30",
+        "day_mean_mm": 125.6,
+        "day_max_mm": 178.1,
+        "prev_3d_mm": 83.3
+      },
+      {
+        "date": "2023-07-14",
+        "day_mean_mm": 122.8,
+        "day_max_mm": 159.8,
+        "prev_3d_mm": 51.9
+      },
+      {
+        "date": "2025-08-07",
+        "day_mean_mm": 122.0,
+        "day_max_mm": 145.8,
+        "prev_3d_mm": 74.6
+      },
+      {
+        "date": "2016-07-27",
+        "day_mean_mm": 120.4,
+        "day_max_mm": 150.2,
+        "prev_3d_mm": 175.0
+      },
+      {
+        "date": "2018-07-22",
+        "day_mean_mm": 118.6,
+        "day_max_mm": 178.8,
+        "prev_3d_mm": 40.0
+      },
+      {
+        "date": "2013-08-25",
+        "day_mean_mm": 118.0,
+        "day_max_mm": 153.4,
+        "prev_3d_mm": 17.5
+      },
+      {
+        "date": "2016-09-17",
+        "day_mean_mm": 115.7,
+        "day_max_mm": 171.6,
+        "prev_3d_mm": 100.1
+      },
+      {
+        "date": "2017-08-22",
+        "day_mean_mm": 113.9,
+        "day_max_mm": 162.9,
+        "prev_3d_mm": 31.0
+      },
+      {
+        "date": "2022-07-01",
+        "day_mean_mm": 109.9,
+        "day_max_mm": 137.7,
+        "prev_3d_mm": 52.2
+      }
+    ]
+  }
+}
