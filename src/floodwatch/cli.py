@@ -6,6 +6,7 @@ Commands
   hindcast   score warning rules against the flood history
   terrain    trace streams, place past floods on the terrain, draw the map
   zones      split the peninsula into warning zones (run after terrain)
+  subdaily   half-hourly satellite rain around past floods (after hindcast)
 """
 
 from __future__ import annotations
@@ -68,6 +69,12 @@ def _zones(args: argparse.Namespace) -> None:
     zones.build()
 
 
+def _subdaily(args: argparse.Namespace) -> None:
+    from floodwatch import subdaily
+
+    subdaily.run()
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="floodwatch")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -83,6 +90,7 @@ def main(argv: list[str] | None = None) -> None:
     hc.set_defaults(func=_hindcast)
     sub.add_parser("terrain", help="streams, flood places and exposure map").set_defaults(func=_terrain)
     sub.add_parser("zones", help="warning zones (one per catchment) and their maps").set_defaults(func=_zones)
+    sub.add_parser("subdaily", help="half-hourly IMERG rain around past floods (needs Earthdata token)").set_defaults(func=_subdaily)
     args = parser.parse_args(argv)
     args.func(args)
 
