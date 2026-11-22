@@ -21,9 +21,11 @@ def test_score_counts_warnings_before_floods_and_on_ordinary_days():
     rows += _rows(flood, ["ELEVATED", "LOW", "LOW"], [0.4, 0, 0])
     rows += _rows(sample[0], ["LOW", "LOW", "LOW"], [0, 0, 0])
     rows += _rows(sample[1], ["LOW", "ELEVATED", "LOW"], [0, 0.35, 0])
-    r = backtest.score(pd.DataFrame(rows), sample, [flood])
+    r = backtest.score(pd.DataFrame(rows), sample, [flood], reported={"2025-08-10": ("2025-08-10 04:00", "")})
     assert r["floods"]["day_before"] == {"elevated_or_high": 1, "high": 1, "of": 1}
     assert r["floods"]["same_morning"] == {"elevated_or_high": 1, "high": 0, "of": 1}
     assert r["floods"]["two_days_before"]["elevated_or_high"] == 0
+    # Reported at 04:00, before the morning issue: only the day-before Outlook was in time.
+    assert r["per_flood"][0]["in_time_from"] == "day before" and r["per_flood"][0]["in_time"] == "HIGH"
     assert r["ordinary_days"]["elevated_or_high"] == 0.5
     assert r["ordinary_days"]["alerts_from_forecast"] == 1

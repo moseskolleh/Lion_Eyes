@@ -30,6 +30,7 @@ and refreshed daily with the new Outlook.
 | Tide | Harmonic tide fitted to 2023-2026 modelled sea level, predicted back to 2000 (4.7 cm error on a held-out year) |
 | Hindcast (do rain/tide rules flag past floods?) | v0, daily: 2008-2026, 28 floods: flood days clearly wetter (AUC 0.82); daily rules catch ~half of floods at ~3 false alarms per season; misses cluster in May/October. See [docs/analysis/hindcast-v0.md](docs/analysis/hindcast-v0.md) |
 | Half-hourly satellite rain (NASA IMERG) | Floods follow 1-6 h of heavy rain; satellite misses local cloudbursts; short bursts add no skill over daily totals, and no rain measure separates floods from the very wettest no-flood days. See [docs/analysis/subdaily-v0.md](docs/analysis/subdaily-v0.md) |
+| Outlook backtest (2024-2026 ECMWF forecasts) | Replaying the Outlook: HIGH in time before 4 of 9 floods, on ~23 of ~214 rainy-season mornings; ELEVATED on over a third of mornings; today's forecast is useful, tomorrow's misses most heavy days. See [docs/analysis/outlook-backtest-v0.md](docs/analysis/outlook-backtest-v0.md) |
 | Hourly model rain (ERA5, ECMWF 9 km) | Code ready; blocked by the free API's daily quota |
 | Terrain and flood places | v0 map of streams and past flood places (two groups: stream mouths/shoreline and hillsides); street level next |
 | Warning zones | v0: 94 catchment zones (21 in the city), each with low-ground and steep-slope measures and CHIRPS weights. See [docs/analysis/zones-v0.md](docs/analysis/zones-v0.md) |
@@ -53,6 +54,7 @@ floodwatch terrain          # streams, flood places, map
 floodwatch zones            # warning zones (after terrain)
 floodwatch exposure         # buildings and people per zone (after zones)
 floodwatch subdaily         # half-hourly NASA IMERG around past floods (needs Earthdata token)
+floodwatch backtest         # replay the Outlook on 2024-2026 ECMWF forecasts (~20 GB first time)
 floodwatch outlook          # today's 3-day outlook -> data/outlook/
 floodwatch site             # build the website into _site/
 pytest
@@ -79,6 +81,7 @@ src/floodwatch/
   population.py              buildings (Overture) and people (Meta HRSL) per zone
   subdaily.py                half-hourly rain timing and intensity around floods
   outlook.py                 daily 3-day outlook
+  backtest.py                the Outlook replayed on past forecasts and scored
   sources/imerg.py           NASA IMERG half-hourly and daily (OPeNDAP)
   sources/ecmwf.py           ECMWF open-data ensemble rain (byte-range GRIB)
   site.py                    static website for GitHub Pages

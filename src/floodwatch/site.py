@@ -15,6 +15,8 @@ from __future__ import annotations
 
 import html
 import json
+import posixpath
+import re
 import shutil
 from pathlib import Path
 
@@ -32,6 +34,7 @@ PAGES = [  # (source markdown, output path, nav label)
     (DOCS / "analysis" / "hindcast-v0.md", "analysis/hindcast.html", "Hindcast"),
     (DOCS / "analysis" / "zones-v0.md", "analysis/zones.html", "Zones"),
     (DOCS / "analysis" / "subdaily-v0.md", "analysis/subdaily.html", "Half-hourly rain"),
+    (DOCS / "analysis" / "outlook-backtest-v0.md", "analysis/backtest.html", "Outlook backtest"),
     (DOCS / "outlook.md", "outlook-method.html", "Outlook method"),
 ]
 
@@ -136,7 +139,8 @@ THEME_SCRIPT = (
 ACTIVE = ' class="active"'
 NAV = [("index.html", "Outlook"), ("map.html", "Map"), ("floods.html", "Flood history"),
        ("concept.html", "Concept"), ("analysis/hindcast.html", "Hindcast"), ("analysis/zones.html", "Zones"),
-       ("analysis/subdaily.html", "Half-hourly rain"), ("outlook/index.html", "Archive")]
+       ("analysis/subdaily.html", "Half-hourly rain"), ("analysis/backtest.html", "Backtest"),
+       ("outlook/index.html", "Archive")]
 
 
 def _shell(title: str, body: str, depth: int = 0, extra_head: str = "", path: str = "") -> str:
@@ -154,8 +158,34 @@ Copernicus DEM, Overture Maps, Meta HRSL, OpenStreetMap contributors. <a href="h
 {THEME_SCRIPT}</body></html>"""
 
 
-def _md(path: Path) -> str:
-    return markdown.markdown(path.read_text(), extensions=["tables", "fenced_code", "sane_lists"])
+_LIST_ITEM = re.compile(r"\s*([-*+]|\d+\.)\s")
+
+
+def _blank_before_lists(text: str) -> str:
+    """GitHub renders a list straight after a paragraph line; Python-Markdown
+    needs a blank line first, or the items run into the paragraph."""
+    out, prev, fence = [], "", False
+    for line in text.splitlines():
+        if line.startswith("```"):
+            fence = not fence
+        if (not fence and _LIST_ITEM.match(line) and prev.strip() and not _LIST_ITEM.match(prev)
+                and not prev.startswith(("|", " ", "\t"))):
+            out.append("")
+        out.append(line)
+        prev = line
+    return "\n".join(out) + "\n"
+
+
+def _md(path: Path, target: str | None = None) -> str:
+    """Render a markdown doc. Links to other docs that are site pages are
+    pointed at their HTML pages (relative to `target`, this page's output path)."""
+    page = markdown.markdown(_blank_before_lists(path.read_text()), extensions=["tables", "fenced_code", "sane_lists"])
+    if target is not None:
+        here = posixpath.dirname(target) or "."
+        for src, out, _ in PAGES:
+            link = posixpath.relpath(src.as_posix(), path.parent.as_posix())
+            page = page.replace(f'href="{link}"', f'href="{posixpath.relpath(out, here)}"')
+    return page
 
 
 def _latest_outlook() -> dict | None:
@@ -198,6 +228,9 @@ floods: heavy rain usually comes 1-6 hours before a flood is reported.</p><a hre
 <div class="card"><h3><a href="analysis/hindcast.html">Does open data see past floods?</a></h3><p class="small">Over 19 rainy seasons,
 flood days were clearly wetter (AUC 0.82). Daily rules catch about half of floods at about 3 false alarms per season.</p>
 <a href="analysis/hindcast.html"><img src="figures/streams_and_flood_places.png" alt="Streams and flood places"></a></div>
+<div class="card"><h3><a href="analysis/backtest.html">Would the forecasts have warned?</a></h3><p class="small">Replaying this
+Outlook on 2024-2026 forecasts: HIGH came in time before 4 of 9 floods, but on only about 1 in 9 ordinary rainy-season
+mornings. ELEVATED is common (over a third of mornings), so treat it as "watch".</p></div>
 </div>"""
     return _shell("Outlook", body, path="index.html")
 
@@ -338,7 +371,7 @@ def build(out: Path = OUT) -> Path:
     (out / "floods.html").write_text(_floods_page())
     for src, target, label in PAGES:
         depth = target.count("/")
-        (out / target).write_text(_shell(label, _md(src), depth=depth, path=target))
+        (out / target).write_text(_shell(label, _md(src, target), depth=depth, path=target))
     for f in sorted((config.DATA_DIR / "outlook").glob("*.md")):
         (out / "outlook" / f"{f.stem}.html").write_text(_shell(f"Outlook {f.stem}", _md(f), depth=1))
     (out / "outlook" / "index.html").write_text(_archive_page())

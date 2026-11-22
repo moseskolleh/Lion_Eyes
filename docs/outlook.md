@@ -40,6 +40,22 @@ daily runs, the thresholds should be reset as percentiles of the model's own
 forecasts. The levels should then be scored against what happened, using the
 flood history and residents' reports.
 
+## How well it works (backtest)
+
+Replaying the Outlook on ECMWF's 2024-2026 forecasts (`floodwatch backtest`,
+[write-up](analysis/outlook-backtest-v0.md)):
+
+| Level | Rainy-season mornings with this level for today or tomorrow | Floods with this level in time (of 9) |
+|---|---|---|
+| HIGH | ~11% (~23 a season) | 4 |
+| ELEVATED or HIGH | ~37% (~78 a season) | 5 |
+
+So **HIGH is the action level and ELEVATED is a watch level.** Today's forecast
+is useful. Tomorrow's misses most heavy days. Most floods come at night,
+after the morning issue, so an evening issue from the 12 UTC run is the next
+improvement. The thresholds stay as they are until there are more floods to test
+changes on.
+
 ## Running it
 
 ```bash

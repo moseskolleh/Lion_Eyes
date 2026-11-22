@@ -32,6 +32,7 @@ from floodwatch.sources import ecmwf
 
 FIRST_DAY = date(2024, 5, 1)
 SEASON_DAYS = 214  # 1 May - 30 Nov
+ISSUE_HOUR = 9.5  # the daily job runs at 09:23 UTC; Freetown is on UTC
 LEVELS = ["LOW", "ELEVATED", "HIGH"]
 SAMPLE_CSV = config.DERIVED_DIR / "outlook_backtest_sample.csv"
 DAYS_CSV = config.DERIVED_DIR / "outlook_backtest_days.csv"
@@ -70,7 +71,10 @@ def _rate(x: pd.Series) -> float:
     return round(float(x.mean()), 3)
 
 
-def score(days: pd.DataFrame, sample: list[date], floods: list[date]) -> dict:
+def score(days: pd.DataFrame, sample: list[date], floods: list[date],
+          reported: dict[str, tuple[str, str]] | None = None) -> dict:
+    """`reported`: flood date -> (reported time, note), as in `subdaily.REPORTED_TIMES`."""
+    reported = subdaily.REPORTED_TIMES if reported is None else reported
     days = days.copy()
     days["lvl"] = days["level"].map(LEVELS.index)
     days["forecast_wet"] = (days["p_wet"] >= outlook.LIKELY) | (days["p_very_wet"] >= outlook.LIKELY)
@@ -111,18 +115,28 @@ def score(days: pd.DataFrame, sample: list[date], floods: list[date]) -> dict:
             lvl = window(issue, leads, "lvl")
             row[name] = LEVELS[int(lvl)] if not np.isnan(lvl) else None
             row[name + "_p_wet"] = window(issue, leads, "p_wet")
-        row["prior_obs_day_before"] = float(at.loc[(d - timedelta(days=1), 1), "prior_3d_mm"])
+        # In time: the latest Outlook issued before the flood. A flood reported after the
+        # morning issue counts the same-morning Outlook; one before it (or at an unknown
+        # time) only the day-before Outlook.
+        t = reported.get(d.isoformat(), (None,))[0]
+        when = pd.Timestamp(t) if t else None
+        same_ok = when is not None and when >= pd.Timestamp(d) + pd.Timedelta(hours=ISSUE_HOUR)
+        row["reported_time"] = t
+        row["in_time_from"] = "same morning" if same_ok else "day before"
+        row["in_time"] = row["same_morning"] if same_ok else row["day_before"]
+        row["prior_obs_day_before"] = window(d - timedelta(days=1), (1,), "prior_3d_mm")
         row["forecast_wet_day_before"] = bool(window(d - timedelta(days=1), (1, 2), "forecast_wet"))
         row["observed_mm_d_minus_1_to_d"] = round(window(d - timedelta(days=1), (1, 2), "observed_mm", "nanmax"), 1)
         per_flood.append(row)
     pf = pd.DataFrame(per_flood)
 
     def hits(col: str, minimum: str) -> int:
-        return int(pf[col].map(lambda v: v is not None and LEVELS.index(v) >= LEVELS.index(minimum)).sum())
+        return int(pf[col].map(lambda v: isinstance(v, str) and LEVELS.index(v) >= LEVELS.index(minimum)).sum())
 
     flood_summary = {
-        lead: {"elevated_or_high": hits(lead, "ELEVATED"), "high": hits(lead, "HIGH"), "of": len(pf)}
-        for lead in ("same_morning", "day_before", "two_days_before")
+        lead: {"elevated_or_high": hits(lead, "ELEVATED"), "high": hits(lead, "HIGH"),
+               "of": int(pf[lead].map(lambda v: isinstance(v, str)).sum())}
+        for lead in ("in_time", "same_morning", "day_before", "two_days_before")
     }
 
     # Continuous scores, floods (issued the day before) vs ordinary issue days.

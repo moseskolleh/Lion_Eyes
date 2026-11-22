@@ -81,10 +81,10 @@ def _get(url: str, headers: dict | None = None, tries: int = 7) -> requests.Resp
             r = _local.session.get(url, headers=headers, timeout=120)
             if r.status_code in (200, 206):
                 return r
-            if r.status_code not in (429, 500, 502, 503, 504):
-                r.raise_for_status()
-        except requests.ConnectionError:
-            if attempt == tries - 1:
+            if r.status_code in (403, 404):
+                r.raise_for_status()  # not there: no point retrying
+        except (requests.ConnectionError, requests.exceptions.ChunkedEncodingError, requests.Timeout):
+            if attempt == tries - 1:  # dropped or cut-off transfers are worth retrying
                 raise
         time.sleep(min(60, 2 * 2**attempt))
     raise RuntimeError(f"ECMWF open data did not answer: {url}")
