@@ -146,7 +146,7 @@
       "two_days_before": "LOW",
       "two_days_before_p_wet": 0.14,
       "reported_time": "2026-05-23 09:00",
-      "in_time_from": "day before",
+      "in_time_from": "same morning",
       "in_time": "LOW",
       "prior_obs_day_before": 3.0,
       "forecast_wet_day_before": false,

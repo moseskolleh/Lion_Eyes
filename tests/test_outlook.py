@@ -91,3 +91,17 @@ def test_evening_bulletin_says_watch_and_points_to_next_issue():
     assert "evening of 2027-08-02" in text and "Tonight to noon Tue 03 Aug" in text
     assert "**ELEVATED (watch)**" in text and "**Watch.**" in text and "tomorrow morning's update" in text
     assert "noon to noon" in text and "What the levels mean" in text
+
+
+def test_short_message_fits_one_text_and_names_low_ground_when_high():
+    days = [{"day": "2027-08-02", "start": "2027-08-02T12:00:00", "level": "HIGH"},
+            {"day": "2027-08-03", "start": "2027-08-03T12:00:00", "level": "ELEVATED"},
+            {"day": "2027-08-04", "start": "2027-08-04T12:00:00", "level": "LOW"}]
+    o = {"issued": "2027-08-02", "edition": "evening", "days": days,
+         "low_ground_zones": ["New Life Community", "Kaningo", "Tengbeh Town", "Kroo Bay"]}
+    text = outlook.sms_text(o)
+    assert len(text) <= outlook.SMS_LIMIT and text.isascii()
+    assert text.startswith("Freetown flood outlook, 02 Aug pm: Tonight HIGH, Tomorrow ELEVATED, Wed LOW.")
+    assert "ACT:" in text and "New Life Community" in text
+    o["days"] = [dict(d, level="LOW") for d in days]
+    assert "No action needed." in outlook.sms_text(o)

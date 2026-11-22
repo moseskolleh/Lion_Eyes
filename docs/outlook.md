@@ -15,7 +15,7 @@ that is free and available remotely every day:
 
 | Issue | Time (Freetown = UTC) | Forecast run | Periods | Wet ground counted before the first period |
 |---|---|---|---|---|
-| Morning | ~09:30 | 00 UTC | Calendar days: today, tomorrow, the day after | The 3 previous days |
+| Morning | ~08:15 | 00 UTC | Calendar days: today, tomorrow, the day after | The 3 previous days |
 | Evening | ~21:00 | 12 UTC | Noon to noon: tonight (from noon today) to noon tomorrow, then the next two | The 2 previous days plus this morning |
 
 The evening issue exists because most Freetown floods come at night or before
@@ -74,6 +74,21 @@ So **HIGH is the action level and ELEVATED is a watch level.** Today's forecast
 is useful, but tomorrow's misses most heavy days. The thresholds stay as they
 are until there are more floods to test changes on.
 
+## Getting the Outlook
+
+Each issue is published in four forms, so radio stations, community groups or
+an SMS gateway can pick it up without visiting the site:
+
+| Form | Where | For |
+|---|---|---|
+| Web page | The site's home page, and one page per issue in the archive | Reading |
+| Short message | On the home page, at the end of each bulletin, and as `sms` in the JSON | Forwarding by SMS or WhatsApp: at most 160 plain characters |
+| Feed | `feed.xml` (Atom): one entry per issue, newest first, with the short message as its summary | Feed readers, or tools that post new entries to WhatsApp, Telegram or email |
+| Data | `latest.json`: the newest issue with all numbers, the short message and the bulletin link | Other systems |
+
+Example short message, at HIGH:
+`Freetown flood outlook, 02 Aug pm: Tonight HIGH, Tomorrow ELEVATED, Wed LOW. ACT: ready to move people from low ground (New Life Community); watch hillsides.`
+
 ## Running it
 
 ```bash
@@ -83,7 +98,7 @@ floodwatch outlook        # writes data/outlook/YYYY-MM-DD.md and .json
 It needs a NASA Earthdata token for the observed rain. In the cloud environment
 the network proxy adds it; elsewhere set `EARTHDATA_TOKEN`.
 
-It runs every day at 09:23 and 20:47 UTC from GitHub Actions
+It runs every day at 08:13 and 20:47 UTC from GitHub Actions
 (`.github/workflows/outlook-and-site.yml`); the issue (morning or evening) is
 chosen by the clock. The workflow commits the bulletin and the forecast
 archive, and republishes the website. See the README for the one-time

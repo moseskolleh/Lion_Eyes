@@ -189,6 +189,7 @@ def build(run: tuple[date, int] | None = None, now: datetime | None = None) -> d
         "thresholds": {"wet_mm": WET_DAY_MM, "very_wet_mm": VERY_WET_DAY_MM,
                        "saturated_3d_mm": SATURATED_3D_MM, "likely": LIKELY, "provisional": True},
     }
+    out["sms"] = sms_text(out)
     folder = config.DATA_DIR / "outlook"
     folder.mkdir(parents=True, exist_ok=True)
     stem = today.isoformat() + ("-evening" if edition == "evening" else "")
@@ -224,6 +225,42 @@ def level_meaning(bold: tuple[str, str] = ("**", "**")) -> str:
         high, elevated = "the rarer, stronger signal", "common"
     return (f"{b0}HIGH = act{b1}: {high}. {b0}ELEVATED = watch{b1}: {elevated}; most such days pass "
             "without flooding. LOW = normal. Read the morning and evening issues together.")
+
+
+SMS_LIMIT = 160  # one standard text message
+
+
+def _short_period(d: dict, k: int, evening: bool) -> str:
+    if k == 0:
+        return "Tonight" if evening else "Today"
+    if k == 1:
+        return "Tomorrow"
+    return f"{pd.Timestamp(d.get('start') or d['day']):%a}"
+
+
+def sms_text(o: dict) -> str:
+    """The Outlook in one text message (<= 160 plain characters), for SMS or WhatsApp."""
+    evening = o.get("edition") == "evening"
+    edition = {"morning": " am", "evening": " pm"}.get(o.get("edition"), "")
+    head = f"Freetown flood outlook, {pd.Timestamp(o['issued']):%d %b}{edition}: "
+    levels = ", ".join(f"{_short_period(d, k, evening)} {d['level']}" for k, d in enumerate(o["days"])) + ". "
+    worst = max(o["days"], key=lambda d: ["LOW", "ELEVATED", "HIGH"].index(d["level"]))["level"]
+    tail = " moseskolleh.github.io/Maji"
+    zones = list(o.get("low_ground_zones") or [])
+    for n in range(min(3, len(zones)), -1, -1):
+        if worst == "HIGH":
+            where = f" ({', '.join(zones[:n])})" if n else ""
+            action = f"ACT: ready to move people from low ground{where}; watch hillsides."
+        elif worst == "ELEVATED":
+            action = "WATCH: clear drains, check the next update."
+        else:
+            action = "No action needed."
+        text = head + levels + action
+        if len(text + tail) <= SMS_LIMIT:
+            return text + tail
+        if len(text) <= SMS_LIMIT:
+            return text
+    return (head + levels + action)[:SMS_LIMIT]
 
 
 def to_text(o: dict) -> str:
@@ -281,6 +318,7 @@ def to_text(o: dict) -> str:
             + (f", about {o['people_steep']:,} people on steep slopes" if o.get("people_steep") else "")
             + ": watch for runoff, cracks and leaning walls; after several wet days, landslide risk rises."
         )
+    lines += ["", f"**Short message** (SMS or WhatsApp): {sms_text(o)}"]
     lines += ["", "**What the levels mean.** " + level_meaning(),
-              "", "*v0: thresholds are provisional. Issued twice a day, around 09:30 and 21:00 Freetown time.*"]
+              "", "*v0: thresholds are provisional. Issued twice a day, around 08:15 and 21:00 Freetown time.*"]
     return "\n".join(lines) + "\n"
