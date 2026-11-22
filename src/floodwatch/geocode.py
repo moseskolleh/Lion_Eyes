@@ -45,21 +45,31 @@ def lookup(names: list[str]) -> dict[str, dict | None]:
     for name in names:
         if name in cache or name.strip().lower() in GENERIC:
             continue
-        resp = requests.get(
-            URL,
-            params={
-                "q": f"{name}, Sierra Leone",
-                "format": "json",
-                "limit": 10,
-                "countrycodes": "sl",
-                "viewbox": f"{west},{north},{east},{south}",
-                "bounded": 1,
-            },
-            headers={"User-Agent": USER_AGENT},
-            timeout=30,
-        )
-        resp.raise_for_status()
-        cache[name] = _best(resp.json())
+        hits = None
+        for attempt in range(3):  # Nominatim sometimes answers with an HTML error page
+            try:
+                resp = requests.get(
+                    URL,
+                    params={
+                        "q": f"{name}, Sierra Leone",
+                        "format": "json",
+                        "limit": 10,
+                        "countrycodes": "sl",
+                        "viewbox": f"{west},{north},{east},{south}",
+                        "bounded": 1,
+                    },
+                    headers={"User-Agent": USER_AGENT},
+                    timeout=30,
+                )
+                resp.raise_for_status()
+                hits = resp.json()
+                break
+            except (requests.RequestException, ValueError):
+                time.sleep(5 * (attempt + 1))
+        if hits is None:  # give up for now; not cached, so retried next run
+            print(f"geocode: no answer for {name!r}, skipped")
+            continue
+        cache[name] = _best(hits)
         CACHE.parent.mkdir(parents=True, exist_ok=True)
         CACHE.write_text(json.dumps(cache, indent=1))
         time.sleep(1.1)

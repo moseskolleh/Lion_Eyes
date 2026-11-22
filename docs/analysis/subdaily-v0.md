@@ -9,11 +9,11 @@ uses the 9 cells over the peninsula and the Final (gauge-corrected) run.
 
 ![Rain timelines](figures/flood_rain_timelines.png)
 
-*Half-hourly rain rate on the wettest cell, over three days around each of the 21 dated floods (2008-2026). The yellow band is the reported flood day.*
+*Half-hourly rain rate on the wettest cell, over three days around each of the 28 dated floods (2008-2026). The yellow band is the reported flood day.*
 
 ## 1. Timing: how long before a flood does the heavy rain fall?
 
-For the 11 floods whose reports give a time of day, I measured the rain on the wettest cell in the 12 hours before that time. Vague phrases were turned into times, with the assumption recorded in `subdaily.REPORTED_TIMES`; for example, "early hours" became 03:00.
+For the 14 floods whose reports give a time of day, I measured the rain on the wettest cell in the 12 hours before that time. Vague phrases were turned into times, with the assumption recorded in `subdaily.REPORTED_TIMES`; for example, "early hours" became 03:00.
 
 | Flood | Reported time | Rain in previous 3 h | 6 h | 12 h | Heavy rain (>= 10 mm/h) began | Hours before report |
 |---|---|---|---|---|---|---|
@@ -26,14 +26,17 @@ For the 11 floods whose reports give a time of day, I measured the rain on the w
 | 15 Aug 2019 | ~03:00 | 21 mm | 34 mm | 66 mm | 02:00 | 1.0 |
 | 20 Jul 2024 | 12:00 | 7 mm | 24 mm | 50 mm | not reached | - |
 | 23 Jul 2025 | ~18:00 | 23 mm | 24 mm | 38 mm | 16:30 | 1.5 |
+| 28-29 Jul 2023 (Waterloo market) | ~01:00 | 16 mm | 23 mm | 34 mm | not reached | - |
+| 4 Aug 2024 (wall collapse) | ~05:00 | 0 mm | 1 mm | 1 mm | not reached | - |
+| 31 Jul 2025 (Kroo Bay) | ~06:00 | 5 mm | 11 mm | 17 mm | not reached | - |
 | 23 May 2026 | ~09:00 | 7 mm | 10 mm | 11 mm | not reached | - |
 | 3 Aug 2026 | ~04:00 | 79 mm | 143 mm | 149 mm | 23:30 | 4.5 |
 
 What this shows:
-- **The median flood had about 50 mm on the wettest cell in the 12 hours before it was reported.**
+- **The median flood had about 44 mm on the wettest cell in the 12 hours before it was reported.**
 - **Where a clear burst exists, it starts 1 to 11 hours before the flood is reported,** most often 1-6 hours.
-- **The two deadly mudslides (Owen Street 2010, Regent 2017) had no single burst.** They followed long wet spells: Regent came after three days of heavy rain. Accumulated-rain triggers fit them, not intensity triggers.
-- **Satellite intensity under-reads local cloudbursts badly.** On 20 July 2024 the Tower Hill rain gauge recorded 106 mm between 09:00 and 12:00. IMERG shows under 7 mm on its wettest cell in those hours and places the heavy rain at 06:00-08:00 and 12:00-15:00. A satellite cell is about 11 km wide and its rain is estimated from snapshots, so short local downpours are smeared and shifted. Any satellite threshold must be set on the satellite's own scale (percentiles), never compared directly with gauge millimetres.
+- **The two deadly mudslides (Owen Street 2010, Regent 2017) had no single burst.** They followed long wet spells: Regent came after three days of heavy rain. Accumulated-rain triggers fit them, not intensity triggers. The 4 August 2024 Calaba Town wall collapse (four dead) is the same kind: almost no rain in the 12 hours before, but about 117 mm across the peninsula in the three days before (CHIRPS).
+- **Satellite intensity under-reads local cloudbursts badly.** On 20 July 2024 the Tower Hill rain gauge recorded 106 mm between 09:00 and 12:00. IMERG shows under 7 mm on its wettest cell in those hours and places the heavy rain at 06:00-08:00 and 12:00-15:00. A satellite cell is about 11 km wide and its rain is estimated from snapshots, so short local downpours are smeared and shifted. Two of the three floods added in round 2 show the same shift: on 28-29 July 2023 and 31 July 2025 IMERG's heaviest 3 hours end 7 and 5 hours *after* the reported flood. Any satellite threshold must be set on the satellite's own scale (percentiles), never compared directly with gauge millimetres.
 
 ## 2. Some daily "misses" were short bursts
 
@@ -53,25 +56,25 @@ Either these early-season events (a boulder fall, a wall collapse, a localised f
 
 ## 3. Do short bursts separate floods better than daily totals?
 
-All windows were the same three days long. I compared the 21 flood windows with two groups:
-- **30 very wet days with no reported flood:** the wettest rainy-season days in CHIRPS that were at least 4 days from any reported flood.
+All windows were the same three days long. I compared the 28 flood windows with two groups:
+- **27 very wet days with no reported flood:** the wettest rainy-season days in CHIRPS that were at least 4 days from any reported flood. The list was drawn once and frozen (`data/derived/subdaily_controls.csv`); 3 of its original 30 days turned out to be floods, or within 4 days of one, in the second search of the flood history, so they were dropped.
 - **30 ordinary days:** random rainy-season days.
 
 | Rain measure (wettest cell unless noted) | AUC vs ordinary days | AUC vs very wet no-flood days | Median: floods | very wet no-flood | ordinary |
 |---|---|---|---|---|---|
-| Most rain in 1 hour (IMERG) | 0.75 (0.67-0.83) | 0.42 (0.31-0.53) | 16 mm | 19 mm | 9 mm |
-| Most rain in 3 hours | 0.74 (0.66-0.82) | 0.37 (0.26-0.49) | 37 mm | 39 mm | 18 mm |
-| Most rain in 6 hours | 0.74 (0.66-0.82) | 0.36 (0.24-0.47) | 50 mm | 61 mm | 23 mm |
-| Most rain in 24 hours | 0.76 (0.68-0.84) | 0.36 (0.26-0.48) | 81 mm | 110 mm | 32 mm |
-| 24 hours, peninsula average (IMERG) | 0.80 (0.73-0.87) | 0.38 (0.27-0.51) | 62 mm | 80 mm | 21 mm |
-| Day's rain, peninsula average (CHIRPS) | 0.83 (0.73-0.91) | 0.14* | 67 mm | 118 mm | 19 mm |
+| Most rain in 1 hour (IMERG) | 0.73 (0.66-0.81) | 0.41 (0.32-0.51) | 16 mm | 19 mm | 9 mm |
+| Most rain in 3 hours | 0.73 (0.66-0.80) | 0.38 (0.28-0.48) | 36 mm | 37 mm | 18 mm |
+| Most rain in 6 hours | 0.76 (0.68-0.82) | 0.38 (0.28-0.49) | 51 mm | 61 mm | 23 mm |
+| Most rain in 24 hours | 0.77 (0.70-0.84) | 0.38 (0.28-0.47) | 83 mm | 107 mm | 32 mm |
+| 24 hours, peninsula average (IMERG) | 0.80 (0.73-0.86) | 0.39 (0.29-0.49) | 65 mm | 79 mm | 21 mm |
+| Day's rain, peninsula average (CHIRPS) | 0.84 (0.76-0.91) | 0.17* | 73 mm | 116 mm | 19 mm |
 
 \* The very wet group was *chosen* by CHIRPS rain, so this AUC is low by construction. The IMERG columns were not used to choose it.
 
 What this shows:
-1. **Against ordinary days, short bursts add nothing.** All measures separate floods from ordinary days about equally well (AUC 0.74-0.83). Daily totals do as well as or better than 1-3 hour peaks, because satellite bursts are smeared (section 1). The Outlook can work on daily totals.
-2. **Among the very wettest days, no rain measure tells floods from non-floods.** The 30 wettest no-flood days were as intense or more intense than the flood days on every measure; the AUC is below 0.5 with intervals mostly below it. Their rain was no more "bursty" either: the 3-hour peak was 46% of the day's total on flood days and 42% on no-flood days. Two explanations, both likely true:
-   - **Many of those days probably did flood,** but no report was found. The flood history is news-based and incomplete; 16 Aug 2013, with 232 mm across the peninsula, is the clearest candidate.
+1. **Against ordinary days, short bursts add nothing.** All measures separate floods from ordinary days about equally well (AUC 0.73-0.84). Daily totals do as well as or better than 1-3 hour peaks, because satellite bursts are smeared (section 1). The Outlook can work on daily totals.
+2. **Among the very wettest days, no rain measure tells floods from non-floods.** The 27 wettest no-flood days were as intense or more intense than the flood days on every measure; the AUC is below 0.5 with intervals mostly below it. Their rain was no more "bursty" either: the 3-hour peak was 47% of the day's total on flood days and 42% on no-flood days. Two explanations, both likely true:
+   - **Many of those days probably did flood,** but no report was found. The flood history is news-based and incomplete; The second search of the flood history confirmed this for 3 of the original 30, and 16 Aug 2013, with 232 mm across the peninsula, is still the clearest candidate.
    - **Whether a wet day floods also depends on things rain cannot show:** blocked drains, exactly which hillside got the rain, the tide, and the time of day.
 
 **Consequence for the product.** Rain can say "this is one of the wettest days of the season", and every such day should be treated as a potential flood day. It cannot say which of those days will actually flood. That last step needs information from the ground: residents' reports during the event, and a flood history completed by checking the wettest days.

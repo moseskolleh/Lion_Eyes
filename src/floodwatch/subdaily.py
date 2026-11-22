@@ -42,6 +42,9 @@ REPORTED_TIMES = {
     "2019-08-15": ("2019-08-15 03:00", "'early hours': assume 03:00"),
     "2024-07-20": ("2024-07-20 12:00", "'106 mm between 09:00 and 12:00': end of that"),
     "2025-07-23": ("2025-07-23 18:00", "'evening, approx. 18:00'"),
+    "2023-07-28": ("2023-07-29 01:00", "'late night 28 Jul into early hours of 29 Jul': assume 01:00"),
+    "2024-08-04": ("2024-08-04 05:00", "'early morning': assume 05:00"),
+    "2025-07-31": ("2025-07-31 06:00", "'early hours and morning': assume 06:00"),
     "2026-05-23": ("2026-05-23 09:00", "'morning': assume 09:00"),
     "2026-08-03": ("2026-08-03 04:00", "'overnight into the early hours': assume 04:00"),
 }
@@ -81,11 +84,31 @@ def flood_dates(first_year: int = 2008) -> pd.DataFrame:
     return cat[["event_id", "date", "time_of_day", "type", "coastal"]].reset_index(drop=True)
 
 
+CONTROLS_CSV = config.DERIVED_DIR / "subdaily_controls.csv"
+
+
 def control_dates(n_heavy: int = 30, n_random: int = 30, seed: int = 7) -> pd.DataFrame:
+    """Comparison days: very wet non-flood days and random ordinary days.
+
+    The set is drawn once and frozen in CONTROLS_CSV, so adding floods to the
+    history later does not redraw the random sample (and re-download its
+    rain). A frozen comparison day that turns out to be within 4 days of a
+    flood is dropped: it is now a flood, not a comparison.
+    """
+    floods = pd.DatetimeIndex(flood_dates()["date"])
+    if CONTROLS_CSV.exists():
+        frozen = pd.read_csv(CONTROLS_CSV, parse_dates=["date"])
+        near = frozen["date"].map(lambda d: any(abs((d - e).days) <= 4 for e in floods))
+        return frozen[~near].reset_index(drop=True)
+    drawn = _draw_controls(floods, n_heavy, n_random, seed)
+    drawn.to_csv(CONTROLS_CSV, index=False)
+    return drawn
+
+
+def _draw_controls(floods: pd.DatetimeIndex, n_heavy: int, n_random: int, seed: int) -> pd.DataFrame:
     """Very wet non-flood days (by CHIRPS) and random ordinary rainy-season days."""
     daily = pd.read_csv(config.DERIVED_DIR / "daily_features_chirps.csv", parse_dates=["date"]).set_index("date")
     daily = daily[hindcast.in_season(pd.DatetimeIndex(daily.index))].dropna(subset=["day_mean"])
-    floods = pd.DatetimeIndex(flood_dates()["date"])
     far = pd.Series(True, index=daily.index)
     for e in floods:
         far.loc[e - pd.Timedelta(days=4) : e + pd.Timedelta(days=4)] = False

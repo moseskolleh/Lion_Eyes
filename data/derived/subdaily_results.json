@@ -1,107 +1,107 @@
 {
-  "floods": 21,
-  "heavy_no_flood": 30,
+  "floods": 28,
+  "heavy_no_flood": 27,
   "ordinary": 30,
   "skill": {
     "max_1h": {
-      "auc_vs_ordinary": 0.75,
+      "auc_vs_ordinary": 0.735,
       "auc_vs_ordinary_90pct": [
-        0.667,
-        0.825
+        0.659,
+        0.805
       ],
-      "auc_vs_heavy_no_flood": 0.419,
+      "auc_vs_heavy_no_flood": 0.41,
       "auc_vs_heavy_no_flood_90pct": [
-        0.308,
-        0.532
+        0.316,
+        0.506
       ],
       "median": {
-        "flood": 15.7,
-        "heavy_no_flood": 19.2,
+        "flood": 16.1,
+        "heavy_no_flood": 18.9,
         "ordinary": 9.3
       }
     },
     "max_3h": {
-      "auc_vs_ordinary": 0.737,
+      "auc_vs_ordinary": 0.732,
       "auc_vs_ordinary_90pct": [
-        0.656,
-        0.817
+        0.658,
+        0.801
       ],
-      "auc_vs_heavy_no_flood": 0.373,
+      "auc_vs_heavy_no_flood": 0.382,
       "auc_vs_heavy_no_flood_90pct": [
-        0.257,
-        0.49
+        0.28,
+        0.484
       ],
       "median": {
-        "flood": 37.3,
-        "heavy_no_flood": 39.0,
+        "flood": 35.5,
+        "heavy_no_flood": 37.4,
         "ordinary": 17.8
       }
     },
     "max_6h": {
-      "auc_vs_ordinary": 0.743,
+      "auc_vs_ordinary": 0.757,
       "auc_vs_ordinary_90pct": [
-        0.66,
-        0.822
+        0.684,
+        0.823
       ],
-      "auc_vs_heavy_no_flood": 0.357,
+      "auc_vs_heavy_no_flood": 0.384,
       "auc_vs_heavy_no_flood_90pct": [
-        0.244,
-        0.473
+        0.282,
+        0.485
       ],
       "median": {
-        "flood": 49.8,
-        "heavy_no_flood": 61.0,
+        "flood": 51.3,
+        "heavy_no_flood": 60.8,
         "ordinary": 23.4
       }
     },
     "max_24h": {
-      "auc_vs_ordinary": 0.762,
+      "auc_vs_ordinary": 0.771,
       "auc_vs_ordinary_90pct": [
-        0.676,
-        0.843
+        0.695,
+        0.839
       ],
-      "auc_vs_heavy_no_flood": 0.362,
+      "auc_vs_heavy_no_flood": 0.377,
       "auc_vs_heavy_no_flood_90pct": [
-        0.256,
-        0.475
+        0.284,
+        0.474
       ],
       "median": {
-        "flood": 81.4,
-        "heavy_no_flood": 109.5,
+        "flood": 82.6,
+        "heavy_no_flood": 107.0,
         "ordinary": 31.9
       }
     },
     "max_24h_mean": {
-      "auc_vs_ordinary": 0.803,
+      "auc_vs_ordinary": 0.799,
       "auc_vs_ordinary_90pct": [
-        0.729,
-        0.873
+        0.73,
+        0.861
       ],
-      "auc_vs_heavy_no_flood": 0.381,
+      "auc_vs_heavy_no_flood": 0.39,
       "auc_vs_heavy_no_flood_90pct": [
-        0.265,
-        0.505
+        0.291,
+        0.492
       ],
       "median": {
-        "flood": 62.1,
-        "heavy_no_flood": 80.3,
+        "flood": 65.0,
+        "heavy_no_flood": 79.1,
         "ordinary": 21.1
       }
     },
     "chirps_day_mean": {
-      "auc_vs_ordinary": 0.829,
+      "auc_vs_ordinary": 0.84,
       "auc_vs_ordinary_90pct": [
-        0.73,
-        0.914
+        0.762,
+        0.911
       ],
-      "auc_vs_heavy_no_flood": 0.145,
+      "auc_vs_heavy_no_flood": 0.17,
       "auc_vs_heavy_no_flood_90pct": [
-        0.051,
-        0.254
+        0.087,
+        0.265
       ],
       "median": {
-        "flood": 67.3,
-        "heavy_no_flood": 118.3,
+        "flood": 72.8,
+        "heavy_no_flood": 115.7,
         "ordinary": 18.7
       }
     }
@@ -198,6 +198,36 @@
       "hours_onset_to_report": 1.5
     },
     {
+      "flood": "2023-07-28",
+      "reported_time": "2023-07-29 01:00:00",
+      "assumption": "'late night 28 Jul into early hours of 29 Jul': assume 01:00",
+      "rain_3h_before_mm": 15.5,
+      "rain_6h_before_mm": 22.5,
+      "rain_12h_before_mm": 33.5,
+      "heavy_onset": NaN,
+      "hours_onset_to_report": NaN
+    },
+    {
+      "flood": "2024-08-04",
+      "reported_time": "2024-08-04 05:00:00",
+      "assumption": "'early morning': assume 05:00",
+      "rain_3h_before_mm": 0.4,
+      "rain_6h_before_mm": 0.6,
+      "rain_12h_before_mm": 0.6,
+      "heavy_onset": NaN,
+      "hours_onset_to_report": NaN
+    },
+    {
+      "flood": "2025-07-31",
+      "reported_time": "2025-07-31 06:00:00",
+      "assumption": "'early hours and morning': assume 06:00",
+      "rain_3h_before_mm": 5.4,
+      "rain_6h_before_mm": 11.4,
+      "rain_12h_before_mm": 16.9,
+      "heavy_onset": NaN,
+      "hours_onset_to_report": NaN
+    },
+    {
       "flood": "2026-05-23",
       "reported_time": "2026-05-23 09:00:00",
       "assumption": "'morning': assume 09:00",
@@ -274,6 +304,34 @@
       "max_24h_mean": 21.6,
       "product": "final",
       "chirps_day_mean": 37.1
+    },
+    {
+      "date": "2014-07-13",
+      "group": "flood",
+      "event_id": "FT-20140713",
+      "time_of_day": "morning",
+      "max_1h": 48.2,
+      "max_3h": 104.7,
+      "peak_3h_ends": "2014-07-13 16:30:00",
+      "max_6h": 141.0,
+      "max_24h": 173.3,
+      "max_24h_mean": 113.8,
+      "product": "final",
+      "chirps_day_mean": 94.6
+    },
+    {
+      "date": "2014-09-05",
+      "group": "flood",
+      "event_id": "FT-20140905",
+      "time_of_day": "night",
+      "max_1h": 18.3,
+      "max_3h": 47.3,
+      "peak_3h_ends": "2014-09-06 19:00:00",
+      "max_6h": 67.6,
+      "max_24h": 81.2,
+      "max_24h_mean": 61.8,
+      "product": "final",
+      "chirps_day_mean": 62.0
     },
     {
       "date": "2015-09-16",
@@ -430,6 +488,34 @@
       "chirps_day_mean": 18.2
     },
     {
+      "date": "2023-07-14",
+      "group": "flood",
+      "event_id": "FT-20230714",
+      "time_of_day": NaN,
+      "max_1h": 20.9,
+      "max_3h": 46.8,
+      "peak_3h_ends": "2023-07-14 03:00:00",
+      "max_6h": 69.8,
+      "max_24h": 135.1,
+      "max_24h_mean": 107.5,
+      "product": "final",
+      "chirps_day_mean": 122.8
+    },
+    {
+      "date": "2023-07-28",
+      "group": "flood",
+      "event_id": "FT-20230728",
+      "time_of_day": "late night 28 Jul into early hours of 29 Jul",
+      "max_1h": 12.6,
+      "max_3h": 33.6,
+      "peak_3h_ends": "2023-07-29 08:30:00",
+      "max_6h": 58.5,
+      "max_24h": 99.2,
+      "max_24h_mean": 70.5,
+      "product": "final",
+      "chirps_day_mean": 134.5
+    },
+    {
       "date": "2024-07-16",
       "group": "flood",
       "event_id": "FT-20240716",
@@ -456,6 +542,34 @@
       "max_24h_mean": 118.6,
       "product": "final",
       "chirps_day_mean": 134.7
+    },
+    {
+      "date": "2024-07-27",
+      "group": "flood",
+      "event_id": "FT-20240727",
+      "time_of_day": "night",
+      "max_1h": 24.8,
+      "max_3h": 33.6,
+      "peak_3h_ends": "2024-07-27 20:00:00",
+      "max_6h": 45.4,
+      "max_24h": 90.6,
+      "max_24h_mean": 70.0,
+      "product": "final",
+      "chirps_day_mean": 101.9
+    },
+    {
+      "date": "2024-08-04",
+      "group": "flood",
+      "event_id": "FT-20240804",
+      "time_of_day": "early morning",
+      "max_1h": 4.5,
+      "max_3h": 11.9,
+      "peak_3h_ends": "2024-08-05 10:00:00",
+      "max_6h": 18.2,
+      "max_24h": 20.3,
+      "max_24h_mean": 13.5,
+      "product": "final",
+      "chirps_day_mean": 16.7
     },
     {
       "date": "2024-10-24",
@@ -486,6 +600,20 @@
       "chirps_day_mean": 30.3
     },
     {
+      "date": "2025-07-31",
+      "group": "flood",
+      "event_id": "FT-20250731",
+      "time_of_day": "early hours and morning",
+      "max_1h": 9.2,
+      "max_3h": 19.1,
+      "peak_3h_ends": "2025-07-31 11:30:00",
+      "max_6h": 32.3,
+      "max_24h": 40.6,
+      "max_24h_mean": 23.5,
+      "product": "final",
+      "chirps_day_mean": 35.8
+    },
+    {
       "date": "2026-05-23",
       "group": "flood",
       "event_id": "FT-20260523",
@@ -514,46 +642,18 @@
       "chirps_day_mean": 47.6
     },
     {
-      "date": "2013-08-16",
+      "date": "2008-07-18",
       "group": "heavy_no_flood",
       "event_id": NaN,
       "time_of_day": NaN,
-      "max_1h": 14.8,
-      "max_3h": 32.5,
-      "peak_3h_ends": "2013-08-16 11:30:00",
-      "max_6h": 37.7,
-      "max_24h": 55.4,
-      "max_24h_mean": 43.6,
+      "max_1h": 62.5,
+      "max_3h": 148.8,
+      "peak_3h_ends": "2008-07-18 07:00:00",
+      "max_6h": 176.2,
+      "max_24h": 222.8,
+      "max_24h_mean": 114.2,
       "product": "final",
-      "chirps_day_mean": 231.9
-    },
-    {
-      "date": "2008-08-23",
-      "group": "heavy_no_flood",
-      "event_id": NaN,
-      "time_of_day": NaN,
-      "max_1h": 19.6,
-      "max_3h": 40.5,
-      "peak_3h_ends": "2008-08-23 13:00:00",
-      "max_6h": 65.6,
-      "max_24h": 143.4,
-      "max_24h_mean": 122.9,
-      "product": "final",
-      "chirps_day_mean": 165.1
-    },
-    {
-      "date": "2024-07-30",
-      "group": "heavy_no_flood",
-      "event_id": NaN,
-      "time_of_day": NaN,
-      "max_1h": 26.7,
-      "max_3h": 68.8,
-      "peak_3h_ends": "2024-07-30 05:00:00",
-      "max_6h": 105.9,
-      "max_24h": 137.7,
-      "max_24h_mean": 93.1,
-      "product": "final",
-      "chirps_day_mean": 161.2
+      "chirps_day_mean": 103.9
     },
     {
       "date": "2008-07-27",
@@ -570,32 +670,60 @@
       "chirps_day_mean": 160.4
     },
     {
-      "date": "2012-07-29",
+      "date": "2008-08-23",
       "group": "heavy_no_flood",
       "event_id": NaN,
       "time_of_day": NaN,
-      "max_1h": 9.6,
-      "max_3h": 19.4,
-      "peak_3h_ends": "2012-07-29 02:30:00",
-      "max_6h": 29.3,
-      "max_24h": 65.6,
-      "max_24h_mean": 58.7,
+      "max_1h": 19.6,
+      "max_3h": 40.5,
+      "peak_3h_ends": "2008-08-23 13:00:00",
+      "max_6h": 65.6,
+      "max_24h": 143.4,
+      "max_24h_mean": 122.9,
       "product": "final",
-      "chirps_day_mean": 158.7
+      "chirps_day_mean": 165.1
     },
     {
-      "date": "2024-08-14",
+      "date": "2008-09-25",
       "group": "heavy_no_flood",
       "event_id": NaN,
       "time_of_day": NaN,
-      "max_1h": 32.4,
-      "max_3h": 84.1,
-      "peak_3h_ends": "2024-08-14 02:30:00",
-      "max_6h": 105.7,
-      "max_24h": 148.8,
-      "max_24h_mean": 114.7,
+      "max_1h": 14.3,
+      "max_3h": 37.4,
+      "peak_3h_ends": "2008-09-25 03:30:00",
+      "max_6h": 48.7,
+      "max_24h": 56.5,
+      "max_24h_mean": 37.1,
       "product": "final",
-      "chirps_day_mean": 149.6
+      "chirps_day_mean": 101.6
+    },
+    {
+      "date": "2009-07-18",
+      "group": "heavy_no_flood",
+      "event_id": NaN,
+      "time_of_day": NaN,
+      "max_1h": 49.6,
+      "max_3h": 134.6,
+      "peak_3h_ends": "2009-07-18 20:00:00",
+      "max_6h": 229.8,
+      "max_24h": 286.5,
+      "max_24h_mean": 154.7,
+      "product": "final",
+      "chirps_day_mean": 102.5
+    },
+    {
+      "date": "2010-07-06",
+      "group": "heavy_no_flood",
+      "event_id": NaN,
+      "time_of_day": NaN,
+      "max_1h": 13.6,
+      "max_3h": 29.8,
+      "peak_3h_ends": "2010-07-07 22:30:00",
+      "max_6h": 35.1,
+      "max_24h": 54.6,
+      "max_24h_mean": 25.5,
+      "product": "final",
+      "chirps_day_mean": 96.9
     },
     {
       "date": "2010-08-22",
@@ -612,116 +740,60 @@
       "chirps_day_mean": 147.3
     },
     {
-      "date": "2017-07-08",
+      "date": "2011-08-05",
       "group": "heavy_no_flood",
       "event_id": NaN,
       "time_of_day": NaN,
-      "max_1h": 16.6,
-      "max_3h": 36.3,
-      "peak_3h_ends": "2017-07-08 08:30:00",
-      "max_6h": 50.0,
-      "max_24h": 91.9,
-      "max_24h_mean": 71.7,
+      "max_1h": 47.4,
+      "max_3h": 71.7,
+      "peak_3h_ends": "2011-08-05 04:00:00",
+      "max_6h": 89.5,
+      "max_24h": 113.6,
+      "max_24h_mean": 79.1,
       "product": "final",
-      "chirps_day_mean": 135.0
+      "chirps_day_mean": 112.0
     },
     {
-      "date": "2023-07-29",
+      "date": "2012-07-29",
       "group": "heavy_no_flood",
       "event_id": NaN,
       "time_of_day": NaN,
-      "max_1h": 12.6,
-      "max_3h": 33.6,
-      "peak_3h_ends": "2023-07-29 08:30:00",
-      "max_6h": 58.5,
-      "max_24h": 99.2,
-      "max_24h_mean": 70.5,
+      "max_1h": 9.6,
+      "max_3h": 19.4,
+      "peak_3h_ends": "2012-07-29 02:30:00",
+      "max_6h": 29.3,
+      "max_24h": 65.6,
+      "max_24h_mean": 58.7,
       "product": "final",
-      "chirps_day_mean": 134.5
+      "chirps_day_mean": 158.7
     },
     {
-      "date": "2015-05-18",
+      "date": "2013-08-06",
       "group": "heavy_no_flood",
       "event_id": NaN,
       "time_of_day": NaN,
-      "max_1h": 22.7,
-      "max_3h": 41.0,
-      "peak_3h_ends": "2015-05-18 08:00:00",
-      "max_6h": 51.4,
-      "max_24h": 56.4,
-      "max_24h_mean": 48.9,
+      "max_1h": 16.8,
+      "max_3h": 41.6,
+      "peak_3h_ends": "2013-08-05 20:00:00",
+      "max_6h": 66.8,
+      "max_24h": 137.8,
+      "max_24h_mean": 117.5,
       "product": "final",
-      "chirps_day_mean": 133.5
+      "chirps_day_mean": 100.9
     },
     {
-      "date": "2013-08-30",
+      "date": "2013-08-16",
       "group": "heavy_no_flood",
       "event_id": NaN,
       "time_of_day": NaN,
-      "max_1h": 14.4,
-      "max_3h": 32.7,
-      "peak_3h_ends": "2013-08-30 10:30:00",
-      "max_6h": 46.8,
-      "max_24h": 95.5,
-      "max_24h_mean": 81.5,
+      "max_1h": 14.8,
+      "max_3h": 32.5,
+      "peak_3h_ends": "2013-08-16 11:30:00",
+      "max_6h": 37.7,
+      "max_24h": 55.4,
+      "max_24h_mean": 43.6,
       "product": "final",
-      "chirps_day_mean": 125.6
-    },
-    {
-      "date": "2023-07-14",
-      "group": "heavy_no_flood",
-      "event_id": NaN,
-      "time_of_day": NaN,
-      "max_1h": 20.9,
-      "max_3h": 46.8,
-      "peak_3h_ends": "2023-07-14 03:00:00",
-      "max_6h": 69.8,
-      "max_24h": 135.1,
-      "max_24h_mean": 107.5,
-      "product": "final",
-      "chirps_day_mean": 122.8
-    },
-    {
-      "date": "2025-08-07",
-      "group": "heavy_no_flood",
-      "event_id": NaN,
-      "time_of_day": NaN,
-      "max_1h": 34.7,
-      "max_3h": 85.6,
-      "peak_3h_ends": "2025-08-07 12:00:00",
-      "max_6h": 118.2,
-      "max_24h": 211.5,
-      "max_24h_mean": 153.8,
-      "product": "final",
-      "chirps_day_mean": 122.0
-    },
-    {
-      "date": "2016-07-27",
-      "group": "heavy_no_flood",
-      "event_id": NaN,
-      "time_of_day": NaN,
-      "max_1h": 27.6,
-      "max_3h": 55.0,
-      "peak_3h_ends": "2016-07-27 09:30:00",
-      "max_6h": 68.3,
-      "max_24h": 112.0,
-      "max_24h_mean": 78.5,
-      "product": "final",
-      "chirps_day_mean": 120.4
-    },
-    {
-      "date": "2018-07-22",
-      "group": "heavy_no_flood",
-      "event_id": NaN,
-      "time_of_day": NaN,
-      "max_1h": 21.5,
-      "max_3h": 37.4,
-      "peak_3h_ends": "2018-07-22 05:30:00",
-      "max_6h": 60.8,
-      "max_24h": 125.6,
-      "max_24h_mean": 70.2,
-      "product": "final",
-      "chirps_day_mean": 118.6
+      "chirps_day_mean": 231.9
     },
     {
       "date": "2013-08-25",
@@ -738,6 +810,62 @@
       "chirps_day_mean": 118.0
     },
     {
+      "date": "2013-08-30",
+      "group": "heavy_no_flood",
+      "event_id": NaN,
+      "time_of_day": NaN,
+      "max_1h": 14.4,
+      "max_3h": 32.7,
+      "peak_3h_ends": "2013-08-30 10:30:00",
+      "max_6h": 46.8,
+      "max_24h": 95.5,
+      "max_24h_mean": 81.5,
+      "product": "final",
+      "chirps_day_mean": 125.6
+    },
+    {
+      "date": "2015-05-18",
+      "group": "heavy_no_flood",
+      "event_id": NaN,
+      "time_of_day": NaN,
+      "max_1h": 22.7,
+      "max_3h": 41.0,
+      "peak_3h_ends": "2015-05-18 08:00:00",
+      "max_6h": 51.4,
+      "max_24h": 56.4,
+      "max_24h_mean": 48.9,
+      "product": "final",
+      "chirps_day_mean": 133.5
+    },
+    {
+      "date": "2015-09-06",
+      "group": "heavy_no_flood",
+      "event_id": NaN,
+      "time_of_day": NaN,
+      "max_1h": 14.3,
+      "max_3h": 37.0,
+      "peak_3h_ends": "2015-09-06 08:00:00",
+      "max_6h": 60.6,
+      "max_24h": 100.6,
+      "max_24h_mean": 66.4,
+      "product": "final",
+      "chirps_day_mean": 104.5
+    },
+    {
+      "date": "2016-07-27",
+      "group": "heavy_no_flood",
+      "event_id": NaN,
+      "time_of_day": NaN,
+      "max_1h": 27.6,
+      "max_3h": 55.0,
+      "peak_3h_ends": "2016-07-27 09:30:00",
+      "max_6h": 68.3,
+      "max_24h": 112.0,
+      "max_24h_mean": 78.5,
+      "product": "final",
+      "chirps_day_mean": 120.4
+    },
+    {
       "date": "2016-09-17",
       "group": "heavy_no_flood",
       "event_id": NaN,
@@ -752,46 +880,46 @@
       "chirps_day_mean": 115.7
     },
     {
-      "date": "2011-08-05",
+      "date": "2017-07-08",
       "group": "heavy_no_flood",
       "event_id": NaN,
       "time_of_day": NaN,
-      "max_1h": 47.4,
-      "max_3h": 71.7,
-      "peak_3h_ends": "2011-08-05 04:00:00",
-      "max_6h": 89.5,
-      "max_24h": 113.6,
-      "max_24h_mean": 79.1,
+      "max_1h": 16.6,
+      "max_3h": 36.3,
+      "peak_3h_ends": "2017-07-08 08:30:00",
+      "max_6h": 50.0,
+      "max_24h": 91.9,
+      "max_24h_mean": 71.7,
       "product": "final",
-      "chirps_day_mean": 112.0
+      "chirps_day_mean": 135.0
     },
     {
-      "date": "2022-07-01",
+      "date": "2018-07-22",
       "group": "heavy_no_flood",
       "event_id": NaN,
       "time_of_day": NaN,
-      "max_1h": 45.4,
-      "max_3h": 71.3,
-      "peak_3h_ends": "2022-07-01 08:00:00",
-      "max_6h": 96.6,
-      "max_24h": 116.1,
-      "max_24h_mean": 89.8,
+      "max_1h": 21.5,
+      "max_3h": 37.4,
+      "peak_3h_ends": "2018-07-22 05:30:00",
+      "max_6h": 60.8,
+      "max_24h": 125.6,
+      "max_24h_mean": 70.2,
       "product": "final",
-      "chirps_day_mean": 109.9
+      "chirps_day_mean": 118.6
     },
     {
-      "date": "2023-08-12",
+      "date": "2019-08-21",
       "group": "heavy_no_flood",
       "event_id": NaN,
       "time_of_day": NaN,
-      "max_1h": 10.5,
-      "max_3h": 26.6,
-      "peak_3h_ends": "2023-08-12 11:30:00",
-      "max_6h": 36.6,
-      "max_24h": 46.9,
-      "max_24h_mean": 35.1,
+      "max_1h": 25.4,
+      "max_3h": 55.1,
+      "peak_3h_ends": "2019-08-21 12:00:00",
+      "max_6h": 73.3,
+      "max_24h": 129.9,
+      "max_24h_mean": 96.2,
       "product": "final",
-      "chirps_day_mean": 107.8
+      "chirps_day_mean": 97.6
     },
     {
       "date": "2020-07-26",
@@ -822,60 +950,32 @@
       "chirps_day_mean": 104.6
     },
     {
-      "date": "2015-09-06",
+      "date": "2022-07-01",
       "group": "heavy_no_flood",
       "event_id": NaN,
       "time_of_day": NaN,
-      "max_1h": 14.3,
-      "max_3h": 37.0,
-      "peak_3h_ends": "2015-09-06 08:00:00",
-      "max_6h": 60.6,
-      "max_24h": 100.6,
-      "max_24h_mean": 66.4,
+      "max_1h": 45.4,
+      "max_3h": 71.3,
+      "peak_3h_ends": "2022-07-01 08:00:00",
+      "max_6h": 96.6,
+      "max_24h": 116.1,
+      "max_24h_mean": 89.8,
       "product": "final",
-      "chirps_day_mean": 104.5
+      "chirps_day_mean": 109.9
     },
     {
-      "date": "2008-07-18",
+      "date": "2023-08-12",
       "group": "heavy_no_flood",
       "event_id": NaN,
       "time_of_day": NaN,
-      "max_1h": 62.5,
-      "max_3h": 148.8,
-      "peak_3h_ends": "2008-07-18 07:00:00",
-      "max_6h": 176.2,
-      "max_24h": 222.8,
-      "max_24h_mean": 114.2,
+      "max_1h": 10.5,
+      "max_3h": 26.6,
+      "peak_3h_ends": "2023-08-12 11:30:00",
+      "max_6h": 36.6,
+      "max_24h": 46.9,
+      "max_24h_mean": 35.1,
       "product": "final",
-      "chirps_day_mean": 103.9
-    },
-    {
-      "date": "2009-07-18",
-      "group": "heavy_no_flood",
-      "event_id": NaN,
-      "time_of_day": NaN,
-      "max_1h": 49.6,
-      "max_3h": 134.6,
-      "peak_3h_ends": "2009-07-18 20:00:00",
-      "max_6h": 229.8,
-      "max_24h": 286.5,
-      "max_24h_mean": 154.7,
-      "product": "final",
-      "chirps_day_mean": 102.5
-    },
-    {
-      "date": "2008-09-25",
-      "group": "heavy_no_flood",
-      "event_id": NaN,
-      "time_of_day": NaN,
-      "max_1h": 14.3,
-      "max_3h": 37.4,
-      "peak_3h_ends": "2008-09-25 03:30:00",
-      "max_6h": 48.7,
-      "max_24h": 56.5,
-      "max_24h_mean": 37.1,
-      "product": "final",
-      "chirps_day_mean": 101.6
+      "chirps_day_mean": 107.8
     },
     {
       "date": "2023-08-28",
@@ -892,46 +992,32 @@
       "chirps_day_mean": 101.4
     },
     {
-      "date": "2013-08-06",
+      "date": "2024-08-14",
       "group": "heavy_no_flood",
       "event_id": NaN,
       "time_of_day": NaN,
-      "max_1h": 16.8,
-      "max_3h": 41.6,
-      "peak_3h_ends": "2013-08-05 20:00:00",
-      "max_6h": 66.8,
-      "max_24h": 137.8,
-      "max_24h_mean": 117.5,
+      "max_1h": 32.4,
+      "max_3h": 84.1,
+      "peak_3h_ends": "2024-08-14 02:30:00",
+      "max_6h": 105.7,
+      "max_24h": 148.8,
+      "max_24h_mean": 114.7,
       "product": "final",
-      "chirps_day_mean": 100.9
+      "chirps_day_mean": 149.6
     },
     {
-      "date": "2019-08-21",
+      "date": "2025-08-07",
       "group": "heavy_no_flood",
       "event_id": NaN,
       "time_of_day": NaN,
-      "max_1h": 25.4,
-      "max_3h": 55.1,
-      "peak_3h_ends": "2019-08-21 12:00:00",
-      "max_6h": 73.3,
-      "max_24h": 129.9,
-      "max_24h_mean": 96.2,
+      "max_1h": 34.7,
+      "max_3h": 85.6,
+      "peak_3h_ends": "2025-08-07 12:00:00",
+      "max_6h": 118.2,
+      "max_24h": 211.5,
+      "max_24h_mean": 153.8,
       "product": "final",
-      "chirps_day_mean": 97.6
-    },
-    {
-      "date": "2010-07-06",
-      "group": "heavy_no_flood",
-      "event_id": NaN,
-      "time_of_day": NaN,
-      "max_1h": 13.6,
-      "max_3h": 29.8,
-      "peak_3h_ends": "2010-07-07 22:30:00",
-      "max_6h": 35.1,
-      "max_24h": 54.6,
-      "max_24h_mean": 25.5,
-      "product": "final",
-      "chirps_day_mean": 96.9
+      "chirps_day_mean": 122.0
     },
     {
       "date": "2008-05-19",
