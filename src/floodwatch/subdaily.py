@@ -30,6 +30,51 @@ DURATIONS_H = {"max_1h": 1, "max_3h": 3, "max_6h": 6, "max_24h": 24}
 FIG = config.REPO_ROOT / "docs" / "analysis" / "figures" / "flood_rain_timelines.png"
 
 
+# Reported flood times, read by hand from the catalogue's `time_of_day` text
+# (local time = UTC). Vague phrases are given a stated assumption.
+REPORTED_TIMES = {
+    "2008-09-11": ("2008-09-12 00:00", "'night of 11 into 12 Sep': assume midnight"),
+    "2009-08-13": ("2009-08-13 03:00", "'overnight / early morning': assume 03:00"),
+    "2010-08-09": ("2010-08-09 04:00", "'around 4:00 am'"),
+    "2017-08-14": ("2017-08-14 05:45", "'slope collapse at about 05:45'"),
+    "2017-08-26": ("2017-08-27 00:00", "'night between 26 and 27 Aug': assume midnight"),
+    "2019-08-02": ("2019-08-02 07:00", "'rain from 22:00 until the morning': assume 07:00"),
+    "2019-08-15": ("2019-08-15 03:00", "'early hours': assume 03:00"),
+    "2024-07-20": ("2024-07-20 12:00", "'106 mm between 09:00 and 12:00': end of that"),
+    "2025-07-23": ("2025-07-23 18:00", "'evening, approx. 18:00'"),
+    "2026-05-23": ("2026-05-23 09:00", "'morning': assume 09:00"),
+    "2026-08-03": ("2026-08-03 04:00", "'overnight into the early hours': assume 04:00"),
+}
+HEAVY_RATE_MM_H = 10.0
+
+
+def timing() -> pd.DataFrame:
+    """For floods with a reported time T: rain in the 3/6/12 h before T on the
+    wettest cell, and when rain first reached HEAVY_RATE_MM_H in those 12 h."""
+    rows = []
+    for day, (when, note) in REPORTED_TIMES.items():
+        t = pd.Timestamp(when)
+        d0 = pd.Timestamp(day)
+        wide = _half_hourly_mm(imerg.fetch_days([(d0 + timedelta(days=k)).date() for k in (-1, 0, 1)]))
+        wettest = wide.max(axis=1)  # mm per half hour
+        before = wettest[(wettest.index >= t - pd.Timedelta(hours=12)) & (wettest.index < t)]
+        heavy = before[before * 2 >= HEAVY_RATE_MM_H]
+        onset = heavy.index.min() if len(heavy) else None
+        rows.append(
+            {
+                "flood": day,
+                "reported_time": str(t),
+                "assumption": note,
+                "rain_3h_before_mm": round(float(before.iloc[-6:].sum()), 1),
+                "rain_6h_before_mm": round(float(before.iloc[-12:].sum()), 1),
+                "rain_12h_before_mm": round(float(before.sum()), 1),
+                "heavy_onset": None if onset is None else str(onset),
+                "hours_onset_to_report": None if onset is None else round((t - onset).total_seconds() / 3600, 1),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
 def flood_dates(first_year: int = 2008) -> pd.DataFrame:
     cat = events.load_catalogue()
     cat = cat[cat["date_confidence"].isin(["exact", "approx_day"]) & (cat["date"].dt.year >= first_year)]
@@ -121,12 +166,13 @@ def run() -> dict:
         "heavy_no_flood": int((df["group"] == "heavy_no_flood").sum()),
         "ordinary": int((df["group"] == "ordinary").sum()),
         "skill": skill,
+        "timing": timing().to_dict(orient="records"),
         "windows": df.assign(date=df["date"].dt.date.astype(str)).to_dict(orient="records"),
     }
     config.DERIVED_DIR.mkdir(parents=True, exist_ok=True)
     (config.DERIVED_DIR / "subdaily_results.json").write_text(json.dumps(out, indent=2, default=str))
     plot_timelines(floods)
-    print(json.dumps({k: v for k, v in out.items() if k != "windows"}, indent=2))
+    print(json.dumps({k: v for k, v in out.items() if k not in ("windows", "timing")}, indent=2))
     return out
 
 
