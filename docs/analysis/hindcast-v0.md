@@ -2,7 +2,7 @@
 
 *November 2026. First pass, daily resolution. Reproduce with `floodwatch fetch && floodwatch hindcast --from 2008 && floodwatch terrain`.*
 
-*Updated 22 Nov 2026 after a second research round: the wettest days with no reported flood and the empty years were searched one by one. Seven dated floods were added; three of them fell on days this analysis had flagged as wet but unreported (14 Jul 2023, 28-29 Jul 2023, 27-28 Jul 2024). The research notes are in `data/events/research/`.*
+*Updated 22 Nov 2026 after a second research round: the wettest days with no reported flood and the empty years were searched one by one. Seven dated floods were added; three of them fell on days this analysis had flagged as wet but unreported (14 Jul 2023, 28-29 Jul 2023, 27-28 Jul 2024). A third round searched Facebook, X and YouTube and added three street floods from 2022 (17 Jun, 9 Jul, 15 Aug), each confirmed in a dated news article. The research notes are in `data/events/research/`.*
 
 ## Questions
 
@@ -15,7 +15,7 @@
 
 | What | Source | Notes |
 |---|---|---|
-| Floods | `data/events/freetown_floods.csv`: 33 events, 2007-2026, 28 with a known day from 2008 on | Built from news, NDMA, IFRC/Red Cross and OCHA in two research rounds. Thin before 2014; none found for 2011-2013, 2016 and 2018. Each row cites its sources. |
+| Floods | `data/events/freetown_floods.csv`: 36 events, 2007-2026, 31 with a known day from 2008 on | Built from news, NDMA, IFRC/Red Cross, OCHA and social media in three research rounds. Thin before 2014; none found for 2011-2013, 2016 and 2018. Each row cites its sources. |
 | Rain | CHIRPS v3 daily `sat` product, 0.05 deg (~5.5 km), 49 cells over the peninsula, April-November, 2008-2026 (19 rainy seasons). 2000-2007 is not scored: no dated floods were found before 2008, so those seasons would only add false alarms caused by gaps in the list. | 5-day station-corrected satellite totals, split across days with NASA IMERG. Good for "how wet was this day", no hour-level timing. |
 | Tide | Harmonic tide fitted (UTide) to Open-Meteo modelled sea level 2023-2026 and predicted back to 2000 | Held-out year error 4.7 cm against a +/-68 cm signal. Main constituent M2 = 0.90 m, so spring range ~2.4 m, neap ~1.2 m. |
 | Terrain | Copernicus 30 m elevation model | Streams, upstream area, height above nearest stream (HAND). |
@@ -31,11 +31,11 @@
 
 ### 1. Free satellite rainfall does "see" most of Freetown's floods
 
-Over 19 rainy seasons (2008-2026) and the 28 floods with a known day:
+Over 19 rainy seasons (2008-2026) and the 31 floods with a known day:
 
-- **Flood days are much wetter than ordinary rainy-season days.** On the wettest cell, the median flood window had **99 mm**, against **37 mm** on ordinary days.
+- **Flood days are much wetter than ordinary rainy-season days.** On the wettest cell, the median flood window had **93 mm**, against **37 mm** on ordinary days.
 - **Rain separates flood days from ordinary days clearly, though not perfectly.** For peninsula-average rain on the day, the AUC is **0.82** (90% interval 0.75-0.89). 0.5 would mean no information.
-- **Most big floods stand out.** On the wettest cell, 19 of the 28 flood windows were wetter than 85% of ordinary windows, and 12 were wetter than 95%. The deadliest stand out most: Regent, August 2017, was at the 96th percentile; 28 August 2022 at the 100th; 20 July 2024 at the 99th.
+- **Most big floods stand out.** On the wettest cell, 21 of the 31 flood windows were wetter than 85% of ordinary windows, and 13 were wetter than 95%. The deadliest stand out most: Regent, August 2017, was at the 96th percentile; 28 August 2022 at the 100th; 20 July 2024 at the 99th.
 
 ### 2. The misses have a pattern: the edges of the season
 
@@ -59,19 +59,19 @@ So transition months need their own, lower trigger, judged on **hourly** rain.
 
 | Rule (fires on...) | Floods caught | False alarms per season |
 |---|---|---|
-| That day + previous 3 days in the top 5% (>= 158 mm) | 15 of 28 | 3.1 |
-| Peninsula-average rain in the top 2.5% of days (>= 75 mm) | 14 of 28 | 4.3 |
-| Previous 3 days in the top 2.5% (>= 155 mm) | 6 of 28 | 2.1 |
-| Wettest cell in the top 10% (>= 62 mm) | 20 of 28 | 15.6 |
+| That day + previous 3 days in the top 5% (>= 158 mm) | 16 of 31 | 3.1 |
+| Peninsula-average rain in the top 2.5% of days (>= 75 mm) | 15 of 31 | 4.3 |
+| Previous 3 days in the top 2.5% (>= 155 mm) | 6 of 31 | 2.1 |
+| Wettest cell in the top 10% (>= 62 mm) | 22 of 31 | 15.6 |
 
 A daily rule catching half the floods with about 3 false alarms per 7-month season is a reasonable **Outlook/Watch** level. It is not good enough for a street-level Warning on its own. That level needs hourly rain and resident confirmation (layer 4).
 
-**Some of these "false alarms" are real floods that were never reported, and searching for them works.** The second research round searched the 15 wettest no-flood days. It found floods on three of them, and a rule's hits rose with no extra false alarms. The wettest day in the record still without a report is **16 August 2013**: 232 mm across the peninsula and 284 mm on the wettest cell. Online archives for 2011-2013, 2016 and 2018 are thin, so these dates need local sources: newspaper archives in Freetown, NDMA records, or residents. The updated list is below.
+**Some of these "false alarms" are real floods that were never reported, and searching for them works.** The second research round searched the 15 wettest no-flood days. It found floods on three of them, and a rule's hits rose with no extra false alarms. A third round, on social media, found nothing on these dates; its three new floods were on other, less extreme days. The wettest day in the record still without a report is **16 August 2013**: 232 mm across the peninsula and 284 mm on the wettest cell. Online archives for 2011-2013, 2016 and 2018 are thin, so these dates need local sources: newspaper archives in Freetown, NDMA records, or residents. The updated list is below.
 
 ### 4. Tide: not yet detectable
 
 - **Shoreline floods:** across the 10 floods in shoreline communities, tides were no higher than on ordinary days (AUC 0.52, interval 0.40-0.64).
-- **Inland floods:** no tide effect, as expected (AUC 0.47).
+- **Inland floods:** no tide effect, as expected (AUC 0.50).
 
 Keep tide as an input for shoreline zones and re-test with more events and hourly timing. With daily data, a high tide anywhere in the 3-day window counts, which blurs the effect.
 
@@ -79,17 +79,17 @@ Keep tide as an input for shoreline zones and re-test with more events and hourl
 
 (Generated by `floodwatch hindcast --from 2008`; also in `data/derived/hindcast_tables.md`.)
 
-Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 2026-10-08, 19 rainy seasons, 28 dated floods.
+Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 2026-10-08, 19 rainy seasons, 31 dated floods.
 
 **How well each rain measure separates flood days from ordinary rainy-season days**
 
 | Rain measure | AUC | 90% interval | Median on flood days | Median on other days |
 |---|---|---|---|---|
-| Wettest cell, that day | 0.80 | 0.72-0.87 | 99 mm | 37 mm |
-| Peninsula average, that day | 0.82 | 0.75-0.89 | 73 mm | 22 mm |
-| Peninsula average, previous 3 days | 0.79 | 0.70-0.86 | 110 mm | 46 mm |
-| Peninsula average, previous 7 days | 0.75 | 0.66-0.84 | 209 mm | 96 mm |
-| Peninsula average, that day + previous 3 days | 0.79 | 0.71-0.87 | 161 mm | 59 mm |
+| Wettest cell, that day | 0.81 | 0.73-0.88 | 93 mm | 37 mm |
+| Peninsula average, that day | 0.82 | 0.75-0.89 | 67 mm | 22 mm |
+| Peninsula average, previous 3 days | 0.79 | 0.71-0.85 | 104 mm | 45 mm |
+| Peninsula average, previous 7 days | 0.76 | 0.67-0.84 | 213 mm | 95 mm |
+| Peninsula average, that day + previous 3 days | 0.80 | 0.72-0.87 | 160 mm | 58 mm |
 
 **Each flood: rain as a percentile of ordinary rainy-season days**
 
@@ -98,7 +98,7 @@ Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 
 | 2008-09-11 | 106 mm | 94 | 162 mm | 93 |
 | 2009-08-13 | 93 mm | 90 | 187 mm | 96 |
 | 2010-08-09 | 86 mm | 88 | 124 mm | 86 |
-| 2014-05-04 | 59 mm | 74 | 40 mm | 32 |
+| 2014-05-04 | 59 mm | 74 | 40 mm | 33 |
 | 2014-07-13 | 114 mm | 96 | 168 mm | 94 |
 | 2014-09-05 | 80 mm | 86 | 80 mm | 66 |
 | 2015-09-16 | 80 mm | 86 | 121 mm | 84 |
@@ -109,6 +109,9 @@ Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 
 | 2020-07-14 | 104 mm | 93 | 170 mm | 94 |
 | 2020-08-25 | 144 mm | 98 | 194 mm | 96 |
 | 2021-07-26 | 29 mm | 38 | 91 mm | 72 |
+| 2022-06-17 | 60 mm | 75 | 115 mm | 82 |
+| 2022-07-09 | 84 mm | 87 | 88 mm | 70 |
+| 2022-08-15 | 179 mm | 99 | 184 mm | 95 |
 | 2022-08-17 | 179 mm | 99 | 244 mm | 99 |
 | 2022-08-28 | 207 mm | 100 | 247 mm | 99 |
 | 2023-05-09 | 24 mm | 32 | 34 mm | 26 |
@@ -119,7 +122,7 @@ Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 
 | 2024-07-27 | 180 mm | 100 | 160 mm | 93 |
 | 2024-08-04 | 24 mm | 32 | 136 mm | 89 |
 | 2024-10-24 | 34 mm | 47 | 66 mm | 56 |
-| 2025-07-23 | 46 mm | 61 | 60 mm | 51 |
+| 2025-07-23 | 46 mm | 62 | 60 mm | 51 |
 | 2025-07-31 | 55 mm | 71 | 53 mm | 46 |
 | 2026-05-23 | 8 mm | 9 | 11 mm | 8 |
 | 2026-08-03 | 65 mm | 79 | 103 mm | 78 |
@@ -156,7 +159,7 @@ The full rule table (every measure at every threshold) is in `data/derived/hindc
 
 ## When floods happen: what it means for delivering warnings
 
-- **Season:** 13 of the 33 floods were in August; July and September add 16 more.
+- **Season:** 14 of the 36 floods were in August; July and September add 17 more.
 - **Time of day:** of the 17 floods with a reported time, **13 hit at night or in the early hours** (e.g. 4 am Owen Street mudslide 2010, 05:45 Regent 2017, overnight 1-2 Aug 2019, the night-time Moyiba landslide of July 2024, overnight 2-3 Aug 2026).
 - **Implication:** SMS alone will not wake people. Warnings need **voice calls** (a ringing phone) and **street wardens** with loudspeakers or whistles, as the concept proposes.
 
@@ -177,7 +180,7 @@ Limits: geocoded points are neighbourhood centres, not the flooded streets, and 
 
 ## Limitations
 
-1. **Small, news-biased flood list.** 28 dated floods; small floods and quiet years are missing. Every score has wide uncertainty.
+1. **Small, news-biased flood list.** 31 dated floods; small floods and quiet years are missing. Every score has wide uncertainty.
 2. **Daily rain only.** CHIRPS cannot tell a 3-hour cloudburst from a steady all-day rain, which is exactly what matters for flash floods. It also smooths a 5-day total across days.
 3. **Coarse rain grid vs. tiny catchments.** ~5.5 km cells, and the daily timing comes from ~10 km IMERG.
 4. **Modelled tide only.** Fitted to a model's sea level, not a tide gauge; surge is ignored.

@@ -1,0 +1,64 @@
+{
+ "dates_checked_nothing_found": [
+  "2013-08-16",
+  "2008-08-23",
+  "2024-07-30",
+  "2008-07-27",
+  "2012-07-29",
+  "2024-08-14",
+  "2010-08-22",
+  "2017-07-08",
+  "2015-05-18",
+  "2013-08-30",
+  "2025-08-07",
+  "2016-07-27",
+  "2018-07-22",
+  "2013-08-25",
+  "2016-09-17",
+  "2017-08-22",
+  "2011-08-05",
+  "2022-07-01",
+  "2023-08-12",
+  "2020-07-26",
+  "2020-08-01",
+  "2015-09-06",
+  "2015-05-21",
+  "2019-08-11",
+  "2013-08-06",
+  "2026-07-28"
+ ],
+ "years_checked": {
+  "2011": "Nothing on X or YouTube. Searches for 2011 Freetown flood, rain or landslide returned only 2015-2026 items.",
+  "2012": "Nothing on X or YouTube, including cholera/Kroo Bay phrasings.",
+  "2013": "Nothing on X or YouTube. One search summary claimed an 'August 2013' Freetown flood, but the videos it cited are the Aug 2017 Regent mudslide (indexed about 14-16 Aug 2017); rejected.",
+  "2016": "Nothing on X or YouTube for Freetown. Searches for July, August and September 2016 returned only 2017 mudslide material.",
+  "2018": "No flood event. The only 2018 Freetown items were a Hull City Council post of 20 Sep 2018 (10:33 UTC) about de-silting the Kroo Bay river (mitigation, not a flood) and FCC's June 2018 flood-mitigation launch."
+ },
+ "method": "WebSearch restricted to x.com, twitter.com and youtube.com (the site: operator was ignored, so the allowed_domains filter was used instead), plus phrase searches. X post times were decoded from post IDs ((id >> 22) + 1288834974657 ms, UTC; Freetown is UTC+0). YouTube upload dates were estimated from the search index's 'days ago' age, which matched known events (e.g. 4085 days -> 16 Sep 2015, 3387 days -> 14 Aug 2017). x.com, youtube.com and all news sites could not be fetched from this session (DNS blocked), so all evidence is from search titles and snippets. The web-search budget (200 per turn, shared with other agents) ran out after about 90 of my searches.",
+ "excluded_items": [
+  {
+   "item": "https://x.com/africandreamsl/status/1661491878183723010",
+   "why": "Cotton Tree fell during a heavy downpour on the night of 24 May 2023 (post 21:58 UTC). Storm/tree fall, no flood, landslide or wall collapse reported."
+  },
+  {
+   "item": "https://x.com/EPA_Images/status/1835914233579454898",
+   "why": "Building collapse in Freetown, post 17 Sep 2024 05:30 UTC; the snippet does not link it to rain."
+  },
+  {
+   "item": "https://www.youtube.com/watch?v=2olSUBurcNs",
+   "why": "Rocketboom/Humanwire 'Massive Flooding Kroo Bay, Sierra Leone', indexed about 2009 (6,255 days); describes chronic flooding with no event date."
+  },
+  {
+   "item": "https://www.youtube.com/watch?v=tZDoxzF_znA",
+   "why": "'Helping Flood Victims at Kaningo, Freetown', indexed about 29 Aug 2017 (3,372 days); cannot tell whether it is the 14 Aug or the 26 Aug 2017 flood, so no record."
+  },
+  {
+   "item": "https://www.youtube.com/watch?v=yatcNuYDl8U",
+   "why": "'Flooding In Freetown', indexed about 16 Sep 2015 (4,085 days); matches the listed 2015-09-16 event, and the snippet text was not verbatim, so it was not used as evidence."
+  },
+  {
+   "item": "https://x.com/FCC_Freetown/status/1155795126398201857",
+   "why": "FCC post of 29 Jul 2019 11:00 UTC about clearing the Samba gutter (Hillside By-pass to Pademba Road); mitigation, not a flood."
+  }
+ ]
+}

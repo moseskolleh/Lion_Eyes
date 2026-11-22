@@ -1,0 +1,95 @@
+{
+ "dates_checked_nothing_found": [
+  "2013-08-16",
+  "2008-08-23",
+  "2024-07-30",
+  "2008-07-27",
+  "2012-07-29",
+  "2024-08-14",
+  "2010-08-22",
+  "2017-07-08",
+  "2015-05-18",
+  "2013-08-30",
+  "2025-08-07",
+  "2016-07-27",
+  "2018-07-22",
+  "2013-08-25",
+  "2016-09-17",
+  "2017-08-22",
+  "2011-08-05",
+  "2022-07-01",
+  "2023-08-12",
+  "2020-07-26",
+  "2020-08-01",
+  "2015-09-06",
+  "2015-05-21",
+  "2019-08-11",
+  "2013-08-06",
+  "2026-07-28"
+ ],
+ "years_checked": {
+  "2011": "Nothing found. Facebook-restricted searches only returned 2011 floods elsewhere (Queensland, Pakistan). No Freetown post or news item citing one.",
+  "2012": "Nothing found. Facebook searches returned only the recurring 2017 mudslide posts. A general search for an Aug 2012 Kroo Bay flood linked to cholera found nothing.",
+  "2013": "Nothing found. A cocorioko article ('Heavy rains cause massive flooding in Sierra Leone capital') has no date. A search summary guessed 'around Sept 2013' from a sidebar post, which is not evidence of the date, so it was not recorded.",
+  "2016": "Nothing found. False leads: an FCC page says 'In August 2016, over 500 people... lost their lives in a mudslide', and a Sierraloaded opinion piece mentions a 2016 landslide. Both are errors for 14 Aug 2017. A Word Made Flesh staff reflection (wordmadeflesh.org/?p=19821) mentions Kroo Bay flooding of a staff home, but no date was visible.",
+  "2018": "Nothing found. Facebook and Twitter searches for Mayor Aki-Sawyerr's 2018 flood visits found nothing. One search summary claimed 'August 2018' floods (7 dead on 2 Aug, 4 dead on 15 Aug), but its sources are about August 2019. False lead.",
+  "other_years": "Checked through searches for priority dates. Only the 2022-08-15 Facebook-sourced report is new. See other_leads_not_facebook for news-only items found along the way."
+ },
+ "date_notes": {
+  "2024-08-14": "No Facebook report. A news-only lead is a Sierra Leone Monitor report (about 16 Aug 2024) of a four-storey building collapse at midnight on Joshua Street, Wellington. A caretaker blamed temporary drainage 'built during the heavy August 2024 rains', and floodwater affected two nearby homes. The night is not given, and it is unclear whether rain caused the collapse. https://www.sierraleonemonitor.com/four-storey-building-collapses-in-wellington-freetown/",
+  "2025-08-07": "No Facebook report. The only match is an NDMA/SLMet heavy-rain advisory for 20-21 Aug 2025, with no flood reported.",
+  "2026-07-28": "No report. Searches only returned the 3 Aug 2026 floods, which are already listed.",
+  "2022-07-01": "No report for 30 Jun-2 Jul. Nearby, but outside the +/-1 day window: Sierraloaded reports of Kissy Road flooding (17 Jun 2022) and Brima Lane flooding (8-9 Jul 2022). See other_leads_not_facebook."
+ },
+ "other_leads_not_facebook": [
+  {
+   "date": "2022-06-17",
+   "date_confidence": "approx_day",
+   "place": "Manfred Lane junction, Kissy Road (East End, Freetown)",
+   "note": "Sierraloaded article dated 17 Jun 2022 (Binta Koroma): 'more than 3 hours of continuous rain in Freetown has caused the Manfred Lane junction at Kissy Road to flood'; a compound next to Manfred Lane flooded and vehicles were stuck. Seen only as a search snippet.",
+   "source": "https://sierraloaded.sl/news/heavy-rain-floods-kissy-road-freetown/"
+  },
+  {
+   "date": "2022-07-09",
+   "date_confidence": "exact",
+   "place": "Brima Lane, eastern Freetown",
+   "note": "Sierraloaded article 'TRAGEDY: Heavy Rain Floods The Easter Part of Freetown', dated 9 Jul 2022. Rain fell from the evening of Friday 8 Jul to the morning of Saturday 9 Jul 2022. Flooding submerged Brima Lane, stopped vehicles and destroyed residents' property. Seen only as a search snippet.",
+   "source": "https://sierraloaded.sl/news/heavy-rain-floods-easter-part-freetown/"
+  },
+  {
+   "date": null,
+   "date_confidence": "month_only",
+   "month": "2019-08",
+   "place": "Tombo, Kerry Town and other coastal towns (Western Area Rural)",
+   "note": "The Calabash (9 Aug 2019) says Tombo flooded 'around 23:00 GMT', with homes washed away and hundreds of families homeless, after rains that began on 2 Aug. Politico SL quotes the Western Area District Council chairman: more than 2,000 displaced in Tombo, Kerry Town and other coastal towns after more than five hours of nonstop rain. One search summary said Tombo flooding happened on 6 Aug 2019, but this could not be confirmed. The flood may be part of the 2019-08-02 event or a separate night. An undated Facebook video by iamsomeone.org also reports flooding at its Tombo project.",
+   "source": "https://thecalabashnewspaper.com/heavy-flooding-leaves-hundreds-homeless-in-tombo-sierra-leone | https://politicosl.com/node/5170 | https://www.facebook.com/iamsomeone.org/videos/disaster-the-massive-flooding-in-sierra-leone-has-reached-our-tombo-project-torr/359844358264591/"
+  },
+  {
+   "date": "2024-07-24",
+   "date_confidence": "approx_day",
+   "place": "Connaught Hospital, central Freetown",
+   "note": "Sierra Leone Telegraph (24 Jul 2024), 'Freetown hospital wards submerged after heavy downpour', and Sierraloaded, 'Connaught Hospital Flooded Again', citing social media videos. Probably the 2024-07-20 event (which already lists Connaught Hospital) or rain on 21-24 Jul. Not confirmed as a separate flood.",
+   "source": "https://www.thesierraleonetelegraph.com/freetown-hospital-wards-submerged-after-heavy-downpour/ | https://sierraloaded.sl/news/connaught-hospital-flooded-again/"
+  }
+ ],
+ "undated_facebook_items": [
+  {
+   "item": "Video 'Flooding na Charles Street' (central Freetown) on The Makoni Times - Sierra Leone page. No date was visible.",
+   "url": "https://www.facebook.com/1033233856704464/videos/2091952470962320/"
+  },
+  {
+   "item": "iamsomeone.org video: 'Disaster! The massive flooding in Sierra Leone has reached our tombo project...'. No date was visible.",
+   "url": "https://www.facebook.com/iamsomeone.org/videos/disaster-the-massive-flooding-in-sierra-leone-has-reached-our-tombo-project-torr/359844358264591/"
+  }
+ ],
+ "time_of_day_notes": {
+  "2025-07-23": "NDMA statement (reported by Sierra Eye / This Day): fence collapse at 54 Off Pratt Street, New England Ville, 'at about 6:00 PM' after a heavy downpour. Already in the history.",
+  "2023-05-09": "Sierraloaded 'Flooding in Parts of Freetown After Heavy Downpour' says a heavy downpour on a 'Wednesday morning' flooded PWD Junction (Pademba Road/Campbell Street). Its search-metadata age puts it at about 10 May 2023 (a Wednesday). This suggests a morning flood on 10 May, but the date is not confirmed.",
+  "2019-08-02": "The Calabash says Tombo was flooded 'around 23:00 GMT'. This fits the existing overnight timing."
+ },
+ "extra_sources_for_existing_events": {
+  "2022-08-28": "Sierraloaded 'Flooding Engulfs Freetown (VIDEO)', dated 28 Aug 2022: Kanikay (East End) houses, roads and livelihoods destroyed; a local DJ shared social media audio and video claiming children and adults were missing. https://sierraloaded.sl/news/flooding-engulfs-freetown/",
+  "2025-07-23": "Sierraloaded 'Flood Waters Halt President Bio's Motorcade in Freetown' (social media clip from the evening of Wed 23 Jul 2025). https://sierraloaded.sl/news/flood-waters-bios-motorcade-freetown/"
+ },
+ "blocked": "facebook.com, m.facebook.com and mbasic.facebook.com could not be reached (DNS failure and proxy 403). WebFetch also failed for other hosts, including reliefweb.int, so no post or article could be opened and everything comes from search snippets. The search tool ignores 'site:' but accepts a domain filter. Its Facebook index is thin: a few pages, mostly about the 2017 mudslide, came up again and again. The shared web-search budget (200 calls) ran out before all follow-ups were done."
+}

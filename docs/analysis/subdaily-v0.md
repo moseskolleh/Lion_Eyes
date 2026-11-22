@@ -9,7 +9,7 @@ uses the 9 cells over the peninsula and the Final (gauge-corrected) run.
 
 ![Rain timelines](figures/flood_rain_timelines.png)
 
-*Half-hourly rain rate on the wettest cell, over three days around each of the 28 dated floods (2008-2026). The yellow band is the reported flood day.*
+*Half-hourly rain rate on the wettest cell, over three days around each of the 31 dated floods (2008-2026). The yellow band is the reported flood day.*
 
 ## 1. Timing: how long before a flood does the heavy rain fall?
 
@@ -56,23 +56,23 @@ Either these early-season events (a boulder fall, a wall collapse, a localised f
 
 ## 3. Do short bursts separate floods better than daily totals?
 
-All windows were the same three days long. I compared the 28 flood windows with two groups:
+All windows were the same three days long. I compared the 31 flood windows with two groups:
 - **27 very wet days with no reported flood:** the wettest rainy-season days in CHIRPS that were at least 4 days from any reported flood. The list was drawn once and frozen (`data/derived/subdaily_controls.csv`); 3 of its original 30 days turned out to be floods, or within 4 days of one, in the second search of the flood history, so they were dropped.
-- **30 ordinary days:** random rainy-season days.
+- **29 ordinary days:** random rainy-season days (30 drawn; one turned out to be within 4 days of a flood found later, so it was dropped).
 
 | Rain measure (wettest cell unless noted) | AUC vs ordinary days | AUC vs very wet no-flood days | Median: floods | very wet no-flood | ordinary |
 |---|---|---|---|---|---|
-| Most rain in 1 hour (IMERG) | 0.73 (0.66-0.81) | 0.41 (0.32-0.51) | 16 mm | 19 mm | 9 mm |
-| Most rain in 3 hours | 0.73 (0.66-0.80) | 0.38 (0.28-0.48) | 36 mm | 37 mm | 18 mm |
-| Most rain in 6 hours | 0.76 (0.68-0.82) | 0.38 (0.28-0.49) | 51 mm | 61 mm | 23 mm |
-| Most rain in 24 hours | 0.77 (0.70-0.84) | 0.38 (0.28-0.47) | 83 mm | 107 mm | 32 mm |
-| 24 hours, peninsula average (IMERG) | 0.80 (0.73-0.86) | 0.39 (0.29-0.49) | 65 mm | 79 mm | 21 mm |
-| Day's rain, peninsula average (CHIRPS) | 0.84 (0.76-0.91) | 0.17* | 73 mm | 116 mm | 19 mm |
+| Most rain in 1 hour (IMERG) | 0.75 (0.69-0.82) | 0.43 (0.34-0.52) | 17 mm | 19 mm | 9 mm |
+| Most rain in 3 hours | 0.75 (0.68-0.81) | 0.40 (0.31-0.50) | 37 mm | 37 mm | 18 mm |
+| Most rain in 6 hours | 0.77 (0.70-0.83) | 0.39 (0.31-0.49) | 53 mm | 61 mm | 23 mm |
+| Most rain in 24 hours | 0.78 (0.71-0.84) | 0.38 (0.29-0.48) | 81 mm | 107 mm | 31 mm |
+| 24 hours, peninsula average (IMERG) | 0.81 (0.74-0.86) | 0.39 (0.30-0.49) | 62 mm | 79 mm | 20 mm |
+| Day's rain, peninsula average (CHIRPS) | 0.85 (0.78-0.91) | 0.17* | 67 mm | 116 mm | 18 mm |
 
 \* The very wet group was *chosen* by CHIRPS rain, so this AUC is low by construction. The IMERG columns were not used to choose it.
 
 What this shows:
-1. **Against ordinary days, short bursts add nothing.** All measures separate floods from ordinary days about equally well (AUC 0.73-0.84). Daily totals do as well as or better than 1-3 hour peaks, because satellite bursts are smeared (section 1). The Outlook can work on daily totals.
+1. **Against ordinary days, short bursts add nothing.** All measures separate floods from ordinary days about equally well (AUC 0.75-0.85). Daily totals do as well as or better than 1-3 hour peaks, because satellite bursts are smeared (section 1). The Outlook can work on daily totals.
 2. **Among the very wettest days, no rain measure tells floods from non-floods.** The 27 wettest no-flood days were as intense or more intense than the flood days on every measure; the AUC is below 0.5 with intervals mostly below it. Their rain was no more "bursty" either: the 3-hour peak was 47% of the day's total on flood days and 42% on no-flood days. Two explanations, both likely true:
    - **Many of those days probably did flood,** but no report was found. The flood history is news-based and incomplete; The second search of the flood history confirmed this for 3 of the original 30, and 16 Aug 2013, with 232 mm across the peninsula, is still the clearest candidate.
    - **Whether a wet day floods also depends on things rain cannot show:** blocked drains, exactly which hillside got the rain, the tide, and the time of day.
