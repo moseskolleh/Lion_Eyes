@@ -1,4 +1,4 @@
-# Warning zones v0
+# Warning zones
 
 *November 2026. Reproduce with `floodwatch terrain && floodwatch zones`.*
 

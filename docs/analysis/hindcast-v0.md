@@ -1,4 +1,4 @@
-# Hindcast v0: does open data "see" Freetown's past floods?
+# Hindcast: does open data "see" Freetown's past floods?
 
 *November 2026. First pass, daily resolution. Reproduce with `floodwatch fetch && floodwatch hindcast --from 2008 && floodwatch terrain`.*
 

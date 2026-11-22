@@ -1,7 +1,11 @@
-# FloodWatch Freetown *(working name)*
+# Lion Eyes · *Eyes of the mountains*
 
-Flash-flood warnings for Freetown, Sierra Leone, built from open data, so it
+Flash-flood outlook for Freetown, Sierra Leone, built from open data, so it
 works before any sensor is installed and by a team that is not on the ground.
+Sierra Leone is named after the Lion Mountains, the peninsula hills above
+Freetown; Lion Eyes watches the rain that falls on them.
+
+(The Python package and command are still called `floodwatch`.)
 
 > This repository used to hold *Maji*, a water-vendor marketplace. That project
 > was dropped in November 2026; its code remains in the git history.

@@ -1,4 +1,4 @@
-# 3-day Outlook (v0), morning and evening
+# The Lion Eyes Outlook: three days ahead, morning and evening
 
 `floodwatch outlook` produces the **Outlook** level of the warning system: a
 call for the next three days, issued twice a day. It is built only from data
@@ -43,7 +43,7 @@ how often each level has come up (from the backtest).
 - **May, June, October and November use lower thresholds.** Several floods at the edges of the season happened with modest rain. The evidence is weak: four events.
 - **The Outlook gives days of notice, not hours.** The half-hourly analysis shows that heavy rain falls 1-6 hours before floods. Observed satellite rain arrives too late to warn, which is why the hour-scale Warning level needs storm tracking, lightning and residents' reports.
 
-## Provisional thresholds and calibration
+## Thresholds and calibration
 
 The millimetre thresholds come from the CHIRPS hindcast. The forecast model has
 its own rain climate: smoother, and it usually under-states peaks. So the
