@@ -204,14 +204,119 @@ def analyse(
         for feat in ("tide_max", "tide_range"):
             w = window_max(daily[feat])
             neg = w.reindex(control).to_numpy()
+            cpos, ipos = w.reindex(coastal).to_numpy(), w.reindex(inland).to_numpy()
             result["tide"][feat] = {
                 "auc_all": round(auc(w.reindex(flood_days).to_numpy(), neg), 3),
-                "auc_coastal": round(auc(w.reindex(coastal).to_numpy(), neg), 3),
-                "auc_inland": round(auc(w.reindex(inland).to_numpy(), neg), 3),
+                "auc_coastal": round(auc(cpos, neg), 3),
+                "auc_coastal_90pct_interval": auc_interval(cpos, neg),
+                "auc_inland": round(auc(ipos, neg), 3),
+                "auc_inland_90pct_interval": auc_interval(ipos, neg),
                 "n_coastal": len(coastal),
                 "n_inland": len(inland),
             }
+
+    result["heavy_days_without_reported_flood"] = heavy_unreported(daily, season.index, near)
     return result
+
+
+def heavy_unreported(
+    daily: pd.DataFrame, season_days: pd.DatetimeIndex, near_flood: pd.Series, top: int = 15
+) -> list[dict]:
+    """The wettest season days with no reported flood nearby.
+
+    These are the first dates to search for floods the catalogue is missing:
+    each one found turns a "false alarm" into a hit.
+    """
+    ranked = daily.loc[season_days[~near_flood.to_numpy()]].sort_values("day_mean", ascending=False)
+    picked: list[pd.Timestamp] = []
+    for day in ranked.index:
+        if all(abs((day - p).days) > 3 for p in picked):
+            picked.append(day)
+        if len(picked) == top:
+            break
+    return [
+        {
+            "date": str(d.date()),
+            "day_mean_mm": round(float(daily.at[d, "day_mean"]), 1),
+            "day_max_mm": round(float(daily.at[d, "day_max"]), 1),
+            "prev_3d_mm": round(float(daily.at[d, "prev_3d"]), 1),
+        }
+        for d in picked
+    ]
+
+
+FEATURE_LABEL = {
+    "day_max": "Wettest cell, that day",
+    "day_mean": "Peninsula average, that day",
+    "prev_3d": "Peninsula average, previous 3 days",
+    "prev_7d": "Peninsula average, previous 7 days",
+    "day_plus_prev_3d": "Peninsula average, that day + previous 3 days",
+}
+
+
+def to_markdown(res: dict) -> str:
+    """Result tables for the write-up, generated so numbers are never retyped."""
+    c = res["chirps"]
+    out = [
+        f"Source: {c['source']}. Period {c['period'][0]} to {c['period'][1]}, "
+        f"{c['seasons']} rainy seasons, {len(c['floods_scored'])} dated floods.",
+        "",
+        "**How well each rain measure separates flood days from ordinary rainy-season days**",
+        "",
+        "| Rain measure | AUC | 90% interval | Median on flood days | Median on other days |",
+        "|---|---|---|---|---|",
+    ]
+    for feat, s in c["skill"].items():
+        lo, hi = s["auc_90pct_interval"]
+        out.append(
+            f"| {FEATURE_LABEL[feat]} | {s['auc']:.2f} | {lo:.2f}-{hi:.2f} | "
+            f"{s['median_flood_mm']:.0f} mm | {s['median_other_mm']:.0f} mm |"
+        )
+    out += [
+        "",
+        "**Warning rules: floods caught vs false alarms**",
+        "",
+        "| Rain measure | Fires at | Threshold | Floods caught | False alarms per season |",
+        "|---|---|---|---|---|",
+    ]
+    for r in c["rules"]:
+        out.append(
+            f"| {FEATURE_LABEL[r['feature']]} | top {100 - r['percentile']:g}% of days | "
+            f"{r['threshold_mm']:.0f} mm | {r['hits']} of {r['floods']} | {r['false_alarms_per_season']:.1f} |"
+        )
+    out += [
+        "",
+        "**Each flood: rain as a percentile of ordinary rainy-season days**",
+        "",
+        "| Flood date | Wettest cell | Percentile | Peninsula avg + previous 3 days | Percentile |",
+        "|---|---|---|---|---|",
+    ]
+    for day, v in c["flood_days"].items():
+        a, b = v["day_max"], v["day_plus_prev_3d"]
+        out.append(f"| {day} | {a['mm']:.0f} mm | {a['percentile']:.0f} | {b['mm']:.0f} mm | {b['percentile']:.0f} |")
+    if c["tide"]:
+        t = c["tide"]["tide_max"]
+        out += [
+            "",
+            "**Tide (highest tide in the flood window vs ordinary days)**",
+            "",
+            "| Floods | Number | AUC | 90% interval |",
+            "|---|---|---|---|",
+            f"| Shoreline communities | {t['n_coastal']} | {t['auc_coastal']:.2f} | "
+            f"{t['auc_coastal_90pct_interval'][0]:.2f}-{t['auc_coastal_90pct_interval'][1]:.2f} |",
+            f"| Inland | {t['n_inland']} | {t['auc_inland']:.2f} | "
+            f"{t['auc_inland_90pct_interval'][0]:.2f}-{t['auc_inland_90pct_interval'][1]:.2f} |",
+        ]
+    out += [
+        "",
+        "**Wettest days with no reported flood (first dates to search for missing floods)**",
+        "",
+        "| Date | Peninsula average | Wettest cell | Previous 3 days |",
+        "|---|---|---|---|",
+    ]
+    for d in c["heavy_days_without_reported_flood"]:
+        out.append(f"| {d['date']} | {d['day_mean_mm']:.0f} mm | {d['day_max_mm']:.0f} mm | {d['prev_3d_mm']:.0f} mm |")
+    return "\n".join(out) + "\n"
 
 
 def run(first_year: int = config.FIRST_YEAR) -> dict:
@@ -237,5 +342,7 @@ def run(first_year: int = config.FIRST_YEAR) -> dict:
         ),
     }
     (config.DERIVED_DIR / "hindcast_results.json").write_text(json.dumps(results, indent=2))
-    print(json.dumps(results, indent=2))
+    tables = to_markdown(results)
+    (config.DERIVED_DIR / "hindcast_tables.md").write_text(tables)
+    print(tables)
     return results
