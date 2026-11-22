@@ -47,6 +47,9 @@ floodwatch outlook        # writes data/outlook/YYYY-MM-DD.md and .json
 ```
 
 It needs a NASA Earthdata token for the observed rain. In the cloud environment
-the network proxy adds it; elsewhere set `EARTHDATA_TOKEN`. To build the
-calibration archive, it should run once a day, ideally from a scheduled job that
-commits the new files.
+the network proxy adds it; elsewhere set `EARTHDATA_TOKEN`.
+
+It runs every day at 09:23 UTC from GitHub Actions
+(`.github/workflows/outlook-and-site.yml`). The workflow commits the bulletin
+and the forecast archive, and republishes the website. See the README for the
+one-time repository settings.

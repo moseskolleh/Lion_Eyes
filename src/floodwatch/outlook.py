@@ -76,16 +76,17 @@ def build(run: tuple[date, int] | None = None, today: date | None = None) -> dic
     members = ecmwf.daily_rain(ecmwf.fetch_run(*run))
     run_start = pd.Timestamp(run[0]) + pd.Timedelta(hours=run[1])
 
+    # Observed rain needs a NASA Earthdata token; without one (or if NASA is
+    # down) the Outlook still runs on the forecast and says wetness is unknown.
     observed = []
     for k in (3, 2, 1):
         try:
             observed.append(imerg.daily_total(today - timedelta(days=k)))
-        except RuntimeError:
-            pass
+        except Exception as exc:  # noqa: BLE001 - any failure here is non-fatal
+            print(f"observed rain for {today - timedelta(days=k)} unavailable: {exc}")
     prior_obs = sum(o["mean_mm"] for o in observed)
 
-    sea = pd.read_csv(config.RAW_DIR / "tables" / "sea_level.csv.gz", parse_dates=["time"])
-    tide = tides.predict(tides.fit(sea), pd.date_range(pd.Timestamp(today), periods=4 * 24 * 6, freq="10min"))
+    tide = tides.predict(tides.model(), pd.date_range(pd.Timestamp(today), periods=4 * 24 * 6, freq="10min"))
 
     days: list[DayOutlook] = []
     median_by_day = members.groupby("day")["mean_mm"].median()
@@ -113,7 +114,7 @@ def build(run: tuple[date, int] | None = None, today: date | None = None) -> dic
     out = {
         "issued": today.isoformat(),
         "forecast_run": f"{run[0]:%Y-%m-%d} {run[1]:02d}:00 UTC",
-        "observed_rain_last_3_days_mm": round(prior_obs, 1),
+        "observed_rain_last_3_days_mm": round(prior_obs, 1) if observed else None,
         "observed_days": observed,
         "days": [d.__dict__ | {"day": d.day.isoformat()} for d in days],
         "low_ground_zones": low,
@@ -135,7 +136,10 @@ def to_text(o: dict) -> str:
         f"# Freetown flood outlook, issued {o['issued']}",
         "",
         f"Forecast: ECMWF ensemble run {o['forecast_run']}. Rain in the last 3 days (satellite): "
-        f"{o['observed_rain_last_3_days_mm']:.0f} mm.",
+        + (f"{o['observed_rain_last_3_days_mm']:.0f} mm"
+           + ("" if len(o["observed_days"]) == 3 else f" ({len(o['observed_days'])} of 3 days available)")
+           if o["observed_rain_last_3_days_mm"] is not None else "not available, so ground wetness is unknown")
+        + ".",
         "",
         "| Day | Level | Chance of a wet day | Chance of a very wet day | Most likely rain | Ground wetness (prior 3 days) | High tides |",
         "|---|---|---|---|---|---|---|",
