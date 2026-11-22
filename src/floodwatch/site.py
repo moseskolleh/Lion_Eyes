@@ -193,7 +193,7 @@ tide and ground conditions flood which places, with no sensors installed yet.</p
 <div class="grid">
 <div class="card"><h3><a href="map.html">Interactive map</a></h3><p class="small">94 warning zones (one per stream
 catchment) and the places named in past flood reports.</p><a href="map.html"><img src="figures/warning_zones.png" alt="Warning zones map"></a></div>
-<div class="card"><h3><a href="analysis/subdaily.html">When the rain falls</a></h3><p class="small">Half-hourly satellite rain around 21 past
+<div class="card"><h3><a href="analysis/subdaily.html">When the rain falls</a></h3><p class="small">Half-hourly satellite rain around 28 past
 floods: heavy rain usually comes 1-6 hours before a flood is reported.</p><a href="analysis/subdaily.html"><img src="figures/flood_rain_timelines.png" alt="Rain timelines"></a></div>
 <div class="card"><h3><a href="analysis/hindcast.html">Does open data see past floods?</a></h3><p class="small">Over 19 rainy seasons,
 flood days were clearly wetter (AUC 0.82). Daily rules catch about half of floods at about 3 false alarms per season.</p>
