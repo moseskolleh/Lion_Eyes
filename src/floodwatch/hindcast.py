@@ -78,6 +78,19 @@ def auc(positive: np.ndarray, negative: np.ndarray) -> float:
     return float((ranks[:n1].sum() - n1 * (n1 + 1) / 2) / (n1 * n0))
 
 
+def auc_interval(
+    positive: np.ndarray, negative: np.ndarray, n: int = 2000, seed: int = 0
+) -> tuple[float, float]:
+    """90% bootstrap interval for the AUC, resampling the (few) floods."""
+    positive = positive[~np.isnan(positive)]
+    if len(positive) < 3:
+        return (float("nan"), float("nan"))
+    rng = np.random.default_rng(seed)
+    draws = [auc(rng.choice(positive, size=len(positive)), negative) for _ in range(n)]
+    lo, hi = np.percentile(draws, [5, 95])
+    return (round(float(lo), 3), round(float(hi), 3))
+
+
 def flood_windows(index: pd.DatetimeIndex, flood_days: pd.DatetimeIndex) -> pd.Series:
     """Boolean per day: True if the day is in some flood's window."""
     in_window = pd.Series(False, index=index)
@@ -155,8 +168,10 @@ def analyse(
     }
     for feat in rain_features:
         w = window_max(daily[feat])
+        pos, neg = w.reindex(flood_days).to_numpy(), w.reindex(control).to_numpy()
         result["skill"][feat] = {
-            "auc": round(auc(w.reindex(flood_days).to_numpy(), w.reindex(control).to_numpy()), 3),
+            "auc": round(auc(pos, neg), 3),
+            "auc_90pct_interval": auc_interval(pos, neg),
             "median_flood_mm": round(float(np.nanmedian(w.reindex(flood_days))), 1),
             "median_other_mm": round(float(np.nanmedian(w.reindex(control))), 1),
         }
