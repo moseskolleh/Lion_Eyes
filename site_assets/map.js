@@ -6,9 +6,12 @@
 // - Warning levels: the international colour code (ISO 22324, WMO/CAP practice,
 //   MeteoAlarm): green = no warning, yellow = be aware (Watch), orange = be
 //   prepared (Act). Red is kept for a flood warning (flooding imminent or under way).
-// - Hazard maps: blues for water and flood hazard (flood-extent maps), brown
+// - Hazard maps: blue is kept for water only (flood-zone maps such as the UK
+//   Environment Agency's: the darker the blue, the likelier the flooding), brown
 //   hatching for steep, landslide-prone ground, a sequential purple ramp for
-//   population (ColorBrewer), the hospital "H" for health facilities.
+//   population (ColorBrewer; purple clashes with neither water nor warnings).
+//   Things that are not hazards (past-flood markers, facilities) are neutral
+//   dark grey, so a colour on the map always means the ground under it.
 (function () {
   'use strict';
   const $ = s => document.querySelector(s);
@@ -20,12 +23,17 @@
 
   const WARN = {LOW: '#00a651', ELEVATED: '#ffdd00', HIGH: '#ff8c00'};
   const WARN_EDGE = {LOW: '#007a3c', ELEVATED: '#b89c00', HIGH: '#c46a00'};
+  // ColorBrewer Blues for water: light = floods in heavy rain, mid = floods first,
+  // darkest for stream lines and the buildings and roads on flood-prone ground.
   const PAL = () => isLight()
-    ? {water: '#2c7fb8', low: '#3a8fd0', bldLow: '#08519c', flood: '#08306b', steep: '#8c510a', bldSteep: '#8c510a',
-       bld: '#8e9297', zone: '#5b6470', road: '#4b5360'}
-    : {water: '#5aaee8', low: '#2f6fa8', bldLow: '#6baed6', flood: '#08306b', steep: '#d8a65b', bldSteep: '#d8a65b',
-       bld: '#9aa0a6', zone: '#9aa3ad', road: '#aab1ba'};
-  const POP = ['#f2f0f7', '#cbc9e2', '#9e9ac8', '#756bb1', '#54278f'];  // ColorBrewer Purples
+    ? {water: '#08306b', low: '#9ecae1', lowCore: '#4292c6', roadLow: '#2171b5', bldLow: '#08519c', steep: '#8c510a',
+       bldSteep: '#8c510a', bld: '#8e9297', zone: '#5b6470', road: '#4b5360'}
+    : {water: '#9ecae1', low: '#21507d', lowCore: '#3b8fd9', roadLow: '#4ea3e6', bldLow: '#6baed6', steep: '#d8a65b',
+       bldSteep: '#d8a65b', bld: '#9aa0a6', zone: '#9aa3ad', road: '#aab1ba'};
+  // People per hectare: ColorBrewer Purples (the 6-class ramp without its near-white step,
+  // which vanished on the grey base map). Must match site.POP_RAMP.
+  const POP = ['#dadaeb', '#bcbddc', '#9e9ac8', '#756bb1', '#54278f'];
+  const MARK = '#2b2f36';  // past floods and facilities: neutral, not a hazard colour
 
   function sizes() {
     const root = document.documentElement.style;
@@ -101,25 +109,31 @@
       return ctx.getImageData(x, y, 1, 1).data;
     };
   }
-  const IMG = {low: loadImg('layers/lowground.png'), steep: loadImg('layers/steep.png'), pop: loadImg('layers/population.png')};
-  const lowAt = sampler(IMG.low), steepAt = sampler(IMG.steep), popAt = sampler(IMG.pop);
-  let popSteps = [];
+  const IMG = {low: loadImg('layers/lowground.png'), core: loadImg('layers/lowground_core.png'),
+               steep: loadImg('layers/steep.png'), pop: loadImg('layers/population.png')};
+  const lowAt = sampler(IMG.low), coreAt = sampler(IMG.core), steepAt = sampler(IMG.steep), popAt = sampler(IMG.pop);
+  let popSteps = [], coreM = 1, lowM = 3;
 
-  // A tile layer drawn from a whole-area mask: solid fill or hatching, crisp at any zoom.
+  // A tile layer drawn from whole-area masks: each [mask, style] pair is a solid fill
+  // or hatching, painted in order (later pairs on top), crisp at any zoom.
   const MaskLayer = L.GridLayer.extend({
-    initialize(img, style, opts) { this._img = img; this._style = style; L.GridLayer.prototype.initialize.call(this, opts); },
+    initialize(parts, opts) { this._parts = parts; L.GridLayer.prototype.initialize.call(this, opts); },
     createTile(coords) {
       const t = document.createElement('canvas'), size = this.getTileSize();
       t.width = size.x; t.height = size.y;
-      const img = this._img, [[s, w], [n, e]] = B;
+      const [[s, w], [n, e]] = B, out = t.getContext('2d');
       const nw = map.unproject(coords.scaleBy(size), coords.z), se = map.unproject(coords.add([1, 1]).scaleBy(size), coords.z);
-      const sx = (nw.lng - w) / (e - w) * img.width, sy = (n - nw.lat) / (n - s) * img.height;
-      const sw = (se.lng - nw.lng) / (e - w) * img.width, sh = (nw.lat - se.lat) / (n - s) * img.height;
-      const ctx = t.getContext('2d');
-      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, size.x, size.y);
-      ctx.globalCompositeOperation = 'source-in';
-      ctx.fillStyle = this._style(ctx);
-      ctx.fillRect(0, 0, size.x, size.y);
+      this._parts.forEach(([img, style]) => {
+        const sx = (nw.lng - w) / (e - w) * img.width, sy = (n - nw.lat) / (n - s) * img.height;
+        const sw = (se.lng - nw.lng) / (e - w) * img.width, sh = (nw.lat - se.lat) / (n - s) * img.height;
+        const c = document.createElement('canvas'); c.width = size.x; c.height = size.y;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, sx, sy, sw, sh, 0, 0, size.x, size.y);
+        ctx.globalCompositeOperation = 'source-in';
+        ctx.fillStyle = style(ctx);
+        ctx.fillRect(0, 0, size.x, size.y);
+        out.drawImage(c, 0, 0);
+      });
       return t;
     },
   });
@@ -160,9 +174,10 @@
   });
 
   function whatsHere(ll) {
-    const low = lowAt(ll), steep = steepAt(ll), pop = popAt(ll);
+    const low = lowAt(ll), core = coreAt(ll), steep = steepAt(ll), pop = popAt(ll);
     let html = '';
-    if (low && low[3] > 0) html += '<span class="tag low">Flood-prone</span> Low ground near a stream or the shore: water gathers here in heavy rain.<br>';
+    if (core && core[3] > 0) html += `<span class="tag core">Floods first</span> Less than ${coreM} m above the nearest stream or the shore: the first ground to flood in heavy rain.<br>`;
+    else if (low && low[3] > 0) html += `<span class="tag low">Floods in heavy rain</span> ${coreM}-${lowM} m above the nearest stream or the shore: water reaches here in a big storm.<br>`;
     if (steep && steep[3] > 0) html += '<span class="tag steep">Steep slope</span> Watch for landslides, rockfalls and wall collapses.<br>';
     if (!html) html = '<span class="tag ok">Higher, gentler ground</span> Less exposed to flooding here.<br>';
     if (pop && pop[3] > 0 && popSteps.length) {
@@ -185,6 +200,61 @@
     const hint = document.querySelector(`[data-zoomhint="${id}"]`);
     if (hint) hint.hidden = !(on && d.minZoom && map.getZoom() < d.minZoom);
     store.set('layer-' + id, on ? '1' : '0');
+    keySoon();
+  }
+
+  // --- map key: what each colour now on the map means ------------------------
+  // Only the layers showing at this zoom are listed, each colour with its meaning
+  // in words, so no colour on the map needs guessing.
+  const keyEl = $('#mapkey'), keyList = keyEl && keyEl.querySelector('.keybody'), keyBtn = $('#keyBtn');
+  const keyPop = keyEl && keyEl.querySelector('.keypop');
+  let keyTimer = 0;
+  function keySoon() { if (keyList) { cancelAnimationFrame(keyTimer); keyTimer = requestAnimationFrame(renderKey); } }
+  const sw = (bg, cls = '') => `<i class="sw ${cls}" style="background:${bg}"></i>`;
+  const ln = (c, h) => `<i class="ln" style="background:${c};height:${h}px"></i>`;
+  const hatchBg = c => `repeating-linear-gradient(-45deg,${c} 0 2px,transparent 2px 6px)`;
+  function renderKey() {
+    const P = PAL(), on = id => L_[id] && map.hasLayer(L_[id].layer), rows = [];
+    const row = (sym, text) => rows.push(`<li><span class="sym">${sym}</span><span>${text}</span></li>`);
+    if (on('zones')) {
+      if (onAlert) row(sw(WARN[level], 'zone'), `<b>${esc(LE.word)}</b> zone in today's outlook`);
+      row('<i class="sw dash"></i>', 'Warning zone (a stream catchment)');
+    }
+    if (on('low')) {
+      row(sw(P.lowCore), `<b>Floods first</b> (under ${coreM} m above a stream)`);
+      row(sw(P.low), `<b>Floods in heavy rain</b> (${coreM}-${lowM} m above)`);
+    }
+    if (on('streams')) row(ln(P.water, 3), 'Stream');
+    if (on('floods')) row('<i class="sw flk">3</i>', 'Past floods here (how many)');
+    if (on('steep')) row(`<i class="sw" style="background:${hatchBg(P.steep)};box-shadow:inset 0 0 0 1px ${P.steep}"></i>`,
+      '<b>Landslide-prone</b> slope (over 25°)');
+    if (on('buildings')) row(sw(P.bldLow) + sw(P.bldSteep) + sw(P.bld),
+      'Buildings: on flood-prone ground, steep slope, elsewhere');
+    if (on('roads')) row(ln(P.roadLow, 6), 'Main road that may flood');
+    if (on('facilities') || on('worship')) row(`<i class="sw fck" style="box-shadow:0 0 0 2.5px ${P.roadLow}">H</i>`,
+      'Clinic, school, police (ring: <b>blue</b> flood-prone, <b>brown</b> steep)');
+    let popHtml = '';
+    if (on('pop') && popSteps.length) {
+      const cells = POP.map((c, i) => `<span><i style="background:${c}"></i>${popSteps[i] ? popSteps[i][0] +
+        (i + 1 < popSteps.length ? '-' + popSteps[i + 1][0] : '+') : ''}</span>`).join('');
+      popHtml = `<span>People per hectare <small>(a hectare is about a football pitch)</small></span><span class="steps">${cells}</span>`;
+    }
+    keyList.innerHTML = rows.join('');
+    // Two columns read top to bottom, so pairs (the two flood shades) stay together.
+    keyList.style.gridTemplateRows = `repeat(${Math.ceil(rows.length / 2)}, auto)`;
+    keyPop.innerHTML = popHtml; keyPop.hidden = !popHtml;
+    keyEl.hidden = !rows.length && !popHtml;
+  }
+  if (keyEl) {
+    const wide = () => innerWidth > 1180;
+    const saved = store.get('key');
+    keyEl.classList.toggle('closed', saved ? saved === 'closed' : !wide());
+    keyBtn.setAttribute('aria-expanded', String(!keyEl.classList.contains('closed')));
+    keyBtn.addEventListener('click', () => {
+      const closed = keyEl.classList.toggle('closed');
+      keyBtn.setAttribute('aria-expanded', String(!closed));
+      store.set('key', closed ? 'closed' : 'open');
+    });
   }
   map.on('zoomend', () => Object.keys(L_).forEach(id => setOn(id, L_[id].on)));
   function register(id, layer, minZoom, raster) {
@@ -239,9 +309,9 @@
   // Past floods: one marker per place, the number of floods inside.
   let floodLayer = null, floodFeatures = [];
   const TYPE = {flash_flood: 'flash flood', landslide: 'landslide', mixed: 'flood and collapse', coastal_flood: 'coastal flood'};
-  function floodIcon(n, ring) {
-    const d = Math.round(14 + 6 * Math.sqrt(n));
-    return L.divIcon({className: 'fl' + (ring ? ' ring' : ''), iconSize: [d, d], html: n > 1 ? `<b>${n}</b>` : ''});
+  function floodIcon(n) {
+    const d = Math.round(16 + 6 * Math.sqrt(n));
+    return L.divIcon({className: 'fl', iconSize: [d, d], html: `<b>${n}</b>`});
   }
   function floodPopup(p, list) {
     const items = list.map(e => `<li><a href="floods.html#${e.id}">${esc(e.date)}</a> · ${TYPE[e.type] || e.type}` +
@@ -258,7 +328,7 @@
       const p = f.properties, list = p.list.filter(e => e.year >= since);
       if (!list.length) return;
       const m = L.marker([f.geometry.coordinates[1], f.geometry.coordinates[0]],
-        {pane: 'points', icon: floodIcon(list.length, p.precision !== 'area'), title: `${p.place}: ${list.length} flood${list.length > 1 ? 's' : ''}`,
+        {pane: 'points', icon: floodIcon(list.length), title: `${p.place}: ${list.length} flood${list.length > 1 ? 's' : ''}`,
          riseOnHover: true, keyboard: true, zIndexOffset: list.length * 10});
       m.bindPopup(() => floodPopup(p, list), popupOpts());
       p._marker = m;
@@ -288,9 +358,11 @@
 
   ready.push(fetch('layers/layers.json').then(r => r.json()).then(async meta => {
     B = meta.bounds; popSteps = meta.population_steps;
-    const [low, steep, pop] = await Promise.all([IMG.low, IMG.steep, IMG.pop]);
-    register('low', new MaskLayer(low, () => PAL().low, {pane: 'ground', bounds: B, opacity: 0.85, maxZoom: 19}), null, 0.85);
-    register('steep', new MaskLayer(steep, ctx => hatch(ctx, PAL().steep), {pane: 'hatch', bounds: B, maxZoom: 19}), null, 1);
+    coreM = meta.core_hand_m || coreM; lowM = meta.low_hand_m || lowM;
+    const [low, core, steep, pop] = await Promise.all([IMG.low, IMG.core, IMG.steep, IMG.pop]);
+    register('low', new MaskLayer([[low, () => PAL().low], [core, () => PAL().lowCore]],
+      {pane: 'ground', bounds: B, opacity: 0.85, maxZoom: 19}), null, 0.85);
+    register('steep', new MaskLayer([[steep, ctx => hatch(ctx, PAL().steep)]], {pane: 'hatch', bounds: B, maxZoom: 19}), null, 1);
     // Population: the class colours in the image are swapped for the Purples ramp.
     const c = document.createElement('canvas'); c.width = pop.width; c.height = pop.height;
     const cx = c.getContext('2d'); cx.drawImage(pop, 0, 0);
@@ -301,10 +373,10 @@
       if (!px[i + 3]) continue;
       let best = 0, bd = 1e9;
       src.forEach((s, j) => { const dd = (s[0] - px[i]) ** 2 + (s[1] - px[i + 1]) ** 2 + (s[2] - px[i + 2]) ** 2; if (dd < bd) { bd = dd; best = j; } });
-      [px[i], px[i + 1], px[i + 2]] = dst[Math.min(best, dst.length - 1)]; px[i + 3] = 200;
+      [px[i], px[i + 1], px[i + 2]] = dst[Math.min(best, dst.length - 1)]; px[i + 3] = 215;
     }
     cx.putImageData(d, 0, 0);
-    register('pop', L.imageOverlay(c.toDataURL(), B, {pane: 'pop', interactive: false}), null, 0.8);
+    register('pop', L.imageOverlay(c.toDataURL(), B, {pane: 'pop', interactive: false}), null, 0.9);
     register('relief', L.imageOverlay('layers/hillshade.png', B, {pane: 'relief', opacity: 0.85, interactive: false}));
     register('buildings', new BuildingTiles(new Set(meta.building_tiles), {pane: 'buildings', minZoom: 13, maxZoom: 19,
       bounds: B, opacity: 0.95}), 14);
@@ -320,7 +392,7 @@
   // Roads: grey, with the stretches over flood-prone ground in blue.
   const RW = {motorway: 3.4, trunk: 3.4, primary: 2.8, secondary: 2.2, tertiary: 1.7};
   const roadStyle = f => f.properties.kind === 'low_road'
-    ? {color: PAL().water, weight: (RW[f.properties.class] || 2) + 2.2, opacity: 0.95, lineCap: 'butt'}
+    ? {color: PAL().roadLow, weight: (RW[f.properties.class] || 2) + 2.2, opacity: 0.95, lineCap: 'butt'}
     : {color: PAL().road, weight: (RW[f.properties.class] || 2) - 0.6, opacity: isLight() ? 0.75 : 0.55};
   let roads = null, flash = null;
   ready.push(fetch('layers/roads.geojson').then(r => r.json()).then(gj => {
@@ -348,23 +420,24 @@
     });
   }));
 
-  // Facilities: the international hospital "H", a book for schools, a shield for police.
+  // Facilities: the international hospital "H", a book for schools, a shield for police; all
+  // dark grey, with a ring in the hazard colour of the ground they stand on.
   const GLYPH = {
     health: '<text x="12" y="16.5" text-anchor="middle" font-size="13" font-weight="700" font-family="Inter,Arial,sans-serif" fill="#fff">H</text>',
     school: '<path d="M5 7.5c2.4-1 4.8-1 7 .6 2.2-1.6 4.6-1.6 7-.6v9c-2.4-1-4.8-1-7 .6-2.2-1.6-4.6-1.6-7-.6z" fill="none" stroke="#fff" stroke-width="1.6"/><path d="M12 8.1v9" stroke="#fff" stroke-width="1.4"/>',
     emergency: '<path d="M12 5l6 2.2v4.3c0 3.6-2.5 6.1-6 7.5-3.5-1.4-6-3.9-6-7.5V7.2z" fill="#fff"/>',
     worship: '<path d="M7 18v-6l5-4 5 4v6zM12 5v3" fill="none" stroke="#fff" stroke-width="1.6"/>',
   };
-  const FILL = {health: '#005eb8', school: '#4a4f57', emergency: '#1d3557', worship: '#6b7280'};
+  const FILL = {health: MARK, school: MARK, emergency: MARK, worship: '#6b7280'};
   const GROUP = {health: 'Health facility', school: 'School', emergency: 'Police', worship: 'Place of worship'};
   ready.push(fetch('layers/facilities.geojson').then(r => r.json()).then(gj => {
     const groups = {facilities: L.layerGroup(), schools: L.layerGroup(), worship: L.layerGroup()};
     gj.features.forEach(f => {
       const p = f.properties, ll = [f.geometry.coordinates[1], f.geometry.coordinates[0]];
-      const ring = p.low ? PAL().water : p.steep ? PAL().steep : '#fff';
+      const ring = p.low ? PAL().roadLow : p.steep ? PAL().steep : '#fff';
       const m = L.marker(ll, {pane: 'points', title: p.name || GROUP[p.group], keyboard: false,
         icon: L.divIcon({className: 'fac', iconSize: [22, 22],
-          html: `<svg viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="12" r="10.5" fill="${FILL[p.group]}" stroke="${ring}" stroke-width="2.2"/>${GLYPH[p.group]}</svg>`})});
+          html: `<svg viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="12" r="10.2" fill="${FILL[p.group]}" stroke="${ring}" stroke-width="2.8"/>${GLYPH[p.group]}</svg>`})});
       m.bindPopup(() => `<h4>${esc(p.name || GROUP[p.group])}</h4><p class="pk">${GROUP[p.group]}</p><p>` +
         (p.low ? '<span class="tag low">On flood-prone ground</span> May be cut off or flooded.' :
          p.steep ? '<span class="tag steep">On a steep slope</span>' : '<span class="tag ok">Not on flood-prone ground</span>') + '</p>', popupOpts());
@@ -394,6 +467,7 @@
     if (L_.zones) L_.zones.layer.setStyle(zoneStyle);
     if (roads) roads.setStyle(roadStyle);
     if (streams) streams.setStyle({color: PAL().water});
+    keySoon();
   });
 
   // --- search -----------------------------------------------------------------

@@ -45,7 +45,11 @@ OVERTURE = f"overturemaps-us-west-2/release/{population.OVERTURE_RELEASE}"
 CACHE = config.RAW_DIR / "overture"
 
 # Colours (the site's map palette): low ground blue, steep orange, neutral grey.
+# The browser repaints these masks in the map's own palette (site_assets/map.js).
 LOW_RGB = (42, 120, 214)
+# Flood-prone ground is drawn in two shades, darker where it floods first:
+# less than CORE_HAND_M above the nearest stream or the shore.
+CORE_HAND_M = 1.0
 STEEP_RGB = (235, 104, 52)
 NEUTRAL_RGB = (150, 156, 164)
 # Sequential (one hue, light -> dark) for people per hectare.
@@ -79,6 +83,22 @@ def _masks(h: terrain.Hydrology) -> tuple[np.ndarray, np.ndarray]:
     low = land & (np.nan_to_num(h.hand, nan=99) < zones.LOW_HAND_M) & (h.dem < zones.LOW_ELEV_M)
     steep = land & (np.nan_to_num(h.slope_deg(), nan=0) > zones.STEEP_DEG)
     return low, steep
+
+
+def low_core(h: terrain.Hydrology, low: np.ndarray) -> np.ndarray:
+    """The part of the flood-prone ground that floods first: under CORE_HAND_M
+    above the nearest drainage line (about 57% of it on the peninsula)."""
+    return low & (np.nan_to_num(h.hand, nan=99) < CORE_HAND_M)
+
+
+def write_low_core(out: Path = OUT) -> None:
+    """Write only lowground_core.png and its threshold into layers.json (no downloads)."""
+    h = terrain.hydrology()
+    low, _ = _masks(h)
+    _png(_mask_rgba(low_core(h, low), LOW_RGB, 115), out / "lowground_core.png")
+    meta = json.loads((out / "layers.json").read_text())
+    meta.update({"low_hand_m": zones.LOW_HAND_M, "core_hand_m": CORE_HAND_M})
+    (out / "layers.json").write_text(json.dumps(meta, separators=(",", ":")))
 
 
 def _cells(h: terrain.Hydrology, lon: np.ndarray, lat: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -324,6 +344,7 @@ def run(out: Path = OUT) -> dict:
     low, steep = _masks(h)
     _png(hillshade(h), out / "hillshade.png")
     _png(_mask_rgba(low, LOW_RGB, 115), out / "lowground.png")
+    _png(_mask_rgba(low_core(h, low), LOW_RGB, 115), out / "lowground_core.png")
     _png(_mask_rgba(steep, STEEP_RGB, 120), out / "steep.png")
     _png(population_rgba(h), out / "population.png")
     print("rasters written", flush=True)
@@ -335,7 +356,7 @@ def run(out: Path = OUT) -> dict:
     print("facilities written", flush=True)
     tiles = building_tiles(h, low, steep, out)
     meta = {"bounds": _bounds(h), "building_zooms": [min(BUILDING_ZOOMS), max(BUILDING_ZOOMS)], "building_tiles": tiles,
-            "population_steps": POP_STEPS,
+            "population_steps": POP_STEPS, "low_hand_m": zones.LOW_HAND_M, "core_hand_m": CORE_HAND_M,
             "colours": {"low": "#%02x%02x%02x" % LOW_RGB, "steep": "#%02x%02x%02x" % STEEP_RGB,
                         "neutral": "#%02x%02x%02x" % NEUTRAL_RGB}}
     (out / "layers.json").write_text(json.dumps(meta, separators=(",", ":")))

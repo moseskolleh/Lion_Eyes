@@ -191,6 +191,17 @@ background:var(--lvl);color:var(--lvl-txt);padding:.08em .32em .14em;border-radi
 .flow .step span{font-size:.86rem;color:var(--text-secondary)}
 .flow .arrow{align-self:center;font-size:1.6rem;color:var(--accent-color)}
 .flow .out{border-color:var(--accent-color)}
+.readmore{display:grid;grid-template-columns:1fr 1fr;gap:12px 40px;margin-top:14px}
+.readmore ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--line-soft)}
+.readmore li{border-bottom:1px solid var(--line-soft)}
+.readmore a{display:grid;grid-template-columns:1fr auto;gap:2px 16px;padding:14px 4px;text-decoration:none;color:var(--text-primary)}
+.readmore a::after{content:'→';grid-row:1/3;grid-column:2;align-self:center;color:var(--accent-color);font-size:1.2rem;
+transition:transform .15s}
+.readmore a:hover::after{transform:translateX(4px)}
+.readmore a:hover b{color:var(--accent-color)}
+.readmore b{font-family:var(--font-display);font-weight:500;font-size:1.15rem}
+.readmore span{font-size:.88rem;color:var(--text-secondary);line-height:1.45}
+@media (max-width:760px){.readmore{grid-template-columns:1fr}}
 @media (max-width:860px){.flow{grid-template-columns:1fr}.flow .arrow{transform:rotate(90deg);justify-self:center}}
 /* Analysis pages: article layout with a contents list */
 .doc{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:40px}
@@ -408,30 +419,33 @@ MAP_GROUPS = [
          "with the warning colour.", "k-zones", True, None),
     ]),
     ("flood", "Flood hazard", [
-        ("low", "Flood-prone low ground", "Within 3 m of a stream or the shore: water gathers here in heavy rain.",
-         "k-low", True, None),
+        ("low", "Flood-prone ground", "Low ground near a stream or the shore, in two shades: the stronger the blue, "
+         "the sooner it floods.", "k-low", True, None),
         ("streams", "Streams", "Drainage lines traced from the terrain; thicker drains more land.", "k-streams", True, None),
-        ("floods", "Past floods", "Places named in flood reports since 2007; the number is how many floods. "
-         "A ring means the report named a street or landmark there.", "k-floods", True, None),
+        ("floods", "Past floods", "Places named in flood reports since 2007; the number is how many floods.",
+         "k-floods", True, None),
     ]),
     ("slope", "Landslide hazard", [
-        ("steep", "Steep slopes", "Steeper than 25\u00b0: landslides, rockfalls and wall collapses are likelier.",
+        ("steep", "Landslide-prone slopes", "Steeper than 25\u00b0: landslides, rockfalls and wall collapses are likelier.",
          "k-steep", True, None),
     ]),
     ("people", "People and places", [
-        ("buildings", "Buildings", "Every footprint: blue on flood-prone ground, brown on steep slopes.",
+        ("buildings", "Buildings", "Every footprint: blue on flood-prone ground, brown on steep slopes, grey elsewhere.",
          "k-buildings", True, 14),
         ("roads", "Roads that may flood", "Main roads; blue stretches cross flood-prone ground.", "k-roads", True, None),
-        ("facilities", "Health, schools, police", "A blue ring: on flood-prone ground; brown: on a steep slope. "
-         "Schools appear from a closer zoom.",
+        ("facilities", "Health, schools, police", "Dark grey icons; a blue ring means on flood-prone ground, brown "
+         "on a steep slope. Schools appear from a closer zoom.",
          "k-facilities", True, 14),
         ("worship", "Places of worship", "Often used as shelters.", "k-worship", False, 16),
-        ("pop", "Population density", "People per hectare, estimated from buildings (about 3.6 people each).",
+        ("pop", "Population density", "People per hectare (about a football pitch), estimated from buildings: "
+         "the darker the purple, the more crowded.",
          "k-pop", False, None),
     ]),
 ]
 BASEMAPS = [("streets", "Streets"), ("hot", "Humanitarian"), ("satellite", "Satellite"), ("none", "None")]
-POP_RAMP = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"]  # ColorBrewer Purples, 5 classes
+# ColorBrewer Purples (6-class ramp without its near-white step); must match POP in map.js.
+POP_RAMP = ["#dadaeb", "#bcbddc", "#9e9ac8", "#756bb1", "#54278f"]
+POP_BREAKS = [5, 25, 60, 120, 200]  # people per hectare: lower edge of each class (maplayers.POP_STEPS)
 
 
 def _layers_panel() -> str:
@@ -441,8 +455,12 @@ def _layers_panel() -> str:
         for lid, name, note, key, on, zoom in rows:
             extra = ""
             if lid == "pop":
-                extra = ('<span class="ramp">' + "".join(f'<i style="background:{c}"></i>' for c in POP_RAMP)
-                         + "<em>5</em><em>200+ per ha</em></span>")
+                labels = [f"{a}-{b}" for a, b in zip(POP_BREAKS, POP_BREAKS[1:])] + [f"{POP_BREAKS[-1]}+"]
+                extra = ('<span class="ramp">' + "".join(f'<span><i style="background:{c}"></i>{t}</span>'
+                                                         for c, t in zip(POP_RAMP, labels)) + "</span>")
+            if lid == "low":
+                extra = ('<span class="shades"><span><i class="sh-core"></i>Floods first: under 1 m above a stream or the shore</span>'
+                         '<span><i class="sh-low"></i>Floods in heavy rain: 1-3 m above</span></span>')
             if lid == "floods":
                 extra = ('<span class="since"><input id="since" type="range" min="2007" max="2026" value="2007" step="1" '
                          'aria-label="Show floods from this year"><output id="sinceOut">since 2007</output></span>')
@@ -475,7 +493,10 @@ def _layers_panel() -> str:
     return (search + '<aside id="layers" class="layers" aria-label="Map layers"><div class="layers-head">'
             '<b>Map layers</b><button id="layersClose" class="x" type="button" aria-label="Close layers">&times;</button></div>'
             + "".join(groups) + "</aside>"
-            '<div id="hint" class="hint">Tap or click anywhere on the map to see what is there</div>')
+            '<div id="hint" class="hint">Tap or click anywhere on the map to see what is there</div>'
+            '<div id="mapkey" class="mapkey" hidden><button id="keyBtn" class="keybtn" type="button" '
+            'aria-controls="keylist" aria-expanded="true">Map key</button><ul id="keylist" class="keybody"></ul>'
+            '<div class="keypop" hidden></div></div>')
 
 
 LEVEL_KEY = ('<details class="levelkey"><summary><span class="eyebrow">What the colours mean</span>'
@@ -753,19 +774,25 @@ def _about_page() -> str:
                  f"{rates['floods_any']} of the {rates['floods_of']} floods in that period, {rates['floods_high']} of "
                  f"them at HIGH. HIGH came up on about "
                  f"{rates['high_pct']}% of rainy-season days. <a href='analysis/backtest.html'>How well it works</a>.</p>")
-    cards = [
-        ("outlook-method.html", "How the Outlook works", "The rules behind each level, the two daily issues, and the ways to receive it.", None),
-        ("map-guide.html", "Reading the map", "The warning colours (the international code), what each hazard layer shows, and how to search and share a place.", None),
-        ("analysis/backtest.html", "How well it works", "The Outlook replayed on 2024-2026 forecasts: which floods it would have warned of, and how often it raises an alert.", None),
-        ("analysis/hindcast.html", "What past floods teach", "Satellite rain on 19 rainy seasons against the flood record: flood days are clearly wetter.", "figures/streams_and_flood_places.png"),
-        ("analysis/zones.html", "Warning zones", "94 stream catchments, with the people living on low ground and on steep slopes in each.", "figures/warning_zones.png"),
-        ("analysis/subdaily.html", "When the rain falls", "Half-hourly satellite rain around past floods: heavy rain usually comes 1-6 hours before.", "figures/flood_rain_timelines.png"),
-        ("concept.html", "The idea", "Why rain itself is the warning signal in Freetown, and what comes next.", None),
+    # Read more: two lists of links (no thumbnails: the analysis figures are
+    # working charts that only make sense at full size inside their articles).
+    reading = [
+        ("Using Lion Eyes", [
+            ("outlook-method.html", "How the Outlook works", "The rules behind each level, the two daily issues, and the ways to receive it."),
+            ("map-guide.html", "Reading the map", "What each colour means, from the warning levels to the flood and landslide layers, and how to search and share a place."),
+            ("concept.html", "The idea", "Why rain itself is the warning signal in Freetown, and what comes next."),
+        ]),
+        ("The evidence", [
+            ("analysis/backtest.html", "How well it works", "The Outlook replayed on 2024-2026 forecasts: which floods it would have warned of, and how often it raises an alert."),
+            ("analysis/hindcast.html", "What past floods teach", "Satellite rain on 19 rainy seasons against the flood record: flood days are clearly wetter."),
+            ("analysis/subdaily.html", "When the rain falls", "Half-hourly satellite rain around past floods: heavy rain usually comes 1-6 hours before."),
+            ("analysis/zones.html", "Warning zones", "94 stream catchments, with the people living on low ground and on steep slopes in each."),
+        ]),
     ]
     grid = "".join(
-        f'<div class="card"><h3><a href="{href}">{title}</a></h3><p class="small">{text}</p>'
-        + (f'<a href="{href}"><img src="{img}" alt="{title}"></a>' if img else "") + "</div>"
-        for href, title, text, img in cards)
+        f'<section><p class="eyebrow">{head}</p><ul>'
+        + "".join(f'<li><a href="{href}"><b>{title}</b><span>{text}</span></a></li>' for href, title, text in items)
+        + "</ul></section>" for head, items in reading)
     body = f"""<div class="hero"><p class="eyebrow">How it works</p><h1>Watching the <em>mountains</em></h1>
 <p class="lede">Sierra Leone is named after the Lion Mountains, the peninsula hills above Freetown. When heavy rain falls on
 them, the streams reach the low neighbourhoods within the hour. Lion Eyes watches that rain from satellites and weather
@@ -786,7 +813,7 @@ ground and steep slopes in each.</span></div>
 <p>It cannot see short local downpours, which still cause some floods; storm tracking from geostationary satellites and
 residents' reports are the next layers.</p>
 <h2>Read more</h2>
-<div class="grid">{grid}</div>
+<div class="readmore">{grid}</div>
 <h2>Get the outlook</h2>
 <p>Every issue is on the <a href="index.html">map</a>, in the <a href="outlook/index.html">archive</a>, as a
 <a href="feed.xml">feed</a> (for feed readers or tools that forward to WhatsApp, Telegram or email), and as

@@ -71,3 +71,26 @@ def test_flood_history_names_the_month_with_most_floods():
     name = ["January", "February", "March", "April", "May", "June", "July", "August",
             "September", "October", "November", "December"][top - 1]
     assert f"in {name}, the worst month" in site._floods_page()
+
+
+def test_map_colour_ramps_match_the_layers_and_the_key():
+    """The population ramp and its class edges are written in three places; they must agree."""
+    from pathlib import Path
+
+    from floodwatch import config, maplayers
+
+    assert site.POP_BREAKS == [lo for lo, _ in maplayers.POP_STEPS]
+    assert len(site.POP_RAMP) == len(site.POP_BREAKS)
+    js = (config.REPO_ROOT / "site_assets" / "map.js").read_text()
+    assert "const POP = [" + ", ".join(f"'{c}'" for c in site.POP_RAMP) + "];" in js
+    panel = site._layers_panel()
+    assert "120-200" in panel and "200+" in panel
+    assert 'id="mapkey"' in panel
+    assert maplayers.CORE_HAND_M < 3.0  # the "floods first" band sits inside the flood-prone ground
+
+
+def test_how_it_works_reading_lists_have_no_thumbnails():
+    page = site._about_page()
+    assert 'class="readmore"' in page
+    start = page.index('class="readmore"')
+    assert "<img" not in page[start:page.index("Get the outlook")]

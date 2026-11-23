@@ -30,18 +30,32 @@ the warning zones it names are filled with the level's colour.
 
 ## Hazard layers
 
-Hazard colours follow common flood- and landslide-mapping practice:
+Each colour family means one thing, so a colour on the map always says what
+the ground is like:
+- **Blue is water only.** This follows flood-zone maps such as the UK
+  Environment Agency's: the darker the blue, the likelier the flooding.
+- **Brown is steep, landslide-prone ground.**
+- **Purple is people.** Population density uses a one-colour ramp (ColorBrewer
+  "Purples") that clashes with neither the water blues nor the warning colours.
+  The usual yellow-to-red population ramps would be mistaken for warnings here.
+- **Dark grey marks things that are not hazards:** past-flood markers and
+  facilities. A facility's ring takes the hazard colour of the ground it stands on.
 
 | Layer | Drawn as | Meaning |
 |---|---|---|
-| Flood-prone low ground | light blue fill | Within 3 m of a stream or the shore (from the Copernicus 30 m terrain model): water gathers here in heavy rain |
-| Streams | blue lines, thicker for bigger catchments | Drainage traced from the terrain |
-| Past floods | dark blue circles, the number of floods inside | Places named in the flood history; a ring (white inside) means the report named a street or landmark, placed approximately |
-| Steep slopes | brown hatching | Steeper than 25 degrees: landslides, rockfalls and wall collapses are likelier |
-| Buildings | dark blue on flood-prone ground, brown on steep slopes, grey elsewhere | Every footprint (Overture Maps), from zoom 14 |
+| Flood-prone ground | two blues: stronger where it floods first | **Floods first**: less than 1 m above the nearest stream or the shore. **Floods in heavy rain**: 1 to 3 m above. Heights come from the Copernicus 30 m terrain model (height above nearest drainage); about 57% of the flood-prone ground is in the first group |
+| Streams | dark blue lines, thicker for bigger catchments | Drainage traced from the terrain |
+| Past floods | dark grey circles with the number of floods | Places named in the flood history; the popup lists the floods and says when a place is approximate |
+| Landslide-prone slopes | brown hatching | Steeper than 25 degrees: landslides, rockfalls and wall collapses are likelier |
+| Buildings | blue on flood-prone ground, brown on steep slopes, grey elsewhere | Every footprint (Overture Maps), from zoom 14 |
 | Roads that may flood | blue stretches of the main roads | Where they cross flood-prone ground |
-| Health, schools, police | the hospital "H", a book, a shield; a blue ring on flood-prone ground, brown on a steep slope | From zoom 14; places of worship (often used as shelters) from zoom 16 |
-| Population density | purple ramp (ColorBrewer "Purples") | People per hectare, estimated from buildings |
+| Health, schools, police | dark grey icons (the hospital "H", a book, a shield); a blue ring on flood-prone ground, brown on a steep slope | From zoom 14; places of worship (often used as shelters) from zoom 16 |
+| Population density | five purples, labelled 5-25, 25-60, 60-120, 120-200 and 200+ people per hectare | Estimated from buildings (about 3.6 people each); a hectare is about the size of a football pitch |
+
+**The map key** (bottom of the map; a "Map key" button on phones and small
+screens) lists every layer now showing, with each colour or shade in words. It
+changes as layers are switched on and off or appear with zoom. In a Watch or
+Act outlook it adds the warning colour of the zones the outlook names.
 
 The slider under "Base map" fades all hazard layers together; the base map can be
 the street map (greyed so the hazard colours stand out), the Humanitarian

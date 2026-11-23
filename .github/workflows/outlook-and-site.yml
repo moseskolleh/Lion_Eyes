@@ -84,7 +84,15 @@ jobs:
             echo "Nothing new to commit."
           else
             git commit -m "Outlook $(date -u '+%F %H:%M') UTC"
-            git push
+            # main may have moved while the Outlook ran (a merge, another run):
+            # replay this commit on top of it. Only this job writes data/outlook
+            # and data/archive, so the rebase does not conflict.
+            for attempt in 1 2 3; do
+              git pull --rebase origin main && git push && break
+              git rebase --abort 2>/dev/null || true
+              if [ "$attempt" = 3 ]; then exit 1; fi
+              sleep $((attempt * 10))
+            done
           fi
 
       - name: Build the website
