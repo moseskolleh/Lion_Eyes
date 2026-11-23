@@ -20,3 +20,43 @@ def test_feed_is_valid_atom_with_newest_issue_first(monkeypatch):
     # The summary is the short message, built from the issue (not a stored copy).
     assert first.getElementsByTagName("summary")[0].firstChild.data.startswith("Lion Eyes flood outlook, 02 Aug pm: Tonight HIGH.")
     assert doc.getElementsByTagName("updated")[0].firstChild.data == "2027-08-02T20:50:00Z"
+
+
+def test_warning_colours_follow_the_international_code():
+    # Green = no warning, yellow = be aware (Watch), orange = be prepared (Act); red kept for a flood warning.
+    css = site.CSS
+    for token, colour in [("--lvl-low", "#00a651"), ("--lvl-elev", "#ffdd00"), ("--lvl-high", "#ff8c00"),
+                          ("--lvl-red", "#e3000f")]:
+        assert f"{token}:{colour}" in css
+    assert "#7CFC00;--lvl" not in css  # the old lawn green is no longer a level colour
+
+
+def test_layers_panel_groups_and_search_box():
+    panel = site._layers_panel()
+    for group in ("Today's outlook", "Flood hazard", "Landslide hazard", "People and places", "Base map"):
+        assert f"<summary>{group}</summary>" in panel
+    for layer in ("zones", "low", "streams", "floods", "steep", "buildings", "roads", "facilities", "worship", "pop", "relief"):
+        assert f'data-layer="{layer}"' in panel
+    assert 'id="q" type="search"' in panel and 'role="combobox"' in panel
+    assert panel.count('name="basemap"') == len(site.BASEMAPS)
+
+
+def test_past_flood_points_merge_names_and_list_events():
+    gj = site._places_geojson()
+    feats = gj["features"]
+    assert feats
+    for f in feats:
+        p = f["properties"]
+        assert p["events"] == len(p["list"]) > 0
+        assert p["precision"] in {"area", "street", "landmark"}
+        assert all(e["id"].startswith("FT-") for e in p["list"])
+    # Two reported names that geocode to one spot become one marker.
+    names = {f["properties"]["place"]: f["properties"]["aka"] for f in feats}
+    assert any(aka for aka in names.values())
+
+
+def test_flood_history_cards_have_anchors_and_map_links():
+    page = site._floods_page()
+    assert 'id="FT-20130808"' in page
+    assert 'href="index.html#place=' in page
+    assert 'class="yearnav"' in page
