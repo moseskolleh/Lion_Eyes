@@ -72,3 +72,18 @@ def test_offline_run_rescores_from_the_daily_table(tmp_path, monkeypatch):
     assert res["chirps"]["seasons"] == 2
     assert res["chirps"]["skill"]["day_mean"]["auc"] > 0.95
     assert (tmp_path / "hindcast_tables.md").exists()
+
+
+def test_offline_run_refuses_a_table_that_starts_too_late(tmp_path, monkeypatch):
+    import pytest
+
+    from floodwatch import config
+
+    days = pd.date_range("2015-04-01", "2015-11-30", freq="D")
+    pd.DataFrame({"day_mean": 1.0}, index=days).rename_axis("date").to_csv(
+        tmp_path / "daily_features_chirps.csv"
+    )
+    monkeypatch.setattr(config, "DERIVED_DIR", tmp_path)
+    assert len(hindcast.load_daily(2015)) == len(days)
+    with pytest.raises(SystemExit, match="--from 2008"):
+        hindcast.load_daily(2008)

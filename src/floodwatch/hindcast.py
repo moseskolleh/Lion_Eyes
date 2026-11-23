@@ -330,6 +330,12 @@ def results_path():
 def load_daily(first_year: int = config.FIRST_YEAR) -> pd.DataFrame:
     """The daily rain and tide table written by the last full run."""
     daily = pd.read_csv(daily_features_path(), index_col="date", parse_dates=["date"])
+    if daily.index.min() > pd.Timestamp(first_year, min(config.SEASON_MONTHS), 1):
+        raise SystemExit(
+            f"{daily_features_path()} starts on {daily.index.min().date()}, after the start of the "
+            f"{first_year} rainy season. Run `floodwatch hindcast --from {first_year}` without "
+            "--offline to rebuild it."
+        )
     return daily[daily.index >= pd.Timestamp(first_year, 1, 1)]
 
 

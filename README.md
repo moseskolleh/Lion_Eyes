@@ -55,7 +55,7 @@ floodwatch fetch            # sea level + CHIRPS daily rain into data/raw (cache
 floodwatch fetch --hourly   # optional: hourly model rain from Open-Meteo (rate-limited)
 floodwatch catalogue data/events/research/*.jsonl   # rebuild the flood history
 floodwatch hindcast --from 2008   # score warning rules; writes data/derived/
-floodwatch hindcast --offline    # re-score after the flood history changes (no download)
+floodwatch hindcast --from 2008 --offline   # re-score after the flood history changes (no download)
 floodwatch terrain          # streams, flood places, map
 floodwatch zones            # warning zones (after terrain)
 floodwatch exposure         # buildings and people per zone (after zones)
