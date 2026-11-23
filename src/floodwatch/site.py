@@ -20,11 +20,12 @@ import posixpath
 import re
 import shutil
 from pathlib import Path
+from urllib.parse import quote
 
 import markdown
 import pandas as pd
 
-from floodwatch import config, events, outlook
+from floodwatch import config, events, outlook, places
 
 OUT = config.REPO_ROOT / "_site"
 DOCS = config.REPO_ROOT / "docs"
@@ -39,10 +40,16 @@ PAGES = [  # (source markdown, output path, nav label)
     (DOCS / "analysis" / "subdaily-v0.md", "analysis/subdaily.html", "Half-hourly rain"),
     (DOCS / "analysis" / "outlook-backtest-v0.md", "analysis/backtest.html", "Outlook backtest"),
     (DOCS / "outlook.md", "outlook-method.html", "Outlook method"),
+    (DOCS / "map.md", "map-guide.html", "Reading the map"),
 ]
 
 CSS = """
-/* Type and colour from Moses Kolleh Sesay's site (sustaintheworld): Newsreader
+/* Warning levels use the international colour code (ISO 22324, WMO and CAP
+   practice, MeteoAlarm): green = no warning, yellow = be aware (Watch),
+   orange = be prepared (Act); red is kept for a future flood warning (flooding
+   imminent or under way). The same colours in light and dark, always with the
+   level named in text. Water and flood hazard are blue, slopes brown.
+   Type and colour from Moses Kolleh Sesay's site (sustaintheworld): Newsreader
    for titles, Inter for text, IBM Plex Mono for what is measured. Dark by
    default; html.light-mode for light, chosen as that site chooses it. */
 @font-face{font-family:'Newsreader';font-style:normal;font-weight:500;font-display:swap;src:url('fonts/newsreader-latin-500.woff2') format('woff2')}
@@ -54,11 +61,13 @@ CSS = """
 --line-color:rgba(124,252,0,.18);--line-soft:rgba(124,252,0,.08);--border-radius:6px;--bar-bg:rgba(0,0,0,.85);
 --font-display:'Newsreader',Georgia,'Times New Roman',serif;--font-body:'Inter','Segoe UI',sans-serif;
 --font-mono:'IBM Plex Mono','Courier New',monospace;
---lvl-low:#7CFC00;--lvl-low-text:#0a0a0a;--lvl-elev:#f2b705;--lvl-elev-text:#0a0a0a;--lvl-high:#ff5a4f;--lvl-high-text:#0a0a0a}
+--lvl-low:#00a651;--lvl-low-text:#04130a;--lvl-elev:#ffdd00;--lvl-elev-text:#1a1600;--lvl-high:#ff8c00;--lvl-high-text:#1f1000;--lvl-red:#e3000f;--lvl-red-text:#fff;
+--flood:#4fa3e0;--flood-deep:#9ecae1;--steep:#c48a3f;--dead:#ff6b6b}
 html.light-mode{color-scheme:light;--primary-green:#1a7a1a;--dark-bg:#f5f6f3;--darker-bg:#fff;--card-bg:#fff;--card-bg-alt:#fafbf8;
 --text-primary:#161914;--text-secondary:#54584f;--text-dim:#5f635a;--accent-color:#1a7a1a;--hover-color:#146414;--accent-amber:#8a6100;
 --line-color:rgba(34,139,34,.25);--line-soft:rgba(34,139,34,.1);--bar-bg:rgba(255,255,255,.88);
---lvl-low:#1a7a1a;--lvl-low-text:#fff;--lvl-elev:#8a6100;--lvl-elev-text:#fff;--lvl-high:#b3261e;--lvl-high-text:#fff}
+--lvl-low:#00a651;--lvl-low-text:#04130a;--lvl-elev:#ffdd00;--lvl-elev-text:#1a1600;--lvl-high:#ff8c00;--lvl-high-text:#1f1000;--lvl-red:#e3000f;--lvl-red-text:#fff;
+--flood:#2c7fb8;--flood-deep:#08306b;--steep:#8c510a;--dead:#c8102e}
 *{margin:0;padding:0;box-sizing:border-box}[hidden]{display:none!important}
 html{font-size:16px}body{font-family:var(--font-body);background:var(--dark-bg);color:var(--text-primary);line-height:1.65}
 ::selection{background:var(--primary-green);color:var(--darker-bg)}
@@ -105,7 +114,8 @@ pre code{border:0;padding:0;background:none}
 img{max-width:100%;height:auto;border-radius:var(--border-radius);border:1px solid var(--line-soft);background:#fff}
 blockquote{border-left:2px solid var(--primary-green);padding-left:14px;color:var(--text-secondary);margin:0 0 1em}
 hr{border:0;border-top:1px solid var(--line-soft);margin:2em 0}
-.lvl{display:inline-block;font-family:var(--font-mono);font-size:.74rem;letter-spacing:.08em;padding:2px 9px;border-radius:999px}
+.lvl{display:inline-block;font-family:var(--font-mono);font-size:.74rem;letter-spacing:.08em;padding:2px 9px;border-radius:999px;
+box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);font-weight:600}
 .LOW{background:var(--lvl-low);color:var(--lvl-low-text)}.ELEVATED{background:var(--lvl-elev);color:var(--lvl-elev-text)}
 .HIGH{background:var(--lvl-high);color:var(--lvl-high-text)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:20px}.grid .card{margin:0}
@@ -130,14 +140,24 @@ footer .mono{font-size:.76rem;letter-spacing:.06em;text-transform:uppercase}
 .chart .val{fill:var(--text-secondary);font-size:10px}
 .tip{position:fixed;z-index:2000;pointer-events:none;background:var(--card-bg);border:1px solid var(--line-color);border-radius:6px;
 padding:6px 9px;font-size:.82rem;color:var(--text-primary);box-shadow:0 6px 20px rgba(0,0,0,.3)}
-:root{--series-1:#e34948;--series-1-hover:#c73433}html.light-mode{--series-1:#d23b3a;--series-1-hover:#a82a29}
-.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0 18px}
+:root{--series-1:#4fa3e0;--series-1-hover:#7dbbe8}html.light-mode{--series-1:#2c7fb8;--series-1-hover:#1f5f8b}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .chip{font:inherit;font-size:.84rem;cursor:pointer;border:1px solid var(--line-color);background:none;color:var(--text-secondary);
 border-radius:999px;padding:4px 12px}
 .chip.on,.chip:hover{background:var(--accent-color);color:var(--darker-bg);border-color:var(--accent-color)}
 .filters input{font:inherit;font-size:.88rem;padding:6px 10px;border-radius:8px;border:1px solid var(--line-color);
 background:var(--card-bg-alt);color:var(--text-primary);min-width:220px}
+.filters{position:sticky;top:var(--bar-h,64px);z-index:20;background:var(--dark-bg);padding:10px 0;margin:6px 0 8px;
+border-bottom:1px solid var(--line-soft)}
+.yearnav{display:flex;flex-wrap:wrap;gap:4px 10px;font-family:var(--font-mono);font-size:.78rem;margin:0 0 14px}
+.yearnav a{color:var(--text-secondary);text-decoration:none;padding:2px 6px;border-radius:6px;border:1px solid var(--line-soft)}
+.yearnav a:hover{color:var(--text-primary);border-color:var(--line-color)}
 .events{display:grid;gap:12px}
+.event{scroll-margin-top:calc(var(--bar-h,64px) + 70px)}.event.hit{outline:2px solid var(--flood);outline-offset:2px}
+.event .foot{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.event .onmap,.event .permalink{font-size:.82rem}.event .permalink{color:var(--text-dim);text-decoration:none}
+.totop{position:fixed;right:18px;bottom:18px;z-index:30;background:var(--card-bg);border:1px solid var(--line-color);
+border-radius:999px;padding:6px 14px;font-size:.85rem;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 .event{display:grid;grid-template-columns:120px 1fr;gap:4px 18px;background:var(--card-bg);border:1px solid var(--line-soft);
 border-radius:10px;padding:14px 16px}
 .event .when{font-family:var(--font-display);font-size:1.25rem;line-height:1.2}
@@ -147,11 +167,13 @@ border-radius:10px;padding:14px 16px}
 .event details{font-size:.82rem;color:var(--text-dim)}.event details a{word-break:break-all}
 .badge{display:inline-block;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;
 border:1px solid var(--line-color);border-radius:999px;padding:1px 8px;margin-right:6px;color:var(--text-secondary)}
-.badge.dead{border-color:var(--series-1);color:var(--series-1)}
+.badge.dead{border-color:var(--dead);color:var(--dead)}
 @media (max-width:560px){.event{grid-template-columns:1fr}}
 /* Outlook page */
-.bigword{font-family:var(--font-display);font-size:clamp(3rem,8vw,5rem);line-height:1;color:var(--lvl)}
-.state-HIGH{--lvl:var(--lvl-high)}.state-ELEVATED{--lvl:var(--lvl-elev)}.state-LOW{--lvl:var(--lvl-low)}
+.bigword{display:inline-block;font-family:var(--font-display);font-size:clamp(2.6rem,7vw,4.4rem);line-height:1;
+background:var(--lvl);color:var(--lvl-txt);padding:.08em .32em .14em;border-radius:10px}
+.state-HIGH{--lvl:var(--lvl-high);--lvl-txt:var(--lvl-high-text)}.state-ELEVATED{--lvl:var(--lvl-elev);--lvl-txt:var(--lvl-elev-text)}
+.state-LOW{--lvl:var(--lvl-low);--lvl-txt:var(--lvl-low-text)}
 .periodcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:18px 0 24px}
 .pcard{background:var(--card-bg);border:1px solid var(--line-soft);border-top:4px solid var(--lvl);border-radius:10px;padding:14px 16px}
 .pcard h3{font-family:var(--font-body);font-weight:600;font-size:1rem;margin:0 0 6px}
@@ -228,7 +250,7 @@ def _nav_for(path: str) -> str:
     """Which menu item a page belongs to."""
     if path.startswith("outlook/"):
         return "outlook/index.html"
-    if path.startswith("analysis/") or path in ("concept.html", "outlook-method.html", "about.html"):
+    if path.startswith("analysis/") or path in ("concept.html", "outlook-method.html", "about.html", "map-guide.html"):
         return "about.html"
     return path
 
@@ -252,7 +274,7 @@ Get each Outlook as it is issued: <a href="{up}feed.xml">feed</a> · <a href="{u
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">{THEME_HEAD}
 <title>{html.escape(title)} · {TITLE}</title><meta name="description" content="{TITLE}: {SLOGAN}. Flash-flood outlook for Freetown, Sierra Leone.">
-<link rel="stylesheet" href="{up}style.css">
+<link rel="stylesheet" href="{up}style.css"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%2308306b%22/%3E%3Cpath d=%22M4 16c3.5-6 8-9 12-9s8.5 3 12 9c-3.5 6-8 9-12 9s-8.5-3-12-9z%22 fill=%22%23fff%22/%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%225%22 fill=%22%232c7fb8%22/%3E%3C/svg%3E">
 <link rel="alternate" type="application/atom+xml" title="{TITLE} flood outlook" href="{up}feed.xml">{extra_head}</head>
 <body{' class="bare"' if bare else ''}>{header}
 {content}
@@ -377,51 +399,93 @@ def _what_to_do(o: dict) -> str:
 
 MAP_HEAD = '<link rel="stylesheet" href="vendor/leaflet/leaflet.css"><link rel="stylesheet" href="map.css">'
 
-# The layers panel: (id, group, name, note, key, on by default)
-MAP_LAYERS = [
-    ("zones", "Flood outlook", "Warning zones", "One per stream catchment. At Watch or Act, the zones named in the outlook light up.",
-     "border:2px dashed #8a939e", True),
-    ("floods", "Flood outlook", "Past flood places", "Neighbourhoods named in flood reports since 2007; bigger means more floods.",
-     "background:#d23b3a;border-radius:50%;width:14px;height:14px", True),
-    ("relief", "Ground", "Hills", "The Lion Mountains: the rain that falls on them reaches the city within the hour.",
-     "background:linear-gradient(135deg,#fff 0,#999 50%,#222 100%)", True),
-    ("low", "Ground", "Low ground", "Near a stream or the shore and under 3 m above it: water gathers here.",
-     "background:#2a78d6;opacity:.75", True),
-    ("steep", "Ground", "Steep slopes", "Steeper than 25 degrees: landslides and wall collapses are likelier.",
-     "background:#eb6834;opacity:.7", True),
-    ("streams", "Ground", "Streams", "Drainage lines traced from the terrain.", "background:#4cb4ff;height:3px;margin-top:9px", True),
-    ("buildings", "People and places", "Buildings", "Every footprint, coloured by the ground it stands on.",
-     "background:linear-gradient(90deg,#2a78d6 33%,#eb6834 33% 66%,#969ca4 66%)", True),
-    ("pop", "People and places", "Population", "People per hectare, estimated from buildings (about 3.6 people each).", "background:linear-gradient(90deg,#f3e8ff,#a855f7,#4c1d95)", False),
-    ("roads", "People and places", "Main roads", "Blue stretches run over low ground and may flood.",
-     "background:linear-gradient(180deg,transparent 40%,#2a78d6 40% 70%,transparent 70%)", True),
-    ("facilities", "People and places", "Hospitals, schools, police, worship", "A blue ring means it stands on low ground.",
-     "background:#1f2937;border:2px solid #2a78d6;border-radius:50%;width:14px;height:14px", True),
+# The layers panel, by what a reader asks of the map: today's outlook, where
+# water goes, where slopes fail, who and what is in the way, and the base map.
+# Rows: (id, name, note, legend-key class, on by default, shown from zoom).
+MAP_GROUPS = [
+    ("outlook", "Today's outlook", [
+        ("zones", "Warning zones", "One per stream catchment. In a Watch or Act outlook, the zones it names fill "
+         "with the warning colour.", "k-zones", True, None),
+    ]),
+    ("flood", "Flood hazard", [
+        ("low", "Flood-prone low ground", "Within 3 m of a stream or the shore: water gathers here in heavy rain.",
+         "k-low", True, None),
+        ("streams", "Streams", "Drainage lines traced from the terrain; thicker drains more land.", "k-streams", True, None),
+        ("floods", "Past floods", "Places named in flood reports since 2007; the number is how many floods. "
+         "A ring means the report named a street or landmark there.", "k-floods", True, None),
+    ]),
+    ("slope", "Landslide hazard", [
+        ("steep", "Steep slopes", "Steeper than 25\u00b0: landslides, rockfalls and wall collapses are likelier.",
+         "k-steep", True, None),
+    ]),
+    ("people", "People and places", [
+        ("buildings", "Buildings", "Every footprint: blue on flood-prone ground, brown on steep slopes.",
+         "k-buildings", True, 14),
+        ("roads", "Roads that may flood", "Main roads; blue stretches cross flood-prone ground.", "k-roads", True, None),
+        ("facilities", "Health, schools, police", "A blue ring: on flood-prone ground; brown: on a steep slope. "
+         "Schools appear from a closer zoom.",
+         "k-facilities", True, 14),
+        ("worship", "Places of worship", "Often used as shelters.", "k-worship", False, 16),
+        ("pop", "Population density", "People per hectare, estimated from buildings (about 3.6 people each).",
+         "k-pop", False, None),
+    ]),
 ]
-ZOOM_HINTS = {"buildings": "Zoom in to see them", "facilities": "Zoom in to see them"}
+BASEMAPS = [("streets", "Streets"), ("hot", "Humanitarian"), ("satellite", "Satellite"), ("none", "None")]
+POP_RAMP = ["#f2f0f7", "#cbc9e2", "#9e9ac8", "#756bb1", "#54278f"]  # ColorBrewer Purples, 5 classes
 
 
 def _layers_panel() -> str:
-    rows, group = [], None
-    for lid, grp, name, note, key, on in MAP_LAYERS:
-        if grp != group:
-            rows.append(f"<h3>{grp}</h3>")
-            group = grp
-        hint = (f'<span class="zoomhint" data-zoomhint="{lid}" hidden>{ZOOM_HINTS[lid]}</span>' if lid in ZOOM_HINTS else "")
-        ramp = ""
-        if lid == "pop":
-            ramp = ('<span class="ramp">' + "".join(f'<span class="c" style="background:{c}"></span>' for _, c in
-                    [(5, "#f3e8ff"), (25, "#d8b4fe"), (60, "#a855f7"), (120, "#7e22ce"), (200, "#4c1d95")]) +
-                    " 5 → 200+ per ha</span>")
-        rows.append(f'<label><input type="checkbox" data-layer="{lid}"{" checked" if on else ""}>'
-                    f'<span class="key" style="{key}"></span><span class="name">{name}</span>'
-                    f'<span class="note">{note}</span>{ramp}{hint}</label>')
-    return ('<button id="layersBtn" class="btn layers-btn" type="button">Layers</button>'
-            '<aside id="layers" class="layers" aria-label="Map layers">'
-            '<div class="search"><input id="q" type="search" placeholder="Search a neighbourhood or place" '
-            'aria-label="Search a neighbourhood or place" autocomplete="off"><ul id="results" class="results" hidden></ul></div>'
-            + "".join(rows) + "</aside>"
-            '<div id="hint" class="hint">Click anywhere on the map to see what is there</div>')
+    groups = []
+    for gid, title, rows in MAP_GROUPS:
+        items = []
+        for lid, name, note, key, on, zoom in rows:
+            extra = ""
+            if lid == "pop":
+                extra = ('<span class="ramp">' + "".join(f'<i style="background:{c}"></i>' for c in POP_RAMP)
+                         + "<em>5</em><em>200+ per ha</em></span>")
+            if lid == "floods":
+                extra = ('<span class="since"><input id="since" type="range" min="2007" max="2026" value="2007" step="1" '
+                         'aria-label="Show floods from this year"><output id="sinceOut">since 2007</output></span>')
+            hint = f'<span class="zoomhint" data-zoomhint="{lid}" hidden>Zoom in to see them</span>' if zoom else ""
+            items.append(f'<label class="row"><input type="checkbox" data-layer="{lid}"{" checked" if on else ""}'
+                         f'{f" data-minzoom={zoom}" if zoom else ""}><span class="key {key}" aria-hidden="true"></span>'
+                         f'<span class="name">{name}</span><span class="note">{note}</span>{extra}{hint}</label>')
+        groups.append(f'<details class="grp" open><summary>{title}</summary>{"".join(items)}</details>')
+    base = "".join(f'<label class="seg"><input type="radio" name="basemap" value="{v}"{" checked" if v == "streets" else ""}>'
+                   f'<span>{t}</span></label>' for v, t in BASEMAPS)
+    groups.append('<details class="grp" open><summary>Base map</summary>'
+                  f'<div class="segs" role="radiogroup" aria-label="Base map">{base}</div>'
+                  '<label class="row"><input type="checkbox" data-layer="relief" checked><span class="key k-relief" aria-hidden="true">'
+                  '</span><span class="name">Relief shading</span><span class="note">The Lion Mountains: rain on them reaches '
+                  'the city within the hour.</span></label>'
+                  '<label class="slider"><span>Hazard layers</span><input id="opacity" type="range" min="20" max="100" '
+                  'value="80" aria-label="Hazard layer opacity"><output id="opacityOut">80%</output></label></details>'
+                  '<p class="guide"><a href="map-guide.html">How to read this map</a> · press <kbd>/</kbd> to search</p>')
+    search = ('<div id="searchbox" class="searchbox" role="search">'
+              '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>'
+              '<input id="q" type="search" placeholder="Search a place or street" '
+              'aria-label="Search the map" autocomplete="off" spellcheck="false" enterkeyhint="search" '
+              'role="combobox" aria-expanded="false" aria-controls="results" aria-autocomplete="list">'
+              '<kbd class="slash" title="Press / to search">/</kbd>'
+              '<button id="qclear" class="qclear" type="button" aria-label="Clear search" hidden>&times;</button>'
+              '<button id="layersBtn" class="layers-btn" type="button" aria-controls="layers" aria-expanded="false">'
+              '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5-10-5zM2 13l10 5 10-5M2 17.5l10 5 10-5"/></svg>'
+              '<span>Layers</span></button>'
+              '<ul id="results" class="results" role="listbox" hidden></ul></div>')
+    return (search + '<aside id="layers" class="layers" aria-label="Map layers"><div class="layers-head">'
+            '<b>Map layers</b><button id="layersClose" class="x" type="button" aria-label="Close layers">&times;</button></div>'
+            + "".join(groups) + "</aside>"
+            '<div id="hint" class="hint">Tap or click anywhere on the map to see what is there</div>')
+
+
+LEVEL_KEY = ('<details class="levelkey"><summary><span class="eyebrow">What the colours mean</span>'
+             '<span class="lvl LOW">LOW</span><span class="lvl ELEVATED">ELEVATED</span><span class="lvl HIGH">HIGH</span></summary>'
+             '<div><span class="lvl LOW">LOW</span> Normal: no flood threat expected.</div>'
+             '<div><span class="lvl ELEVATED">ELEVATED</span> Watch: be aware; heavy rain is possible.</div>'
+             '<div><span class="lvl HIGH">HIGH</span> Act: be prepared to move people from low ground.</div>'
+             '<p class="fine">The international colour code for public warnings (ISO 22324, WMO): green, yellow, orange, '
+             'red. Red is kept for a flood warning when flooding is imminent or under way, which Lion Eyes does not '
+             'issue yet. The level is always written out as well, for readers who do not see colour.</p></details>')
 
 
 def _home(found: list[tuple[str, dict]]) -> str:
@@ -457,6 +521,7 @@ def _home(found: list[tuple[str, dict]]) -> str:
 <p class="facts">{html.escape(wet_text)} Forecast: ECMWF ensemble, run {html.escape(o['forecast_run'])}.</p>
 <div class="sms"><span class="eyebrow">Short message · SMS or WhatsApp</span><p id="smstext">{sms}</p>
 <button id="copy" type="button">Copy</button></div>
+{LEVEL_KEY}
 <p class="links"><a href="outlook/{stem}.html">Full bulletin</a> · <a href="outlook/index.html">Earlier outlooks</a> ·
 <a href="about.html">How it works</a></p>
 <p class="fine">{DISCLAIMER}</p></div></aside>"""
@@ -512,14 +577,22 @@ def _bar_chart(items: list[tuple[str, int, str]], label_every: int = 1, height: 
     return "".join(parts)
 
 
-FLOODS_SCRIPT = """<script>(function(){var cards=[].slice.call(document.querySelectorAll('.event')),kind='all',
+FLOODS_SCRIPT = """<script>(function(){var bar=document.querySelector('header.bar');function bh(){
+document.documentElement.style.setProperty('--bar-h',bar.offsetHeight+'px')}bh();addEventListener('resize',bh);var cards=[].slice.call(document.querySelectorAll('.event')),kind='all',
 q=document.getElementById('fq'),yr=document.getElementById('fy'),count=document.getElementById('fcount');
 function apply(){var t=q.value.trim().toLowerCase(),y=yr.value,n=0;cards.forEach(function(c){
 var ok=(kind==='all'||(kind==='deadly'?c.dataset.dead==='1':c.dataset.kind===kind))&&(!y||c.dataset.year===y)&&
 (!t||c.textContent.toLowerCase().indexOf(t)>=0);c.hidden=!ok;if(ok)n++});count.textContent=n+' of '+cards.length+' floods'}
 [].forEach.call(document.querySelectorAll('.chip[data-kind]'),function(b){b.addEventListener('click',function(){
 kind=b.dataset.kind;[].forEach.call(document.querySelectorAll('.chip[data-kind]'),function(o){o.classList.toggle('on',o===b)});apply()})});
-q.addEventListener('input',apply);yr.addEventListener('change',apply);apply()})();</script>"""
+q.addEventListener('input',apply);yr.addEventListener('change',apply);
+[].forEach.call(document.querySelectorAll('.yearnav a'),function(a){a.addEventListener('click',function(){
+if(yr.value&&yr.value!==a.dataset.y){yr.value='';apply()}})});
+var top=document.getElementById('totop');addEventListener('scroll',function(){top.hidden=scrollY<900},{passive:true});
+top.addEventListener('click',function(e){e.preventDefault();scrollTo({top:0,behavior:'smooth'})});
+function mark(){var h=location.hash.slice(1),c=h&&document.getElementById(h);cards.forEach(function(x){x.classList.toggle('hit',x===c)});
+if(c&&c.hidden){kind='all';q.value='';yr.value='';apply();c.scrollIntoView()}}addEventListener('hashchange',mark);
+apply();mark()})();</script>"""
 
 
 def _floods_page() -> str:
@@ -536,16 +609,13 @@ def _floods_page() -> str:
     worst = cat.loc[cat["deaths"].fillna(0).idxmax()]
     place_counts = pd.Series([pl for locs in cat["locations"] for pl in locs]).value_counts()
     top_place, top_n = place_counts.index[0], int(place_counts.iloc[0])
-    gaps = [y for y in years if not by_year.get(y, 0)]
-    year_note = ("Dashed: no flood reports found online for that year. That is a gap in the record, not a dry year."
-                 if gaps else "Every year has at least one report. A short bar is more likely a gap in the record "
-                 "than a quiet year: small floods rarely make the news.")
-    month_names = dict(enumerate(["January", "February", "March", "April"] + [
-        "May", "June", "July", "August", "September", "October", "November", "December"], 1))
+    month_names = ["January", "February", "March", "April", "May", "June", "July", "August",
+                   "September", "October", "November", "December"]
     ranked = by_month.sort_values(ascending=False, kind="stable")
-    top_month, top_month_n = month_names[int(ranked.index[0])], int(ranked.iloc[0])
-    next_month, next_month_n = month_names[int(ranked.index[1])], int(ranked.iloc[1])
+    top_month, top_month_n = month_names[int(ranked.index[0]) - 1], int(ranked.iloc[0])
+    next_month, next_month_n = month_names[int(ranked.index[1]) - 1], int(ranked.iloc[1])
     cards = []
+    placed = _placed()
     for _, e in cat.iterrows():
         month_only = e["date_confidence"] == "month_only"
         when = f"{e['date']:%b %Y}" if month_only else f"{e['date']:%d %b %Y}"
@@ -555,14 +625,26 @@ def _floods_page() -> str:
         srcs = "".join(f'<li><a href="{html.escape(u)}" rel="noopener">{html.escape(u.split("//")[-1][:70])}</a></li>'
                        for u in e["sources"])
         time = "" if pd.isna(e["time_of_day"]) else f"<small>{html.escape(str(e['time_of_day'])[:40])}</small>"
+        on_map = next((pl for pl in e["locations"] if pl in placed), None)
+        map_link = (f'<a class="onmap" href="index.html#place={html.escape(quote(on_map))}">Show on map</a>'
+                    if on_map else "")
         cards.append(
-            f'<div class="event" data-kind="{kind}" data-dead="{1 if dead else 0}" data-year="{e["date"].year}">'
+            f'<div class="event" id="{e["event_id"]}" data-kind="{kind}" data-dead="{1 if dead else 0}" data-year="{e["date"].year}">'
             f'<div class="when">{when}{time}</div><div>'
             f'<div class="places">{html.escape(", ".join(e["locations"][:6]))}</div>'
             f'<span class="badge">{kind_label}</span>' + (f'<span class="badge dead">{dead} dead</span>' if dead else "")
             + f'<p class="sum">{html.escape(str(e["summary"]))}</p>'
-            f'<details><summary>{len(e["sources"])} source{"s" if len(e["sources"]) != 1 else ""}</summary><ul>{srcs}</ul></details>'
+            f'<div class="foot"><details><summary>{len(e["sources"])} source{"s" if len(e["sources"]) != 1 else ""}</summary><ul>{srcs}</ul></details>'
+            f'{map_link}<a class="permalink" href="#{e["event_id"]}" aria-label="Link to this flood">#</a></div>'
             "</div></div>")
+    gap_note = ('<p class="small muted">Dashed: no flood reports found online for that year. That is a gap in the record, '
+                'not a dry year.</p>' if any(n == 0 for _, n, _ in year_items) else
+                '<p class="small muted">Every year has at least one report, but small floods and the years before 2014 '
+                'are still under-recorded.</p>')
+    first_of_year = {}
+    for _, e in cat.iterrows():
+        first_of_year.setdefault(int(e["date"].year), e["event_id"])
+    year_nav = "".join(f'<a href="#{eid}" data-y="{y}">{y}</a>' for y, eid in first_of_year.items())
     year_opts = "".join(f'<option value="{y}">{y}</option>' for y in sorted(set(cat["date"].dt.year), reverse=True))
     body = f"""<div class="hero"><p class="eyebrow">Flood history</p><h1>Every flood we could <em>find</em></h1>
 <p class="lede">Floods on the Freetown peninsula since 2007, each from public sources: news, the National Disaster
@@ -577,7 +659,7 @@ about a flood that is missing</a>.</p></div>
 </div>
 <div class="two">
 <div class="panelbox"><h3>Floods per year</h3>{_bar_chart(year_items, label_every=2)}
-<p class="small muted">{year_note}</p></div>
+{gap_note}</div>
 <div class="panelbox"><h3>By month</h3>{_bar_chart(month_items, width=340, height=200)}
 <p class="small muted">The rainy season runs May to November.</p></div>
 </div>
@@ -588,7 +670,9 @@ about a flood that is missing</a>.</p></div>
 <select id="fy" class="chip" aria-label="Year"><option value="">Any year</option>{year_opts}</select>
 <input id="fq" type="search" placeholder="Search places or words" aria-label="Search the flood history">
 <span id="fcount" class="small muted"></span></div>
+<nav class="yearnav" aria-label="Jump to a year">{year_nav}</nav>
 <div class="events">{''.join(cards)}</div>
+<a href="#top" class="totop" id="totop" hidden>Back to top</a>
 {TIP_SCRIPT}{FLOODS_SCRIPT}"""
     return _shell("Flood history", body, path="floods.html")
 
@@ -671,6 +755,7 @@ def _about_page() -> str:
                  f"{rates['high_pct']}% of rainy-season days. <a href='analysis/backtest.html'>How well it works</a>.</p>")
     cards = [
         ("outlook-method.html", "How the Outlook works", "The rules behind each level, the two daily issues, and the ways to receive it.", None),
+        ("map-guide.html", "Reading the map", "The warning colours (the international code), what each hazard layer shows, and how to search and share a place.", None),
         ("analysis/backtest.html", "How well it works", "The Outlook replayed on 2024-2026 forecasts: which floods it would have warned of, and how often it raises an alert.", None),
         ("analysis/hindcast.html", "What past floods teach", "Satellite rain on 19 rainy seasons against the flood record: flood days are clearly wetter.", "figures/streams_and_flood_places.png"),
         ("analysis/zones.html", "Warning zones", "94 stream catchments, with the people living on low ground and on steep slopes in each.", "figures/warning_zones.png"),
@@ -743,15 +828,37 @@ def _latest_json() -> dict | None:
     return o | {"sms": outlook.sms_text(o), "bulletin_url": f"{SITE_URL}outlook/{stem}.html"}
 
 
+def _placed() -> dict[str, tuple[float, float, str]]:
+    """Reported place name -> (lat, lon, precision), for names the map can show."""
+    df = places.load()
+    return {r["place"]: (float(r["lat"]), float(r["lon"]), str(r.get("precision") or "area")) for _, r in df.iterrows()}
+
+
 def _places_geojson() -> dict:
-    places = pd.read_csv(config.DERIVED_DIR / "flood_places.csv")
-    places = places[places["geocoded"]]
-    cat = events.load_catalogue()
+    """One point per location; names that geocode to the same spot are merged."""
+    cat = events.load_catalogue().sort_values("date", ascending=False)
+    spots: dict[tuple[float, float], dict] = {}
+    for name, (lat, lon, precision) in _placed().items():
+        spot = spots.setdefault((round(lat, 4), round(lon, 4)), {"names": [], "precision": precision, "events": {}})
+        spot["names"].append(name)
+        if precision == "area":
+            spot["precision"] = "area"
+        for _, e in cat.iterrows():
+            if name in e["locations"]:
+                month_only = e["date_confidence"] == "month_only"
+                spot["events"][e["event_id"]] = {
+                    "id": e["event_id"], "date": f"{e['date']:%b %Y}" if month_only else f"{e['date']:%d %b %Y}",
+                    "year": int(e["date"].year), "type": e["type"],
+                    "deaths": None if pd.isna(e["deaths"]) else int(e["deaths"])}
     feats = []
-    for _, p in places.iterrows():
-        dates = [f"{e['date']:%d %b %Y}" for _, e in cat.iterrows() if p["place"] in e["locations"]]
-        feats.append({"type": "Feature", "geometry": {"type": "Point", "coordinates": [p["lon"], p["lat"]]},
-                      "properties": {"place": p["place"], "events": int(p["events"]), "dates": dates}})
+    for (lat, lon), spot in spots.items():
+        evs = sorted(spot["events"].values(), key=lambda e: e["id"], reverse=True)
+        if not evs:
+            continue
+        names = sorted(spot["names"], key=len)
+        feats.append({"type": "Feature", "geometry": {"type": "Point", "coordinates": [lon, lat]},
+                      "properties": {"place": names[0], "aka": names[1:], "precision": spot["precision"],
+                                     "events": len(evs), "list": evs}})
     return {"type": "FeatureCollection", "features": feats}
 
 

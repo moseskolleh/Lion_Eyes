@@ -70,7 +70,7 @@
         "median_other_mm": 36.5
       },
       "day_mean": {
-        "auc": 0.802,
+        "auc": 0.801,
         "auc_90pct_interval": [
           0.747,
           0.855
@@ -288,7 +288,7 @@
         "auc_all": 0.553,
         "auc_coastal": 0.517,
         "auc_coastal_90pct_interval": [
-          0.397,
+          0.396,
           0.637
         ],
         "auc_inland": 0.563,
@@ -557,7 +557,7 @@
           "percentile": 79.2
         },
         "prev_7d": {
-          "mm": 390.5,
+          "mm": 390.4,
           "percentile": 99.8
         },
         "day_plus_prev_3d": {
@@ -730,7 +730,7 @@
         },
         "prev_3d": {
           "mm": 56.5,
-          "percentile": 61.8
+          "percentile": 61.9
         },
         "prev_7d": {
           "mm": 60.9,
@@ -787,7 +787,7 @@
       },
       "2018-06-22": {
         "day_max": {
-          "mm": 23.7,
+          "mm": 23.8,
           "percentile": 31.9
         },
         "day_mean": {
@@ -905,7 +905,7 @@
           "percentile": 35.7
         },
         "prev_3d": {
-          "mm": 85.4,
+          "mm": 85.5,
           "percentile": 81.1
         },
         "prev_7d": {
@@ -1382,6 +1382,198 @@
         "day_mean_mm": 109.9,
         "day_max_mm": 137.7,
         "prev_3d_mm": 52.2
+      }
+    ],
+    "season_edges": [
+      {
+        "level": "wet",
+        "months": "Jul-Sep",
+        "reduction": "none",
+        "factors": {
+          "7": 1.0,
+          "8": 1.0,
+          "9": 1.0
+        },
+        "threshold_mm": "30",
+        "floods": 35,
+        "caught": 33,
+        "false_alarm_days_per_season": 21.7,
+        "false_alarm_days_per_flood_caught": 12.5
+      },
+      {
+        "level": "wet",
+        "months": "May, Jun, Oct, Nov",
+        "reduction": "none",
+        "factors": {
+          "5": 1.0,
+          "6": 1.0,
+          "10": 1.0,
+          "11": 1.0
+        },
+        "threshold_mm": "30",
+        "floods": 10,
+        "caught": 4,
+        "false_alarm_days_per_season": 7.3,
+        "false_alarm_days_per_flood_caught": 34.8
+      },
+      {
+        "level": "wet",
+        "months": "May, Jun, Oct, Nov",
+        "reduction": "as now",
+        "factors": {
+          "5": 0.6,
+          "6": 0.8,
+          "10": 0.8,
+          "11": 0.8
+        },
+        "threshold_mm": "18-24",
+        "floods": 10,
+        "caught": 7,
+        "false_alarm_days_per_season": 12.9,
+        "false_alarm_days_per_flood_caught": 35.1
+      },
+      {
+        "level": "wet",
+        "months": "May, Jun, Oct, Nov",
+        "reduction": "x0.8",
+        "factors": {
+          "5": 0.8,
+          "6": 0.8,
+          "10": 0.8,
+          "11": 0.8
+        },
+        "threshold_mm": "24",
+        "floods": 10,
+        "caught": 5,
+        "false_alarm_days_per_season": 11.8,
+        "false_alarm_days_per_flood_caught": 44.8
+      },
+      {
+        "level": "wet",
+        "months": "May, Jun, Oct, Nov",
+        "reduction": "x0.6",
+        "factors": {
+          "5": 0.6,
+          "6": 0.6,
+          "10": 0.6,
+          "11": 0.6
+        },
+        "threshold_mm": "18",
+        "floods": 10,
+        "caught": 7,
+        "false_alarm_days_per_season": 18.8,
+        "false_alarm_days_per_flood_caught": 51.0
+      },
+      {
+        "level": "wet",
+        "months": "May, Jun, Oct, Nov",
+        "reduction": "x0.4",
+        "factors": {
+          "5": 0.4,
+          "6": 0.4,
+          "10": 0.4,
+          "11": 0.4
+        },
+        "threshold_mm": "12",
+        "floods": 10,
+        "caught": 8,
+        "false_alarm_days_per_season": 29.3,
+        "false_alarm_days_per_flood_caught": 69.5
+      },
+      {
+        "level": "very wet",
+        "months": "Jul-Sep",
+        "reduction": "none",
+        "factors": {
+          "7": 1.0,
+          "8": 1.0,
+          "9": 1.0
+        },
+        "threshold_mm": "50",
+        "floods": 35,
+        "caught": 26,
+        "false_alarm_days_per_season": 10.6,
+        "false_alarm_days_per_flood_caught": 7.7
+      },
+      {
+        "level": "very wet",
+        "months": "May, Jun, Oct, Nov",
+        "reduction": "none",
+        "factors": {
+          "5": 1.0,
+          "6": 1.0,
+          "10": 1.0,
+          "11": 1.0
+        },
+        "threshold_mm": "50",
+        "floods": 10,
+        "caught": 0,
+        "false_alarm_days_per_season": 1.7,
+        "false_alarm_days_per_flood_caught": null
+      },
+      {
+        "level": "very wet",
+        "months": "May, Jun, Oct, Nov",
+        "reduction": "as now",
+        "factors": {
+          "5": 0.6,
+          "6": 0.8,
+          "10": 0.8,
+          "11": 0.8
+        },
+        "threshold_mm": "30-40",
+        "floods": 10,
+        "caught": 3,
+        "false_alarm_days_per_season": 4.3,
+        "false_alarm_days_per_flood_caught": 27.3
+      },
+      {
+        "level": "very wet",
+        "months": "May, Jun, Oct, Nov",
+        "reduction": "x0.8",
+        "factors": {
+          "5": 0.8,
+          "6": 0.8,
+          "10": 0.8,
+          "11": 0.8
+        },
+        "threshold_mm": "40",
+        "floods": 10,
+        "caught": 2,
+        "false_alarm_days_per_season": 3.4,
+        "false_alarm_days_per_flood_caught": 32.5
+      },
+      {
+        "level": "very wet",
+        "months": "May, Jun, Oct, Nov",
+        "reduction": "x0.6",
+        "factors": {
+          "5": 0.6,
+          "6": 0.6,
+          "10": 0.6,
+          "11": 0.6
+        },
+        "threshold_mm": "30",
+        "floods": 10,
+        "caught": 4,
+        "false_alarm_days_per_season": 7.3,
+        "false_alarm_days_per_flood_caught": 34.8
+      },
+      {
+        "level": "very wet",
+        "months": "May, Jun, Oct, Nov",
+        "reduction": "x0.4",
+        "factors": {
+          "5": 0.4,
+          "6": 0.4,
+          "10": 0.4,
+          "11": 0.4
+        },
+        "threshold_mm": "20",
+        "floods": 10,
+        "caught": 5,
+        "false_alarm_days_per_season": 16.1,
+        "false_alarm_days_per_flood_caught": 61.0
       }
     ]
   }

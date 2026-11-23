@@ -39,3 +39,67 @@ def test_score_rule_ignores_days_outside_window():
     fires.loc["2020-08-05"] = True  # two days after the flood
     s = hindcast.score_rule(fires, _days("2020-08-03"), seasons=1)
     assert (s.hits, s.false_alarms) == (0, 1)
+
+
+def test_offline_run_rescores_from_the_daily_table(tmp_path, monkeypatch):
+    import json
+
+    from floodwatch import config, events
+
+    rng = np.random.default_rng(1)
+    days = pd.date_range("2019-04-01", "2020-11-30", freq="D")
+    rain = pd.Series(rng.gamma(0.8, 12.0, len(days)), index=days)
+    floods = _days("2019-08-10", "2020-07-20", "2020-09-05")
+    rain.loc[floods] = 250.0  # flood days are very wet
+    daily = pd.DataFrame({"day_max": rain * 1.3, "day_mean": rain})
+    daily["prev_3d"] = rain.shift(1).rolling(3).sum()
+    daily["prev_7d"] = rain.shift(1).rolling(7).sum()
+    daily["day_plus_prev_3d"] = rain + daily["prev_3d"]
+    daily["tide_max"] = 1.0
+    daily["tide_range"] = 2.0
+    monkeypatch.setattr(config, "DERIVED_DIR", tmp_path)
+    daily.rename_axis("date").to_csv(tmp_path / "daily_features_chirps.csv")
+    (tmp_path / "hindcast_results.json").write_text(json.dumps({"tide_fit_check": {"rmse_m": 0.047}}))
+    catalogue = pd.DataFrame(
+        {"date": floods, "date_confidence": "exact", "coastal": [True, False, False]}
+    )
+    monkeypatch.setattr(events, "load_catalogue", lambda: catalogue)
+
+    res = hindcast.run(2019, offline=True)
+
+    assert res["tide_fit_check"] == {"rmse_m": 0.047}  # carried over, not recomputed
+    assert res["chirps"]["floods_scored"] == ["2019-08-10", "2020-07-20", "2020-09-05"]
+    assert res["chirps"]["seasons"] == 2
+    assert res["chirps"]["skill"]["day_mean"]["auc"] > 0.95
+    assert (tmp_path / "hindcast_tables.md").exists()
+
+
+def test_offline_run_refuses_a_table_that_starts_too_late(tmp_path, monkeypatch):
+    import pytest
+
+    from floodwatch import config
+
+    days = pd.date_range("2015-04-01", "2015-11-30", freq="D")
+    pd.DataFrame({"day_mean": 1.0}, index=days).rename_axis("date").to_csv(
+        tmp_path / "daily_features_chirps.csv"
+    )
+    monkeypatch.setattr(config, "DERIVED_DIR", tmp_path)
+    assert len(hindcast.load_daily(2015)) == len(days)
+    with pytest.raises(SystemExit, match="--from 2008"):
+        hindcast.load_daily(2008)
+
+
+def test_season_edge_check_counts_catches_and_false_alarm_days():
+    days = pd.date_range("2020-05-01", "2020-11-30", freq="D")
+    rain = pd.Series(0.0, index=days)
+    rain.loc["2020-05-10"] = 20.0  # May flood: caught once the 30 mm threshold is cut to 18 mm
+    rain.loc["2020-08-10"] = 60.0  # August flood
+    rain.loc["2020-05-20"] = 25.0  # ordinary May day
+    daily = pd.DataFrame({"day_mean": rain})
+    rows = hindcast.season_edge_check(daily, days, _days("2020-05-10", "2020-08-10"), seasons=1)
+    wet = {r["reduction"]: r for r in rows if r["level"] == "wet" and r["months"] != "Jul-Sep"}
+    peak = next(r for r in rows if r["level"] == "wet" and r["months"] == "Jul-Sep")
+    assert (peak["caught"], peak["floods"]) == (1, 1)
+    assert (wet["none"]["caught"], wet["none"]["false_alarm_days_per_season"]) == (0, 0.0)
+    assert (wet["x0.6"]["caught"], wet["x0.6"]["false_alarm_days_per_season"]) == (1, 1.0)
+    assert wet["as now"]["threshold_mm"] == "18-24"

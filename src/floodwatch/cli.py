@@ -9,6 +9,7 @@ Commands
   exposure   count buildings and people per zone and hazard class (after zones)
   subdaily   half-hourly satellite rain around past floods (after hindcast)
   backtest   replay the Outlook on past ECMWF forecasts (2024-2026)
+  places     place past floods on the website map (after catalogue)
   layers     map layers for the website (after zones and exposure)
   outlook    today's 3-day flood outlook (live data; writes data/outlook/)
   site       build the static website (GitHub Pages) into _site/
@@ -59,7 +60,7 @@ def _catalogue(args: argparse.Namespace) -> None:
 def _hindcast(args: argparse.Namespace) -> None:
     from floodwatch import hindcast
 
-    hindcast.run(args.first_year)
+    hindcast.run(args.first_year, offline=args.offline)
 
 
 def _terrain(args: argparse.Namespace) -> None:
@@ -98,6 +99,14 @@ def _exposure(args: argparse.Namespace) -> None:
     population.run()
 
 
+def _places(args: argparse.Namespace) -> None:
+    from floodwatch import places
+
+    df = places.build()
+    placed = df["lat"].notna()
+    print(f"{int(placed.sum())} of {len(df)} flood places placed on the map -> {places.MAP_PLACES_CSV}")
+
+
 def _layers(args: argparse.Namespace) -> None:
     from floodwatch import maplayers
 
@@ -125,11 +134,15 @@ def main(argv: list[str] | None = None) -> None:
     hc = sub.add_parser("hindcast", help="score warning rules")
     hc.add_argument("--from", dest="first_year", type=int, default=config.FIRST_YEAR,
                     help="first rainy season to include (default %(default)s)")
+    hc.add_argument("--offline", action="store_true",
+                    help="re-score from data/derived/daily_features_chirps.csv, no download "
+                         "(use after the flood history changes)")
     hc.set_defaults(func=_hindcast)
     sub.add_parser("terrain", help="streams, flood places and exposure map").set_defaults(func=_terrain)
     sub.add_parser("zones", help="warning zones (one per catchment) and their maps").set_defaults(func=_zones)
     sub.add_parser("exposure", help="buildings and people per zone (after zones)").set_defaults(func=_exposure)
     sub.add_parser("subdaily", help="half-hourly IMERG rain around past floods (needs Earthdata token)").set_defaults(func=_subdaily)
+    sub.add_parser("places", help="place past floods on the website map (OpenStreetMap, after catalogue)").set_defaults(func=_places)
     sub.add_parser("layers", help="map layers for the website (terrain, people, buildings, roads)").set_defaults(func=_layers)
     bt = sub.add_parser("backtest", help="replay the Outlook on past ECMWF forecasts and score it")
     bt.add_argument("--evening", action="store_true", help="evening issues before each flood (after the morning run)")

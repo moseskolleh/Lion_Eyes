@@ -216,7 +216,58 @@ def analyse(
             }
 
     result["heavy_days_without_reported_flood"] = heavy_unreported(daily, season.index, near)
+    if "day_mean" in daily:
+        result["season_edges"] = season_edge_check(daily, season.index, flood_days, seasons)
     return result
+
+
+PEAK_MONTHS = (7, 8, 9)
+EDGE_MONTHS = (5, 6, 10, 11)
+
+
+def season_edge_check(
+    daily: pd.DataFrame, season_days: pd.DatetimeIndex, flood_days: pd.DatetimeIndex, seasons: int
+) -> list[dict]:
+    """The Outlook's "wet" and "very wet" day thresholds, lowered by different
+    amounts in May, June, October and November, tried on observed rain.
+
+    Observed peninsula-average rain stands in for a perfect forecast. A flood is
+    caught if its window reaches the threshold; a false-alarm day is a day at or
+    above it outside every flood window.
+    """
+    from floodwatch import outlook
+
+    w = window_max(daily["day_mean"])
+    rain = daily["day_mean"].reindex(season_days).to_numpy()
+    quiet = ~flood_windows(season_days, flood_days).to_numpy()
+    options = [("Jul-Sep", "none", {m: 1.0 for m in PEAK_MONTHS})]
+    edge = "May, Jun, Oct, Nov"
+    options += [(edge, "none", {m: 1.0 for m in EDGE_MONTHS})]
+    options += [(edge, "as now", {m: outlook.TRANSITION_FACTOR.get(m, 1.0) for m in EDGE_MONTHS})]
+    options += [(edge, f"x{f:g}", {m: f for m in EDGE_MONTHS}) for f in (0.8, 0.6, 0.4)]
+    rows = []
+    for level, mm in (("wet", outlook.WET_DAY_MM), ("very wet", outlook.VERY_WET_DAY_MM)):
+        for months, reduction, factors in options:
+            threshold = mm * season_days.month.map(lambda m: factors.get(m, np.nan)).to_numpy(dtype=float)
+            fires = np.nan_to_num(rain, nan=-1.0) >= np.nan_to_num(threshold, nan=np.inf)
+            floods = [d for d in flood_days if d.month in factors]
+            caught = sum(bool(w.get(d, np.nan) >= mm * factors[d.month]) for d in floods)
+            false_days = int((fires & quiet).sum())
+            values = sorted({round(mm * f) for f in factors.values()})
+            rows.append(
+                {
+                    "level": level,
+                    "months": months,
+                    "reduction": reduction,
+                    "factors": {str(m): f for m, f in factors.items()},
+                    "threshold_mm": f"{values[0]}" if len(values) == 1 else f"{values[0]}-{values[-1]}",
+                    "floods": len(floods),
+                    "caught": caught,
+                    "false_alarm_days_per_season": round(false_days / seasons, 1),
+                    "false_alarm_days_per_flood_caught": round(false_days / caught, 1) if caught else None,
+                }
+            )
+    return rows
 
 
 def heavy_unreported(
@@ -307,6 +358,20 @@ def to_markdown(res: dict) -> str:
             f"| Inland | {t['n_inland']} | {t['auc_inland']:.2f} | "
             f"{t['auc_inland_90pct_interval'][0]:.2f}-{t['auc_inland_90pct_interval'][1]:.2f} |",
         ]
+    for level in ("wet", "very wet") if c.get("season_edges") else ():
+        out += [
+            "",
+            f"**Season-edge thresholds: the Outlook's \"{level}\" day on observed rain**",
+            "",
+            "| Months | Reduction | Threshold | Caught | False-alarm days a season | Per flood caught |",
+            "|---|---|---|---|---|---|",
+        ]
+        for e in (e for e in c["season_edges"] if e["level"] == level):
+            per = "-" if e["false_alarm_days_per_flood_caught"] is None else f"{e['false_alarm_days_per_flood_caught']:.0f}"
+            out.append(
+                f"| {e['months']} | {e['reduction']} | {e['threshold_mm']} mm | {e['caught']} of {e['floods']} | "
+                f"{e['false_alarm_days_per_season']:.1f} | {per} |"
+            )
     out += [
         "",
         "**Wettest days with no reported flood (first dates to search for missing floods)**",
@@ -319,21 +384,53 @@ def to_markdown(res: dict) -> str:
     return "\n".join(out) + "\n"
 
 
-def run(first_year: int = config.FIRST_YEAR) -> dict:
-    from floodwatch.sources import chirps
+def daily_features_path():
+    return config.DERIVED_DIR / "daily_features_chirps.csv"
 
+
+def results_path():
+    return config.DERIVED_DIR / "hindcast_results.json"
+
+
+def load_daily(first_year: int = config.FIRST_YEAR) -> pd.DataFrame:
+    """The daily rain and tide table written by the last full run."""
+    daily = pd.read_csv(daily_features_path(), index_col="date", parse_dates=["date"])
+    if daily.index.min() > pd.Timestamp(first_year, min(config.SEASON_MONTHS), 1):
+        raise SystemExit(
+            f"{daily_features_path()} starts on {daily.index.min().date()}, after the start of the "
+            f"{first_year} rainy season. Run `floodwatch hindcast --from {first_year}` without "
+            "--offline to rebuild it."
+        )
+    return daily[daily.index >= pd.Timestamp(first_year, 1, 1)]
+
+
+def run(first_year: int = config.FIRST_YEAR, offline: bool = False) -> dict:
+    """Score the rules against the flood history.
+
+    ``offline`` re-scores from the daily table already in data/derived, with no
+    download: use it after the flood history changes. The tide fit check is
+    carried over from the last full run, since it needs the raw sea level.
+    """
     catalogue = events.load_catalogue()
-    sea = pd.read_csv(config.RAW_DIR / "tables" / "sea_level.csv.gz", parse_dates=["time"])
-    hours = pd.date_range(f"{config.FIRST_YEAR}-01-01", pd.Timestamp.today().normalize(), freq="h")
-    tide = tides.predict(tides.fit(sea), hours)
+    if offline:
+        daily = load_daily(first_year)
+        previous = json.loads(results_path().read_text()) if results_path().exists() else {}
+        tide_fit = previous.get("tide_fit_check")
+    else:
+        from floodwatch.sources import chirps
 
-    cells = chirps.fetch(first_year, pd.Timestamp.today().year)
-    daily = chirps.daily_features(cells).join(tide_daily(tide), how="left")
-    config.DERIVED_DIR.mkdir(parents=True, exist_ok=True)
-    daily.round(3).to_csv(config.DERIVED_DIR / "daily_features_chirps.csv")
+        sea = pd.read_csv(config.RAW_DIR / "tables" / "sea_level.csv.gz", parse_dates=["time"])
+        hours = pd.date_range(f"{config.FIRST_YEAR}-01-01", pd.Timestamp.today().normalize(), freq="h")
+        tide = tides.predict(tides.fit(sea), hours)
+
+        cells = chirps.fetch(first_year, pd.Timestamp.today().year)
+        daily = chirps.daily_features(cells).join(tide_daily(tide), how="left")
+        config.DERIVED_DIR.mkdir(parents=True, exist_ok=True)
+        daily.round(3).to_csv(daily_features_path())
+        tide_fit = tide_check(sea)
 
     results = {
-        "tide_fit_check": tide_check(sea),
+        "tide_fit_check": tide_fit,
         "chirps": analyse(
             "CHIRPS v3 daily (satellite + gauges, IMERG-timed)",
             daily,
@@ -341,7 +438,7 @@ def run(first_year: int = config.FIRST_YEAR) -> dict:
             catalogue,
         ),
     }
-    (config.DERIVED_DIR / "hindcast_results.json").write_text(json.dumps(results, indent=2))
+    results_path().write_text(json.dumps(results, indent=2))
     tables = to_markdown(results)
     (config.DERIVED_DIR / "hindcast_tables.md").write_text(tables)
     print(tables)

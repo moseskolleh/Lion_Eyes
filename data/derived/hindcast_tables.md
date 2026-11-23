@@ -92,6 +92,28 @@ Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 
 | Shoreline communities | 10 | 0.52 | 0.41-0.64 |
 | Inland | 35 | 0.55 | 0.46-0.64 |
 
+**Season-edge thresholds: the Outlook's "wet" day on observed rain**
+
+| Months | Reduction | Threshold | Caught | False-alarm days a season | Per flood caught |
+|---|---|---|---|---|---|
+| Jul-Sep | none | 30 mm | 33 of 35 | 21.7 | 12 |
+| May, Jun, Oct, Nov | none | 30 mm | 4 of 10 | 7.3 | 35 |
+| May, Jun, Oct, Nov | as now | 18-24 mm | 7 of 10 | 12.9 | 35 |
+| May, Jun, Oct, Nov | x0.8 | 24 mm | 5 of 10 | 11.8 | 45 |
+| May, Jun, Oct, Nov | x0.6 | 18 mm | 7 of 10 | 18.8 | 51 |
+| May, Jun, Oct, Nov | x0.4 | 12 mm | 8 of 10 | 29.3 | 70 |
+
+**Season-edge thresholds: the Outlook's "very wet" day on observed rain**
+
+| Months | Reduction | Threshold | Caught | False-alarm days a season | Per flood caught |
+|---|---|---|---|---|---|
+| Jul-Sep | none | 50 mm | 26 of 35 | 10.6 | 8 |
+| May, Jun, Oct, Nov | none | 50 mm | 0 of 10 | 1.7 | - |
+| May, Jun, Oct, Nov | as now | 30-40 mm | 3 of 10 | 4.3 | 27 |
+| May, Jun, Oct, Nov | x0.8 | 40 mm | 2 of 10 | 3.4 | 32 |
+| May, Jun, Oct, Nov | x0.6 | 30 mm | 4 of 10 | 7.3 | 35 |
+| May, Jun, Oct, Nov | x0.4 | 20 mm | 5 of 10 | 16.1 | 61 |
+
 **Wettest days with no reported flood (first dates to search for missing floods)**
 
 | Date | Peninsula average | Wettest cell | Previous 3 days |

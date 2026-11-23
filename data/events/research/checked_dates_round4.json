@@ -1,0 +1,98 @@
+{
+ "note": "Round 4 (November 2026): X advanced search (since:/until:) and Facebook post search filtered by year, run in a logged-in browser. One entry per target date (searched ±1 day); 'unplaced' lists dated posts that mention floods but do not place them in Freetown, so they are kept out of the catalogue.",
+ "checked": {
+  "2013-08-16": {
+   "flood_found": true,
+   "note": "Philips Street flooding, from a Facebook post dated 18 Aug 2013 that says 'Friday 16 of July 2013'; 16 August 2013 was the Friday (see FT-20130816)."
+  },
+  "2016-09-17": {
+   "flood_found": true,
+   "note": "Flooding on the night of 18-19 Sep 2016 with four deaths (Office of National Security via Umaru Fofana); see FT-20160919. A 15 Sep 22:34 UTC X post reports heavy rain only."
+  },
+  "2008-08-23": {
+   "flood_found": false,
+   "note": "No X or Facebook posts for the window (X has almost nothing from 2008)."
+  },
+  "2008-07-27": {
+   "flood_found": false,
+   "note": "No X or Facebook posts for the window."
+  },
+  "2012-07-29": {
+   "flood_found": false,
+   "note": "No posts for 28-30 Jul 2012. Nearby: deaths in the 4-6 Jul and flash flooding on 9 Jul 2012 (FT-20120705, FT-20120709)."
+  },
+  "2010-08-22": {
+   "flood_found": false,
+   "note": "No posts for the window; 2010 Facebook results are about Freetown, Massachusetts."
+  },
+  "2017-07-08": {
+   "flood_found": false,
+   "note": "Rain only: 'Unumbrellable rain showers in Freetown this morning' and a Mountain Cut rain warning, both 10 Jul 2017.",
+   "sources": [
+    "https://x.com/EricSylas/status/884354900301402114",
+    "https://x.com/sierra_n_salone/status/884418960371970048"
+   ]
+  },
+  "2015-05-18": {
+   "flood_found": false,
+   "note": "Rain only: 'Huge downpour of rain in Freetown' (17 May 2015 16:49 UTC).",
+   "sources": [
+    "https://x.com/P1Adventure/status/599980157731000320"
+   ]
+  },
+  "2013-08-30": {
+   "flood_found": false,
+   "note": "No posts for 29-31 Aug 2013."
+  },
+  "2016-07-27": {
+   "flood_found": false,
+   "note": "Rain only: 'Raining again today in Freetown' (27 Jul) and 'It is heavily raining in freetown this morning' (28 Jul 2016).",
+   "sources": [
+    "https://x.com/t4tunts/status/758307492795473920",
+    "https://x.com/arunakoroma1/status/758545656403333124"
+   ]
+  },
+  "2018-07-22": {
+   "flood_found": false,
+   "note": "A Facebook post on 22 Jul 2018 says a week of heavy rain in Freetown brought no recorded flooding."
+  },
+  "2013-08-25": {
+   "flood_found": false,
+   "note": "No Freetown posts; 27 Aug 2013 posts on 'Flooding in Sierra Leone' concern farmers and a company, not Freetown."
+  },
+  "2011-08-05": {
+   "flood_found": false,
+   "note": "No posts for the window."
+  }
+ },
+ "unplaced": [
+  {
+   "date": "2012-08-29",
+   "text": "My heart goes out to the lovely people of Sierra Leone, and the lives that were lost in yesterday's floods..",
+   "posted": "2012-08-30 13:16 UTC",
+   "source": "https://x.com/lydiaforson/status/241162465700892672",
+   "why_kept_out": "No town named; no other source found placing a 29 Aug 2012 flood in Freetown."
+  },
+  {
+   "date": "2011-11-24",
+   "text": "DUE TO DEFORESTATION, THERE HAVE BEEN TORRENTIAL RAIN FALL CAUSING DRASTIC FLOODING LEADING TO FATAL DESTRUCTION INCLUDING LOSS OF LIFE",
+   "posted": "2011-11-24 22:38 UTC",
+   "source": "https://www.facebook.com/717427467/posts/10150576187912468/",
+   "why_kept_out": "No place named."
+  },
+  {
+   "date": "2011-08-19",
+   "text": "Guinea & Sierra Leone flooded by heavy rains.",
+   "posted": "2011-08-19 13:04 UTC",
+   "source": "https://x.com/NTANewsNow/status/104539149704507394",
+   "why_kept_out": "National, no place or day."
+  },
+  {
+   "date": "2016-08-18",
+   "text": "#SierraLeone's woman flood displaced is inconsolable.",
+   "posted": "2016-08-18 15:32 UTC",
+   "source": "https://x.com/SaloneWomen/status/766296741146726400",
+   "why_kept_out": "No place or day."
+  }
+ ]
+}

@@ -1,8 +1,10 @@
 # Hindcast: does open data "see" Freetown's past floods?
 
-*November 2026. First pass, daily resolution. Reproduce with `floodwatch fetch && floodwatch hindcast --from 2008 && floodwatch terrain`.*
+*November 2026. First pass, daily resolution. Reproduce with `floodwatch fetch && floodwatch hindcast --from 2008 && floodwatch terrain`. After a change to the flood history, `floodwatch hindcast --from 2008 --offline` re-scores from the daily rain table in `data/derived/` with no download.*
 
-*Updated 22 Nov 2026 after a second research round: the wettest days with no reported flood and the empty years were searched one by one. Seven dated floods were added; three of them fell on days this analysis had flagged as wet but unreported (14 Jul 2023, 28-29 Jul 2023, 27-28 Jul 2024). A third round searched Facebook, X and YouTube and added three street floods from 2022 (17 Jun, 9 Jul, 15 Aug), each confirmed in a dated news article. A fourth round read Facebook and X directly in a logged-in browser and filled the empty years: 14 dated floods from 2011-2018, including the 8 Aug 2013 King Jimmy Bridge collapse and a flood on 16 Aug 2013, the wettest day in the record. The research notes are in `data/events/research/`.*
+*Updated 22 Nov 2026 after a second research round: the wettest days with no reported flood and the empty years were searched one by one. Seven dated floods were added; three of them fell on days this analysis had flagged as wet but unreported (14 Jul 2023, 28-29 Jul 2023, 27-28 Jul 2024). A third round searched Facebook, X and YouTube and added three street floods from 2022 (17 Jun, 9 Jul, 15 Aug), each confirmed in a dated news article. The research notes are in `data/events/research/`.*
+
+*Updated 23 Nov 2026 after a fourth round: a year-by-year search of X and Facebook for 2011-2013, 2016 and 2018, with each post opened and quoted. It added 16 events, 14 of them with a known day, so 45 floods are now scored instead of 31. A check of each record against its quoted post then changed four of them: an undated drowning was left out because it may repeat another July 2012 flood, a post that does not give the day was kept as July 2011 only, the 4-6 July 2012 deaths were dated 5 July, and the King Jimmy death toll was set to the BBC's 7 (reports range from 2 to 15). The reasons are in `data/events/research/round4_raw/decisions.json`. All analyses on this page, the terrain section and the half-hourly analysis were re-run on the corrected list.*
 
 ## Questions
 
@@ -15,7 +17,7 @@
 
 | What | Source | Notes |
 |---|---|---|
-| Floods | `data/events/freetown_floods.csv`: 52 events, 2007-2026, 45 with a known day from 2008 on | Built from news, NDMA, IFRC/Red Cross, OCHA and social media in four research rounds. Thin before 2014; none found for 2011-2013, 2016 and 2018. Each row cites its sources. |
+| Floods | `data/events/freetown_floods.csv`: 52 events, 2007-2026, 45 with a known day from 2008 on | Built from news, NDMA, IFRC/Red Cross, OCHA and social media in four research rounds. Every year from 2007 has at least one event, but the list is still thin before 2014. Each row cites its sources. |
 | Rain | CHIRPS v3 daily `sat` product, 0.05 deg (~5.5 km), 49 cells over the peninsula, April-November, 2008-2026 (19 rainy seasons). 2000-2007 is not scored: no dated floods were found before 2008, so those seasons would only add false alarms caused by gaps in the list. | 5-day station-corrected satellite totals, split across days with NASA IMERG. Good for "how wet was this day", no hour-level timing. |
 | Tide | Harmonic tide fitted (UTide) to Open-Meteo modelled sea level 2023-2026 and predicted back to 2000 | Held-out year error 4.7 cm against a +/-68 cm signal. Main constituent M2 = 0.90 m, so spring range ~2.4 m, neap ~1.2 m. |
 | Terrain | Copernicus 30 m elevation model | Streams, upstream area, height above nearest stream (HAND). |
@@ -35,27 +37,75 @@ Over 19 rainy seasons (2008-2026) and the 45 floods with a known day:
 
 - **Flood days are much wetter than ordinary rainy-season days.** On the wettest cell, the median flood window had **84 mm**, against **36 mm** on ordinary days.
 - **Rain separates flood days from ordinary days clearly, though not perfectly.** For peninsula-average rain on the day, the AUC is **0.80** (90% interval 0.75-0.85). 0.5 would mean no information.
-- **Most big floods stand out.** On the wettest cell, 27 of the 45 flood windows were wetter than 85% of ordinary windows, and 16 were wetter than 95%. The deadliest stand out most: Regent, August 2017, was at the 96th percentile; 28 August 2022 at the 100th; 20 July 2024 at the 99th.
+- **Most big floods stand out.** On the wettest cell, 27 of the 45 flood windows were wetter than 85% of ordinary windows, and 16 were wetter than 95%. The deadliest stand out most: Regent, August 2017, was at the 96th percentile; the King Jimmy collapse of 8 August 2013 (7 deaths) at the 96th; 5 July 2012 (6 deaths) at the 97th; 28 August 2022 and 20 July 2024 at the 100th.
+
+### What the fourth research round changed
+
+- **The score fell a little and is now closer to the truth.** With the 31 earlier floods, the AUC for peninsula-average rain was 0.82 (0.75-0.89). With all 45 it is 0.80 (0.75-0.85). The 14 new dated floods come mostly from residents' posts about flooded streets, not from news of disasters. Their median window rain was 42 mm, against 67 mm for the earlier 31, and on their own they score 0.75 (0.64-0.84). News picks the big floods; the history now holds more ordinary ones, and a rain rule finds those harder to see.
+- **The thresholds did not move.** They are percentiles of the rain climate, fixed before scoring, so new floods change the counts of floods caught, not the thresholds. Nothing in the Outlook was changed.
+- **Two of the wettest unreported days had floods.** Round 4 searched 13 of the wettest days with no reported flood. On 16 August 2013, the wettest day in the record (232 mm across the peninsula), a Facebook post describes flooding on Philips Street. The 116 mm of 17 September 2016 was followed by flooding on the night of 18-19 September, with four deaths confirmed by the Office of National Security. CHIRPS puts the heaviest rain two days before that flood, so it stands out on the previous 3 days (99th percentile), not on the day itself (86th). The other 11 days had no posts, or posts about rain only.
+- **A check for search bias.** Five floods were found by searching the wettest unreported days (three in round 2, two in round 4), so they could flatter the score. Leaving them out, the AUC is 0.78 (0.72-0.84).
 
 ### 2. The misses have a pattern: the edges of the season
 
-The weakest cases are the floods whose wettest cell was below the 70th percentile of ordinary days:
-- 27 November 2011: 20th percentile.
-- 23 May 2012: 33rd.
-- 28 June 2013: 68th.
-- 22 June 2018: 32nd.
-- 9 May 2023: 32nd.
-- 23 May 2026: 9th.
-- 24 October 2024: 48th.
-- 23 July 2025: an evening storm, 62nd.
-- 4 August 2024: a wall collapse at Calaba Town, 32nd. The three days before it were very wet (89th percentile), so ground wetness, not the day's rain, explains it.
-- 26 July 2021: 39th, and the date itself is uncertain.
+Sixteen floods were below the 80th percentile on the wettest cell (percentile of ordinary rainy-season days). Nine of them fell in May, June, October or November:
 
-Seven of the ten fall in May, June, October or November, the edges of the season. Four of them came from the fourth research round, so this pattern is now firmer than before. Two explanations fit, and both matter for the product:
+- 27 November 2011, Calaba Town: 20th percentile. One post, which does not say when the flooding started.
+- 23 May 2012, Congo Cross: 33rd. The first rains of the season flooded new roads.
+- 28 June 2013, Kissy Road and East End: 68th.
+- 4 May 2014: 75th.
+- 22 June 2018: 32nd. The post says cleared gutters reduced the worst effects.
+- 17 June 2022: 76th.
+- 9 May 2023: 32nd.
+- 24 October 2024: 48th.
+- 23 May 2026: 9th.
+
+The other seven fell in July and August:
+
+- 9 July 2012: 78th, three days after the deadly rain of 4-6 July.
+- 15 July 2013: 71st.
+- 26 July 2021: 39th. The date itself is uncertain.
+- 4 August 2024: a wall collapse at Calaba Town, 32nd. The three days before it were very wet (93rd percentile), so ground wetness, not the day's rain, explains it.
+- 23 July 2025: an evening storm, 62nd.
+- 31 July 2025: 72nd.
+- 3 August 2026: 79th.
+
+So in May, June, October and November, 9 of the 10 floods were below the 80th percentile; in July to September, 7 of 35. Only 17 November 2016 (82nd) stood out at the edges of the season. Two explanations fit, and both matter for the product:
 - **The storms are short.** Early- and late-season storms are brief, intense convective downpours. Daily data spreads them across a whole day, and CHIRPS also spreads each 5-day total across days.
 - **Less rain is needed to flood.** At the start of the season, drains are still blocked with dry-season rubbish, and slopes and walls have been dry and loose.
 
 So transition months need their own, lower trigger, judged on **hourly** rain.
+
+#### Are the Outlook's lower thresholds for these months right?
+
+The Outlook calls a day "wet" at 30 mm of peninsula-average rain and "very wet" at 50 mm, and lowers both in May (x0.6) and in June, October and November (x0.8). The tables try these and other reductions on observed CHIRPS rain, which stands in for a perfect forecast. A flood is caught if its window reaches the threshold; a false-alarm day is a day at or above it outside every flood window. "As now" is x0.6 in May and x0.8 in the other three months; "per flood caught" is false-alarm days for each flood caught.
+
+**"Wet" day (30 mm in July to September)**
+
+| Months | Reduction | Threshold | Caught | False-alarm days a season | Per flood caught |
+|---|---|---|---|---|---|
+| Jul-Sep | none | 30 mm | 33 of 35 | 21.7 | 12 |
+| May, Jun, Oct, Nov | none | 30 mm | 4 of 10 | 7.3 | 35 |
+| May, Jun, Oct, Nov | as now | 18-24 mm | 7 of 10 | 12.9 | 35 |
+| May, Jun, Oct, Nov | x0.8 | 24 mm | 5 of 10 | 11.8 | 45 |
+| May, Jun, Oct, Nov | x0.6 | 18 mm | 7 of 10 | 18.8 | 51 |
+| May, Jun, Oct, Nov | x0.4 | 12 mm | 8 of 10 | 29.3 | 70 |
+
+**"Very wet" day (50 mm in July to September)**
+
+| Months | Reduction | Threshold | Caught | False-alarm days a season | Per flood caught |
+|---|---|---|---|---|---|
+| Jul-Sep | none | 50 mm | 26 of 35 | 10.6 | 8 |
+| May, Jun, Oct, Nov | none | 50 mm | 0 of 10 | 1.7 | - |
+| May, Jun, Oct, Nov | as now | 30-40 mm | 3 of 10 | 4.3 | 27 |
+| May, Jun, Oct, Nov | x0.8 | 40 mm | 2 of 10 | 3.4 | 32 |
+| May, Jun, Oct, Nov | x0.6 | 30 mm | 4 of 10 | 7.3 | 35 |
+| May, Jun, Oct, Nov | x0.4 | 20 mm | 5 of 10 | 16.1 | 61 |
+
+- **The current reductions earn their place.** At the "wet" level they catch 7 of the 10 floods in these months instead of 4, and each alert is as reliable as without them (35 false-alarm days for each flood caught).
+- **Deeper cuts add false alarms faster than floods.** x0.6 in all four months catches the same 7 floods with 6 more false-alarm days a season; x0.4 catches one more with 16 more.
+- **Alerts in these months stay about three times less reliable than in July to September** (35 against 12 false-alarm days for each flood caught), because floods are rarer then. Lower thresholds cannot fix that; hourly rain and residents' reports have to.
+- **Decision: keep the current reductions.** Nearby choices (x0.7 in May, x0.7 or x0.9 in the other three months) move one or two floods either way, which is within the noise of ten events. Recalibrate on the forecast model's own rain after a season of archived runs, as planned in the [Outlook notes](../outlook.md).
 
 ### 3. Rules from daily rain alone: useful, but noisy
 
@@ -66,20 +116,20 @@ So transition months need their own, lower trigger, judged on **hourly** rain.
 | Previous 3 days in the top 2.5% (>= 155 mm) | 9 of 45 | 1.9 |
 | Wettest cell in the top 10% (>= 62 mm) | 31 of 45 | 15.1 |
 
-A daily rule catching half the floods with about 3 false alarms per 7-month season is a reasonable **Outlook/Watch** level. It is not good enough for a street-level Warning on its own. That level needs hourly rain and resident confirmation (layer 4).
+A daily rule catching about 2 in 5 floods with about 3 false alarms per 7-month season is a reasonable **Outlook/Watch** level. With the 31 earlier floods the same rule caught about half; the share fell because the new floods are smaller. It is not good enough for a street-level Warning on its own. That level needs hourly rain and resident confirmation (layer 4).
 
-**Some of these "false alarms" are real floods that were never reported, and searching for them works.** The second research round searched the 15 wettest no-flood days. It found floods on three of them, and a rule's hits rose with no extra false alarms. A fourth round, reading Facebook and X directly, found a flood on **16 August 2013**, the wettest day in the record (232 mm across the peninsula), and floods in every year that had none. False alarms fell again (2.9 per season for the best rule). The wettest day still without a report is now **23 August 2008** (165 mm). The updated list is below; residents' memories and local archives are the next places to look.
+**Some of these "false alarms" are real floods that were never reported, and searching for them works.** The second research round searched the 15 wettest no-flood days and found floods on three of them. The fourth round searched 13 and found floods on two (see above). Each find turns a false alarm into a hit with no extra false alarms. All but one of the 15 wettest days still without a report have now been searched online at least once; the exception, 1 July 2022, is new to the list. Online archives for the early years are thin, so the rest need local sources: newspaper archives in Freetown, NDMA records, or residents. The updated list is below.
 
 ### 4. Tide: not yet detectable
 
-- **Shoreline floods:** across the 10 floods in shoreline communities, tides were no higher than on ordinary days (AUC 0.52, interval 0.41-0.64).
-- **Inland floods:** no tide effect, as expected (AUC 0.55).
+- **Shoreline floods:** across the 10 floods in shoreline communities, tides were no higher than on ordinary days (AUC 0.52, interval 0.41-0.64). None of the round 4 floods is in a shoreline community, so this result is unchanged.
+- **Inland floods:** across 35 floods, no tide effect, as expected (AUC 0.55, interval 0.46-0.64).
 
 Keep tide as an input for shoreline zones and re-test with more events and hourly timing. With daily data, a high tide anywhere in the 3-day window counts, which blurs the effect.
 
 ### Full tables
 
-(Generated by `floodwatch hindcast --from 2008`; also in `data/derived/hindcast_tables.md`.)
+(Generated by `floodwatch hindcast --from 2008`, with or without `--offline`; also in `data/derived/hindcast_tables.md`.)
 
 Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 2026-10-08, 19 rainy seasons, 45 dated floods.
 
@@ -168,26 +218,28 @@ The full rule table (every measure at every threshold) is in `data/derived/hindc
 ### What this means for the product
 
 1. **The open-data approach works for the Outlook and Watch levels.** Big floods are visible in free satellite rainfall without any sensor.
-2. **Street-level Warnings need hourly rain and people.** Daily rain alone is too noisy. Hourly satellite rain (IMERG) and resident confirmation are the next two building blocks, not optional extras.
-3. **Use season-aware triggers.** Floods at the edges of the season (May, June, October, November) happen at lower rain totals.
+2. **Street-level Warnings need hourly rain and people.** Daily rain alone is too noisy, and smaller street floods are harder still to see. Hourly satellite rain (IMERG) and resident confirmation are the next two building blocks, not optional extras.
+3. **Use season-aware triggers.** Floods in May, June, October and November happen at lower rain totals.
 4. **Use separate triggers for the two kinds of flood place.** Stream mouths and shoreline need rain intensity plus tide. Hillsides need accumulated rain, for landslides and wall collapses (see the terrain section).
 5. **Completing the flood memory is high-value, cheap work.** The unreported-wet-days list points exactly where to look.
 
 ## When floods happen: what it means for delivering warnings
 
 - **Season:** 19 of the 52 floods were in July and 17 in August; September adds 6 more.
-- **Time of day:** of the 24 floods with a reported time, **17 hit at night or in the early hours** (posts that only say "today" are not counted, because they give when someone posted, not when the water came) (e.g. 4 am Owen Street mudslide 2010, 05:45 Regent 2017, overnight 1-2 Aug 2019, the night-time Moyiba landslide of July 2024, overnight 2-3 Aug 2026).
+- **Time of day:** of the 29 floods with a reported time, **18 hit at night or before dawn** (e.g. 4 am Owen Street mudslide 2010, the King Jimmy collapse at about 22:00 in August 2013, overnight 18-19 Sep 2016, 05:45 Regent 2017, overnight 1-2 Aug 2019, the night-time Moyiba landslide of July 2024, overnight 2-3 Aug 2026). Round 4 added 9 floods with a reported time, 4 of them at night. Residents mostly post in daytime, when floods are seen, so the share of night-time floods in the list may be too low rather than too high.
 - **Implication:** SMS alone will not wake people. Warnings need **voice calls** (a ringing phone) and **street wardens** with loudspeakers or whistles, as the concept proposes.
 
 ## Where floods happen: terrain
 
 ![Streams and flood places](figures/streams_and_flood_places.png)
 
-Of 75 place names in the flood history, 21 could be placed as neighbourhoods on OpenStreetMap; the rest are streets, landmarks or descriptions ("low-lying areas"). They fall into two distinct groups:
+*Re-run on 23 Nov 2026 with the 52 events. The website map places flood names separately, including streets and landmarks: 46 of 109 names (see [Reading the map](../map.md)).*
+
+Of 109 place names in the flood history, 24 could be placed as neighbourhoods on OpenStreetMap; the rest are streets, landmarks or descriptions ("low-lying areas"). They fall into two distinct groups:
 
 | Group | Places | Terrain | Mechanism |
 |---|---|---|---|
-| **Stream mouths and shoreline** | Kroo Bay (7 events), Susan's Bay, Kanikay, Cline Town, Portor, Lumley, Kaningo, Cockerill Bay | Under ~3 m above the nearest stream, on streams draining 1-13 km² | Streams overflow where they meet the sea; tide can block outflow |
+| **Stream mouths and shoreline** | Kroo Bay (8 events), Susan's Bay, Kanikay, Cline Town, Portor, Lumley, Kaningo, Cockerill Bay | Under ~3 m above the nearest stream, on streams draining 1-13 km² | Streams overflow where they meet the sea; tide can block outflow |
 | **Hillsides and upper valleys** | Regent, Looking Town, Sugar Loaf, Bathurst, Tengbeh Town, Wilberforce | 90-360 m elevation, steep | Runoff, landslides, wall collapses |
 
 The two groups need different triggers: rain *intensity* plus tide for the first, *accumulated* rain over several days (soil saturation) for the second.
@@ -196,7 +248,7 @@ Limits: geocoded points are neighbourhood centres, not the flooded streets, and 
 
 ## Limitations
 
-1. **Small flood list, biased to news and social media.** 45 dated floods; small floods and quiet years are missing. Every score has wide uncertainty.
+1. **Small, unevenly sourced flood list.** 45 dated floods. Most come from news and agencies, which lean towards disasters. The 14 added in round 4 (2011-2018) come mostly from residents' posts, which lean towards daytime and towards places people post about. Small floods are still missing in most years. Every score has wide uncertainty.
 2. **Daily rain only.** CHIRPS cannot tell a 3-hour cloudburst from a steady all-day rain, which is exactly what matters for flash floods. It also smooths a 5-day total across days.
 3. **Coarse rain grid vs. tiny catchments.** ~5.5 km cells, and the daily timing comes from ~10 km IMERG.
 4. **Modelled tide only.** Fitted to a model's sea level, not a tide gauge; surge is ignored.
@@ -204,6 +256,6 @@ Limits: geocoded points are neighbourhood centres, not the flooded streets, and 
 ## Next steps
 
 1. **Hourly rain** for the same floods: NASA IMERG half-hourly (needs a free NASA Earthdata account) and ECMWF 9 km via Open-Meteo once its quota allows. This answers the lead-time question.
-2. **Grow the flood list**: local newspaper archives, NDMA releases, IFRC DREF reports, Freetown City Council, and interviews; add dated *non-flood* heavy-rain days.
+2. **Grow the flood list**: local newspaper archives, NDMA releases, IFRC DREF reports, Freetown City Council, and interviews; add dated *non-flood* heavy-rain days. Online searches have now covered almost all of the wettest unreported days, so the next finds will come from offline sources.
 3. **Street-level exposure**: building footprints plus resident-reported flood points; define warning zones per catchment.
 4. **Separate triggers** for the two flood groups above, then re-score.

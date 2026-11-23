@@ -22,10 +22,22 @@ the cell is empty.
 | `sources` | URLs, separated by ` \| ` |
 | `coastal` | True if any location is a low-lying shoreline community (tide can block drainage) |
 
-**Known gaps (v0, November 2026):** built from web-search results only; the
-full articles could not be opened in this round. Nothing was found for
-2000-2006, 2011-2013, 2016 and 2018, which almost certainly reflects what is
-searchable, not an absence of floods. Small floods are under-represented.
+The research files behind it are in `events/research/` (one JSON object per
+line, the columns above plus `found_via` from round 3 on):
+`floods_2000_2014.jsonl`, `floods_2015_2019.jsonl`, `floods_2020_2026.jsonl`
+(round 1, news and agencies), `floods_round2_wettest_days.jsonl`,
+`floods_round3_social.jsonl` (Facebook, X, YouTube) and
+`floods_round4_chrome.jsonl` (X advanced search and Facebook post search, year
+by year, each post opened and quoted). `checked_dates_round2.json` and
+`checked_dates_round4.json` record the dates searched with no flood found, and
+posts that mention a flood without placing it in Freetown (kept out of the
+catalogue). `round4_raw/` holds the round 4 file as uploaded and
+`decisions.json`, which lists the records left out or changed after checking
+each one against its quoted post.
+
+**Known gaps (November 2026):** nothing was found for 2000-2006. 2011-2013,
+2016 and 2018 now have events from round 4, mostly residents' posts. Small
+floods are under-represented, above all before 2014.
 Next round: local newspaper archives, NDMA press releases, IFRC DREF reports,
 ReliefWeb, and resident interviews.
 
@@ -37,6 +49,7 @@ ReliefWeb, and resident interviews.
 | `hindcast_results.json` | Scores from `floodwatch hindcast` |
 | `hindcast_tables.md` | The same scores as Markdown tables, used in the write-up |
 | `flood_places.csv` | Each place named in the flood history, geocoded where possible, with elevation, height above nearest stream and nearby stream size (`floodwatch terrain`) |
+| `map_places.csv` | The same places for the website map: neighbourhoods first, then streets and landmarks whose OpenStreetMap name matches the report (`precision` says which); names shared by streets more than 1.5 km apart are left off (`floodwatch places`) |
 | `exposure_summary.json` | Flood places vs ordinary low-lying land |
 | `zones.csv`, `zones.geojson` | Warning zones (one per catchment draining >= 1 km² to the sea): outlet, area, low ground near streams, steep area, flood places (`floodwatch zones`) |
 | `zone_chirps_weights.csv` | Share of each zone in each CHIRPS 0.05° cell, for zone-averaged rain |
