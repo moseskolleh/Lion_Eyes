@@ -30,7 +30,7 @@ feed (`feed.xml`), as data (`latest.json`) and as a one-text-message summary for
 
 | Piece | State |
 |---|---|
-| Flood history (`data/events/freetown_floods.csv`) | 36 sourced events, 2007-2026, from three research rounds (news and agencies, then the wettest unreported days, then Facebook, X and YouTube); thin before 2014, none found for 2011-2013, 2016, 2018 |
+| Flood history (`data/events/freetown_floods.csv`) | 53 sourced events, 2007-2026, from four research rounds (news and agencies; the wettest unreported days; Facebook, X and YouTube; then a year-by-year X and Facebook search that filled 2011-2013, 2016 and 2018); every year now has at least one, still thin before 2014. The 17 events added in round 4 are not yet in the hindcast and backtest scores below |
 | Rainfall history | CHIRPS v3 daily (satellite + gauges), rainy seasons; 2008-2026 analysed (2000-2007 not scored: no dated floods found there yet) |
 | Tide | Harmonic tide fitted to 2023-2026 modelled sea level, predicted back to 2000 (4.7 cm error on a held-out year) |
 | Hindcast (do rain/tide rules flag past floods?) | Daily, 2008-2026, 31 floods: flood days clearly wetter (AUC 0.82); daily rules catch ~half of floods at ~3 false alarms per season; misses cluster in May/October. See [docs/analysis/hindcast-v0.md](docs/analysis/hindcast-v0.md) |
@@ -41,7 +41,7 @@ feed (`feed.xml`), as data (`latest.json`) and as a one-text-message summary for
 | Warning zones | v0: 94 catchment zones (21 in the city), each with low-ground and steep-slope measures and CHIRPS weights. See [docs/analysis/zones-v0.md](docs/analysis/zones-v0.md) |
 | Exposure | ~72,600 people (23,300 buildings) on low ground near streams and the shore, ~44,200 on steep slopes; per zone from Overture buildings and Meta HRSL population (`floodwatch exposure`) |
 | 3-day Outlook | v0 running on live data (ECMWF ensemble + IMERG + tide), issued twice a day by GitHub Actions: morning (00 UTC run, calendar days) and evening (12 UTC run, noon-to-noon periods covering the night). Levels read HIGH = act, ELEVATED = watch; provisional thresholds, forecasts archived for calibration. See [docs/outlook.md](docs/outlook.md) |
-| Website | Static site on GitHub Pages: Outlook, interactive zone map (Leaflet), flood history, analysis pages (`floodwatch site`); styled with the sustaintheworld theme (dark/light, Newsreader / Inter / IBM Plex Mono) |
+| Website | Static site on GitHub Pages: Outlook, interactive map (Leaflet), flood history, analysis pages (`floodwatch site`); styled with the sustaintheworld theme (dark/light, Newsreader / Inter / IBM Plex Mono). Warning levels in the international colour code (green, yellow, orange; red kept for a future flood warning), hazard layers in standard map colours, search over places, streets, schools, clinics and zones with an OpenStreetMap fallback, and shareable links (`#place=Kroo Bay`). See [docs/map.md](docs/map.md) |
 | Nowcast (hours), resident reporting, warning delivery | Planned for April-May 2027 |
 
 ## Quick start
@@ -61,6 +61,7 @@ floodwatch exposure         # buildings and people per zone (after zones)
 floodwatch subdaily         # half-hourly NASA IMERG around past floods (needs Earthdata token)
 floodwatch backtest         # replay the Outlook on 2024-2026 ECMWF forecasts (~20 GB first time)
 floodwatch backtest --evening   # the same for the evening issue (after the morning backtest)
+floodwatch places           # place past floods on the website map (OpenStreetMap; after catalogue)
 floodwatch layers           # map layers for the website -> site_assets/layers/ (once; inputs are static)
 floodwatch outlook          # 3-day outlook (morning or evening issue, by the clock) -> data/outlook/
 floodwatch site             # build the website into _site/
