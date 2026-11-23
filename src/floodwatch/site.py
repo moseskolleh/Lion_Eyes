@@ -536,7 +536,15 @@ def _floods_page() -> str:
     worst = cat.loc[cat["deaths"].fillna(0).idxmax()]
     place_counts = pd.Series([pl for locs in cat["locations"] for pl in locs]).value_counts()
     top_place, top_n = place_counts.index[0], int(place_counts.iloc[0])
-    aug = int(by_month.get(8, 0))
+    gaps = [y for y in years if not by_year.get(y, 0)]
+    year_note = ("Dashed: no flood reports found online for that year. That is a gap in the record, not a dry year."
+                 if gaps else "Every year has at least one report. A short bar is more likely a gap in the record "
+                 "than a quiet year: small floods rarely make the news.")
+    month_names = dict(enumerate(["January", "February", "March", "April"] + [
+        "May", "June", "July", "August", "September", "October", "November", "December"], 1))
+    ranked = by_month.sort_values(ascending=False, kind="stable")
+    top_month, top_month_n = month_names[int(ranked.index[0])], int(ranked.iloc[0])
+    next_month, next_month_n = month_names[int(ranked.index[1])], int(ranked.iloc[1])
     cards = []
     for _, e in cat.iterrows():
         month_only = e["date_confidence"] == "month_only"
@@ -564,12 +572,12 @@ about a flood that is missing</a>.</p></div>
 <div class="stats">
 <div class="stat"><div class="n">{len(cat)}</div><div class="l">floods recorded, 2007-{int(cat['date'].dt.year.max())}</div></div>
 <div class="stat"><div class="n">{deaths:,}</div><div class="l">deaths reported; {int(worst['deaths']):,} in the {worst['date']:%B %Y} Regent mudslide</div></div>
-<div class="stat"><div class="n">{aug}</div><div class="l">in August, the worst month; July and September follow</div></div>
+<div class="stat"><div class="n">{top_month_n}</div><div class="l">in {top_month}, the worst month; {next_month} has {next_month_n}</div></div>
 <div class="stat"><div class="n">{top_n}</div><div class="l">floods at {html.escape(top_place)}, the most-hit place</div></div>
 </div>
 <div class="two">
 <div class="panelbox"><h3>Floods per year</h3>{_bar_chart(year_items, label_every=2)}
-<p class="small muted">Dashed: no flood reports found online for that year. That is a gap in the record, not a dry year.</p></div>
+<p class="small muted">{year_note}</p></div>
 <div class="panelbox"><h3>By month</h3>{_bar_chart(month_items, width=340, height=200)}
 <p class="small muted">The rainy season runs May to November.</p></div>
 </div>
