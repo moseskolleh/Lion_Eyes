@@ -98,7 +98,7 @@ floodwatch outlook        # writes data/outlook/YYYY-MM-DD.md and .json
 It needs a NASA Earthdata token for the observed rain. In the cloud environment
 the network proxy adds it; elsewhere set `EARTHDATA_TOKEN`.
 
-It runs every day at 08:13 and 20:47 UTC from GitHub Actions
+It runs every day at 08:12 and 20:46 UTC from GitHub Actions
 (`.github/workflows/outlook-and-site.yml`); the issue (morning or evening) is
 chosen by the clock. The workflow commits the bulletin and the forecast
 archive, and republishes the website. See the README for the one-time

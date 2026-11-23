@@ -34,14 +34,14 @@ FIRST_DAY = date(2024, 5, 1)
 FETCH_WORKERS = 6  # parallel requests per run in bulk replays
 BULK_MIRRORS = (ecmwf.GOOGLE, ecmwf.AWS)  # AWS throttles bursts of requests for old runs
 SEASON_DAYS = 214  # 1 May - 30 Nov
-ISSUE_HOUR = 8.3  # the morning job runs at 08:13 UTC; Freetown is on UTC
+ISSUE_HOUR = 8.3  # the morning job runs at 08:12 UTC (scheduled; often a few minutes late); Freetown is on UTC
 LEVELS = ["LOW", "ELEVATED", "HIGH"]
 SAMPLE_CSV = config.DERIVED_DIR / "outlook_backtest_sample.csv"
 DAYS_CSV = config.DERIVED_DIR / "outlook_backtest_days.csv"
 RESULTS_JSON = config.DERIVED_DIR / "outlook_backtest.json"
 EVENING_DAYS_CSV = config.DERIVED_DIR / "outlook_backtest_evening_days.csv"
 EVENING_JSON = config.DERIVED_DIR / "outlook_backtest_evening.json"
-EVENING_HOUR = 20.8  # the evening job runs at 20:47 UTC
+EVENING_HOUR = 20.8  # the evening job runs at 20:46 UTC (scheduled; often a few minutes late)
 
 
 def observed() -> pd.Series:
