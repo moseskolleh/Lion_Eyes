@@ -39,7 +39,8 @@ VERY_WET_DAY_MM = 50.0  # "very wet"
 SATURATED_3D_MM = 100.0  # rain in the previous 3 days: ground saturated
 LIKELY = 0.30  # share of ensemble members needed to call something "likely"
 # Early- and late-season floods have happened with less rain (dry-season
-# rubbish in drains, loose slopes): lower thresholds then. Weak evidence (4 events).
+# rubbish in drains, loose slopes): lower thresholds then. Hindcast: 9 of the 10
+# floods in these months had rain below the 80th percentile; the factors are not fitted.
 TRANSITION_FACTOR = {5: 0.6, 6: 0.8, 10: 0.8, 11: 0.8}
 HIGH_TIDE_M = 1.1  # a spring-tide high water at Freetown (M2 ~0.9 m + S2 ~0.3 m)
 MIN_PEOPLE = 500  # a zone is named in the bulletin if at least this many live on its risky ground
