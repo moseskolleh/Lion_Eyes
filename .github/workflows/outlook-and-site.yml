@@ -14,11 +14,15 @@
 #     Without it the Outlook still runs, but ground wetness shows as unknown.
 #     Earthdata tokens expire after 60 days; replace the secret when it does.
 #
-# Who the schedule runs as: GitHub runs the two scheduled issues as the account
-# that authored the last change to the cron lines below. If that account has no
-# write access to this repository, GitHub skips the schedule without any error.
-# This happened from 22 to 23 November 2026: the lines were last changed in
-# commits linked to the "claude" account, so no scheduled run ever started.
+# Who the schedule runs as: GitHub ties scheduled runs to an account (the
+# "actor"), normally the one behind the last change to the cron lines below.
+# GitHub's troubleshooting guide says a schedule stops, with no error and while
+# manual runs still work, when that account is suspended, deleted or
+# deprovisioned; a user with write access restarts it by committing a change
+# to the cron lines. From 22 to 23 November 2026 no scheduled run ever started.
+# The cron lines had last been changed in commits linked to the "claude"
+# account, which has no access to this repository. GitHub does not document
+# that exact case, so it is the likely cause, not a confirmed one.
 # After any change to the cron lines, merge with "Squash and merge" and check
 # that the commit author shown before merging is the repository owner. Then
 # check the Actions tab for a run with the event "schedule" after the next time.
