@@ -464,12 +464,14 @@
     osmFor = q; list.innerHTML = '<li class="none">Searching OpenStreetMap…</li>'; list.hidden = false;
     const url = 'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=8&countrycodes=sl&bounded=1' +
       '&viewbox=-13.32,8.56,-12.98,8.20&q=' + encodeURIComponent(q);
+    const stale = () => input.value.trim() !== q;  // the box changed while OpenStreetMap was answering
     fetch(url, {headers: {'Accept-Language': 'en'}}).then(r => r.json()).then(res => {
+      if (stale()) return;
       hits = res.map(h => ({name: h.name || h.display_name.split(',')[0], kind: 'OpenStreetMap', icon: 'osm',
         sub: [h.type && h.type !== 'yes' ? h.type.replace(/_/g, ' ') : '', h.display_name.split(',').slice(1, 3).join(',').trim()].filter(Boolean).join(' · '),
         go: () => dropPin([+h.lat, +h.lon], h.name || h.display_name.split(',')[0])}));
       cur = hits.length ? 0 : -1; render();
-    }).catch(() => { list.innerHTML = '<li class="none">OpenStreetMap search is not available right now.</li>'; });
+    }).catch(() => { if (!stale()) list.innerHTML = '<li class="none">OpenStreetMap search is not available right now.</li>'; });
   }
   function pick(i) {
     if (i === hits.length && !list.hidden && list.querySelector('[data-osm]')) { osm(); return; }
