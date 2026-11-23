@@ -60,7 +60,7 @@ def _catalogue(args: argparse.Namespace) -> None:
 def _hindcast(args: argparse.Namespace) -> None:
     from floodwatch import hindcast
 
-    hindcast.run(args.first_year)
+    hindcast.run(args.first_year, offline=args.offline)
 
 
 def _terrain(args: argparse.Namespace) -> None:
@@ -134,6 +134,9 @@ def main(argv: list[str] | None = None) -> None:
     hc = sub.add_parser("hindcast", help="score warning rules")
     hc.add_argument("--from", dest="first_year", type=int, default=config.FIRST_YEAR,
                     help="first rainy season to include (default %(default)s)")
+    hc.add_argument("--offline", action="store_true",
+                    help="re-score from data/derived/daily_features_chirps.csv, no download "
+                         "(use after the flood history changes)")
     hc.set_defaults(func=_hindcast)
     sub.add_parser("terrain", help="streams, flood places and exposure map").set_defaults(func=_terrain)
     sub.add_parser("zones", help="warning zones (one per catchment) and their maps").set_defaults(func=_zones)

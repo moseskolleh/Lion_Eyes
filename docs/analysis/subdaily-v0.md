@@ -2,6 +2,8 @@
 
 *November 2026. Reproduce with `floodwatch subdaily` (needs a NASA Earthdata token).*
 
+*Covers the 31 floods dated before round 4 of the flood history. The 16 floods added on 23 Nov 2026 (2011-2018) are not yet included; adding them needs the same token. The daily hindcast already uses all 47.*
+
 The daily hindcast showed that flood days are wetter, but could not say *when*
 the rain fell or how intense it was. This analysis uses NASA's IMERG V07
 satellite rainfall: a rain rate every 30 minutes on a 0.1° (~11 km) grid. It

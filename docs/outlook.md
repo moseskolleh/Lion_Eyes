@@ -39,8 +39,8 @@ how often each level has come up (from the backtest).
 
 ## Why these rules
 
-- **Accumulated rain matters as much as the day's rain.** In the hindcast, "that day + previous 3 days" was among the best daily measures. The two deadliest mudslides (2010, 2017) followed long wet spells, not single bursts.
-- **May, June, October and November use lower thresholds.** Several floods at the edges of the season happened with modest rain. The evidence is weak: four events.
+- **Accumulated rain matters as much as the day's rain.** In the hindcast, "that day + previous 3 days" separates flood days from ordinary days almost as well as the day's own rain (AUC 0.77 against 0.80), and some deadly floods stand out most on it: the King Jimmy collapse of August 2013 and the flood of 18-19 September 2016. The two deadliest mudslides (2010, 2017) followed long wet spells, not single bursts.
+- **May, June, October and November use lower thresholds.** In the hindcast, 9 of the 10 dated floods in these months came with less rain than the 80th percentile of ordinary rainy-season days, against 7 of the 37 floods in July to September. Ten events is still a small sample, and the size of the reduction has not been fitted.
 - **The Outlook gives days of notice, not hours.** The half-hourly analysis shows that heavy rain falls 1-6 hours before floods. Observed satellite rain arrives too late to warn, which is why the hour-scale Warning level needs storm tracking, lightning and residents' reports.
 
 ## Thresholds and calibration

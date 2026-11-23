@@ -319,21 +319,53 @@ def to_markdown(res: dict) -> str:
     return "\n".join(out) + "\n"
 
 
-def run(first_year: int = config.FIRST_YEAR) -> dict:
-    from floodwatch.sources import chirps
+def daily_features_path():
+    return config.DERIVED_DIR / "daily_features_chirps.csv"
 
+
+def results_path():
+    return config.DERIVED_DIR / "hindcast_results.json"
+
+
+def load_daily(first_year: int = config.FIRST_YEAR) -> pd.DataFrame:
+    """The daily rain and tide table written by the last full run."""
+    daily = pd.read_csv(daily_features_path(), index_col="date", parse_dates=["date"])
+    if daily.index.min() > pd.Timestamp(first_year, min(config.SEASON_MONTHS), 1):
+        raise SystemExit(
+            f"{daily_features_path()} starts on {daily.index.min().date()}, after the start of the "
+            f"{first_year} rainy season. Run `floodwatch hindcast --from {first_year}` without "
+            "--offline to rebuild it."
+        )
+    return daily[daily.index >= pd.Timestamp(first_year, 1, 1)]
+
+
+def run(first_year: int = config.FIRST_YEAR, offline: bool = False) -> dict:
+    """Score the rules against the flood history.
+
+    ``offline`` re-scores from the daily table already in data/derived, with no
+    download: use it after the flood history changes. The tide fit check is
+    carried over from the last full run, since it needs the raw sea level.
+    """
     catalogue = events.load_catalogue()
-    sea = pd.read_csv(config.RAW_DIR / "tables" / "sea_level.csv.gz", parse_dates=["time"])
-    hours = pd.date_range(f"{config.FIRST_YEAR}-01-01", pd.Timestamp.today().normalize(), freq="h")
-    tide = tides.predict(tides.fit(sea), hours)
+    if offline:
+        daily = load_daily(first_year)
+        previous = json.loads(results_path().read_text()) if results_path().exists() else {}
+        tide_fit = previous.get("tide_fit_check")
+    else:
+        from floodwatch.sources import chirps
 
-    cells = chirps.fetch(first_year, pd.Timestamp.today().year)
-    daily = chirps.daily_features(cells).join(tide_daily(tide), how="left")
-    config.DERIVED_DIR.mkdir(parents=True, exist_ok=True)
-    daily.round(3).to_csv(config.DERIVED_DIR / "daily_features_chirps.csv")
+        sea = pd.read_csv(config.RAW_DIR / "tables" / "sea_level.csv.gz", parse_dates=["time"])
+        hours = pd.date_range(f"{config.FIRST_YEAR}-01-01", pd.Timestamp.today().normalize(), freq="h")
+        tide = tides.predict(tides.fit(sea), hours)
+
+        cells = chirps.fetch(first_year, pd.Timestamp.today().year)
+        daily = chirps.daily_features(cells).join(tide_daily(tide), how="left")
+        config.DERIVED_DIR.mkdir(parents=True, exist_ok=True)
+        daily.round(3).to_csv(daily_features_path())
+        tide_fit = tide_check(sea)
 
     results = {
-        "tide_fit_check": tide_check(sea),
+        "tide_fit_check": tide_fit,
         "chirps": analyse(
             "CHIRPS v3 daily (satellite + gauges, IMERG-timed)",
             daily,
@@ -341,7 +373,7 @@ def run(first_year: int = config.FIRST_YEAR) -> dict:
             catalogue,
         ),
     }
-    (config.DERIVED_DIR / "hindcast_results.json").write_text(json.dumps(results, indent=2))
+    results_path().write_text(json.dumps(results, indent=2))
     tables = to_markdown(results)
     (config.DERIVED_DIR / "hindcast_tables.md").write_text(tables)
     print(tables)

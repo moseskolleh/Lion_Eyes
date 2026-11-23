@@ -30,10 +30,10 @@ feed (`feed.xml`), as data (`latest.json`) and as a one-text-message summary for
 
 | Piece | State |
 |---|---|
-| Flood history (`data/events/freetown_floods.csv`) | 53 sourced events, 2007-2026, from four research rounds (news and agencies; the wettest unreported days; Facebook, X and YouTube; then a year-by-year X and Facebook search that filled 2011-2013, 2016 and 2018); every year now has at least one, still thin before 2014. The 17 events added in round 4 are not yet in the hindcast and backtest scores below |
+| Flood history (`data/events/freetown_floods.csv`) | 53 sourced events, 2007-2026, from four research rounds (news and agencies; the wettest unreported days; Facebook, X and YouTube; then a year-by-year X and Facebook search that filled 2011-2013, 2016 and 2018); every year now has at least one, still thin before 2014. The hindcast below uses all of them; the backtest window (2024-2026) has none of the round 4 events; the half-hourly and terrain analyses still use the earlier 36 |
 | Rainfall history | CHIRPS v3 daily (satellite + gauges), rainy seasons; 2008-2026 analysed (2000-2007 not scored: no dated floods found there yet) |
 | Tide | Harmonic tide fitted to 2023-2026 modelled sea level, predicted back to 2000 (4.7 cm error on a held-out year) |
-| Hindcast (do rain/tide rules flag past floods?) | Daily, 2008-2026, 31 floods: flood days clearly wetter (AUC 0.82); daily rules catch ~half of floods at ~3 false alarms per season; misses cluster in May/October. See [docs/analysis/hindcast-v0.md](docs/analysis/hindcast-v0.md) |
+| Hindcast (do rain/tide rules flag past floods?) | Daily, 2008-2026, 47 floods: flood days clearly wetter (AUC 0.80; 0.82 on the 31 floods known before round 4, which lean towards big, newsworthy floods); daily rules catch about 2 in 5 floods at ~3 false alarms per season; misses cluster at the edges of the season (9 of the 10 floods in May, June, October and November came with modest rain). See [docs/analysis/hindcast-v0.md](docs/analysis/hindcast-v0.md) |
 | Half-hourly satellite rain (NASA IMERG) | Floods follow 1-6 h of heavy rain; satellite misses local cloudbursts; short bursts add no skill over daily totals, and no rain measure separates floods from the very wettest no-flood days. See [docs/analysis/subdaily-v0.md](docs/analysis/subdaily-v0.md) |
 | Outlook backtest (2024-2026 ECMWF forecasts) | Replaying the Outlook (morning and evening issues): 7 of 9 floods had ELEVATED or HIGH in time, 5 at HIGH; HIGH on ~17% of rainy-season days, ELEVATED or HIGH on ~41%; today's forecast is useful, tomorrow's misses most heavy days. The evening issue added the night-time catches. See [docs/analysis/outlook-backtest-v0.md](docs/analysis/outlook-backtest-v0.md) |
 | Hourly model rain (ERA5, ECMWF 9 km) | Code ready; blocked by the free API's daily quota |
@@ -55,6 +55,7 @@ floodwatch fetch            # sea level + CHIRPS daily rain into data/raw (cache
 floodwatch fetch --hourly   # optional: hourly model rain from Open-Meteo (rate-limited)
 floodwatch catalogue data/events/research/*.jsonl   # rebuild the flood history
 floodwatch hindcast --from 2008   # score warning rules; writes data/derived/
+floodwatch hindcast --from 2008 --offline   # re-score after the flood history changes (no download)
 floodwatch terrain          # streams, flood places, map
 floodwatch zones            # warning zones (after terrain)
 floodwatch exposure         # buildings and people per zone (after zones)
