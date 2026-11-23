@@ -30,10 +30,10 @@ feed (`feed.xml`), as data (`latest.json`) and as a one-text-message summary for
 
 | Piece | State |
 |---|---|
-| Flood history (`data/events/freetown_floods.csv`) | 33 sourced events, 2007-2026, from two research rounds; thin before 2014, none found for 2011-2013, 2016, 2018 |
+| Flood history (`data/events/freetown_floods.csv`) | 36 sourced events, 2007-2026, from three research rounds (news and agencies, then the wettest unreported days, then Facebook, X and YouTube); thin before 2014, none found for 2011-2013, 2016, 2018 |
 | Rainfall history | CHIRPS v3 daily (satellite + gauges), rainy seasons; 2008-2026 analysed (2000-2007 not scored: no dated floods found there yet) |
 | Tide | Harmonic tide fitted to 2023-2026 modelled sea level, predicted back to 2000 (4.7 cm error on a held-out year) |
-| Hindcast (do rain/tide rules flag past floods?) | v0, daily: 2008-2026, 28 floods: flood days clearly wetter (AUC 0.82); daily rules catch ~half of floods at ~3 false alarms per season; misses cluster in May/October. See [docs/analysis/hindcast-v0.md](docs/analysis/hindcast-v0.md) |
+| Hindcast (do rain/tide rules flag past floods?) | Daily, 2008-2026, 31 floods: flood days clearly wetter (AUC 0.82); daily rules catch ~half of floods at ~3 false alarms per season; misses cluster in May/October. See [docs/analysis/hindcast-v0.md](docs/analysis/hindcast-v0.md) |
 | Half-hourly satellite rain (NASA IMERG) | Floods follow 1-6 h of heavy rain; satellite misses local cloudbursts; short bursts add no skill over daily totals, and no rain measure separates floods from the very wettest no-flood days. See [docs/analysis/subdaily-v0.md](docs/analysis/subdaily-v0.md) |
 | Outlook backtest (2024-2026 ECMWF forecasts) | Replaying the Outlook (morning and evening issues): 7 of 9 floods had ELEVATED or HIGH in time, 5 at HIGH; HIGH on ~17% of rainy-season days, ELEVATED or HIGH on ~41%; today's forecast is useful, tomorrow's misses most heavy days. The evening issue added the night-time catches. See [docs/analysis/outlook-backtest-v0.md](docs/analysis/outlook-backtest-v0.md) |
 | Hourly model rain (ERA5, ECMWF 9 km) | Code ready; blocked by the free API's daily quota |
@@ -61,6 +61,7 @@ floodwatch exposure         # buildings and people per zone (after zones)
 floodwatch subdaily         # half-hourly NASA IMERG around past floods (needs Earthdata token)
 floodwatch backtest         # replay the Outlook on 2024-2026 ECMWF forecasts (~20 GB first time)
 floodwatch backtest --evening   # the same for the evening issue (after the morning backtest)
+floodwatch layers           # map layers for the website -> site_assets/layers/ (once; inputs are static)
 floodwatch outlook          # 3-day outlook (morning or evening issue, by the clock) -> data/outlook/
 floodwatch site             # build the website into _site/
 pytest
@@ -90,6 +91,7 @@ src/floodwatch/
   backtest.py                the Outlook replayed on past forecasts and scored
   sources/imerg.py           NASA IMERG half-hourly and daily (OPeNDAP)
   sources/ecmwf.py           ECMWF open-data ensemble rain (byte-range GRIB)
+  maplayers.py               map layers: hills, low ground, steep slopes, streams, people, buildings, roads, facilities
   site.py                    static website for GitHub Pages
 site_assets/leaflet/         Leaflet 1.9.4 (BSD-2), vendored for the map page
 site_assets/fonts/           Newsreader, Inter, IBM Plex Mono (SIL OFL), from the sustaintheworld site

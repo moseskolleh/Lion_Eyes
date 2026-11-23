@@ -10,6 +10,7 @@ Kaningo,2,True,8.44852,-13.26416,neighbourhood,False,18.858562469482422,15.48451
 Lumley,2,True,8.45599,-13.2714,suburb,False,9.20336627960205,0.8324871063232422,1.0438973302514032
 Moyiba,2,False,,,,,,,
 Waterloo,2,False,,,,,,,
+Wilkinson Road,2,False,,,,,,,
 central Freetown,2,False,,,,,,,
 54 Off Pratt Street,1,False,,,,,,,
 Aberdeen,1,True,8.49552,-13.28671,suburb,True,25.845020294189453,25.845020294189453,0.0
@@ -19,6 +20,7 @@ Babadorie River Valley,1,False,,,,,,,
 Bathurst,1,True,8.43118,-13.19986,village,False,283.0249328613281,52.880218505859375,0.0
 Blackhall (Kissy),1,False,,,,,,,
 Bololo,1,False,,,,,,,
+Brima Lane,1,False,,,,,,,
 Brooks field,1,False,,,,,,,
 Calaba Town,1,True,8.43806,-13.16306,hamlet,False,48.04347229003906,18.693889617919922,1.6565175456644678
 Campbell Street,1,False,,,,,,,
@@ -46,6 +48,7 @@ Kamayama,1,False,,,,,,,
 Kanikay,1,True,8.48766,-13.20562,neighbourhood,True,1.2875380516052246,1.2875380516052246,7.08553534421767
 Kissy,1,True,8.46863,-13.18931,suburb,False,49.4889030456543,6.272071838378906,3.1016247409179853
 Kissy (Leone Oil facility),1,False,,,,,,,
+Kissy Road,1,False,,,,,,,
 Kolloh Town,1,False,,,,,,,
 Krootown Road,1,False,,,,,,,
 Kuntholoh,1,False,,,,,,,
@@ -53,6 +56,7 @@ Looking Town,1,True,8.43309,-13.21647,neighbourhood,False,277.9129333496094,9.91
 Lower Kuntolor,1,False,,,,,,,
 Malama,1,False,,,,,,,
 Mama Wurie (Femi Turner),1,False,,,,,,,
+Manfred Lane,1,False,,,,,,,
 Metchem,1,False,,,,,,,
 Moeba,1,False,,,,,,,
 Mordenah,1,False,,,,,,,
@@ -85,9 +89,9 @@ Thomas Street,1,False,,,,,,,
 "Upper Melon Street, Old Road",1,False,,,,,,,
 Wellington,1,True,8.44761,-13.17055,suburb,False,52.3851432800293,19.237281799316406,0.0
 Wilberforce,1,True,8.47536,-13.26359,suburb,False,182.83775329589844,137.6397819519043,0.0
-Wilkinson Road,1,False,,,,,,,
 Williams Street,1,False,,,,,,,
 downtown Freetown,1,False,,,,,,,
 east and west of Freetown,1,False,,,,,,,
+eastern Freetown,1,False,,,,,,,
 low-lying areas of Freetown,1,False,,,,,,,
 low-lying areas of Freetown (no neighbourhoods named),1,False,,,,,,,

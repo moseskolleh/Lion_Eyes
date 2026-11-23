@@ -1,39 +1,39 @@
-Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 2026-10-08, 19 rainy seasons, 28 dated floods.
+Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 2026-10-08, 19 rainy seasons, 31 dated floods.
 
 **How well each rain measure separates flood days from ordinary rainy-season days**
 
 | Rain measure | AUC | 90% interval | Median on flood days | Median on other days |
 |---|---|---|---|---|
-| Wettest cell, that day | 0.80 | 0.72-0.87 | 99 mm | 37 mm |
-| Peninsula average, that day | 0.82 | 0.75-0.89 | 73 mm | 22 mm |
-| Peninsula average, previous 3 days | 0.79 | 0.70-0.86 | 110 mm | 46 mm |
-| Peninsula average, previous 7 days | 0.75 | 0.66-0.84 | 209 mm | 96 mm |
-| Peninsula average, that day + previous 3 days | 0.79 | 0.71-0.87 | 161 mm | 59 mm |
+| Wettest cell, that day | 0.81 | 0.73-0.88 | 93 mm | 37 mm |
+| Peninsula average, that day | 0.82 | 0.75-0.89 | 67 mm | 22 mm |
+| Peninsula average, previous 3 days | 0.79 | 0.71-0.85 | 104 mm | 45 mm |
+| Peninsula average, previous 7 days | 0.76 | 0.67-0.84 | 213 mm | 95 mm |
+| Peninsula average, that day + previous 3 days | 0.80 | 0.72-0.87 | 160 mm | 58 mm |
 
 **Warning rules: floods caught vs false alarms**
 
 | Rain measure | Fires at | Threshold | Floods caught | False alarms per season |
 |---|---|---|---|---|
-| Wettest cell, that day | top 10% of days | 62 mm | 20 of 28 | 15.6 |
-| Wettest cell, that day | top 5% of days | 87 mm | 15 of 28 | 8.4 |
-| Wettest cell, that day | top 2.5% of days | 107 mm | 12 of 28 | 4.3 |
-| Wettest cell, that day | top 1% of days | 135 mm | 8 of 28 | 1.7 |
-| Peninsula average, that day | top 10% of days | 40 mm | 20 of 28 | 16.6 |
-| Peninsula average, that day | top 5% of days | 58 mm | 18 of 28 | 8.7 |
-| Peninsula average, that day | top 2.5% of days | 75 mm | 14 of 28 | 4.3 |
-| Peninsula average, that day | top 1% of days | 98 mm | 8 of 28 | 1.7 |
-| Peninsula average, previous 3 days | top 10% of days | 100 mm | 16 of 28 | 6.2 |
-| Peninsula average, previous 3 days | top 5% of days | 126 mm | 12 of 28 | 4.0 |
-| Peninsula average, previous 3 days | top 2.5% of days | 155 mm | 6 of 28 | 2.1 |
-| Peninsula average, previous 3 days | top 1% of days | 185 mm | 2 of 28 | 1.0 |
-| Peninsula average, previous 7 days | top 10% of days | 211 mm | 14 of 28 | 3.7 |
-| Peninsula average, previous 7 days | top 5% of days | 256 mm | 8 of 28 | 2.7 |
-| Peninsula average, previous 7 days | top 2.5% of days | 300 mm | 6 of 28 | 1.6 |
-| Peninsula average, previous 7 days | top 1% of days | 349 mm | 2 of 28 | 0.9 |
-| Peninsula average, that day + previous 3 days | top 10% of days | 125 mm | 17 of 28 | 6.0 |
-| Peninsula average, that day + previous 3 days | top 5% of days | 158 mm | 15 of 28 | 3.1 |
-| Peninsula average, that day + previous 3 days | top 2.5% of days | 192 mm | 6 of 28 | 1.9 |
-| Peninsula average, that day + previous 3 days | top 1% of days | 229 mm | 4 of 28 | 0.9 |
+| Wettest cell, that day | top 10% of days | 62 mm | 22 of 31 | 15.6 |
+| Wettest cell, that day | top 5% of days | 87 mm | 16 of 31 | 8.4 |
+| Wettest cell, that day | top 2.5% of days | 107 mm | 13 of 31 | 4.3 |
+| Wettest cell, that day | top 1% of days | 135 mm | 9 of 31 | 1.7 |
+| Peninsula average, that day | top 10% of days | 40 mm | 22 of 31 | 16.5 |
+| Peninsula average, that day | top 5% of days | 58 mm | 19 of 31 | 8.7 |
+| Peninsula average, that day | top 2.5% of days | 75 mm | 15 of 31 | 4.3 |
+| Peninsula average, that day | top 1% of days | 98 mm | 9 of 31 | 1.7 |
+| Peninsula average, previous 3 days | top 10% of days | 100 mm | 16 of 31 | 6.2 |
+| Peninsula average, previous 3 days | top 5% of days | 126 mm | 12 of 31 | 4.0 |
+| Peninsula average, previous 3 days | top 2.5% of days | 155 mm | 6 of 31 | 2.1 |
+| Peninsula average, previous 3 days | top 1% of days | 185 mm | 2 of 31 | 1.0 |
+| Peninsula average, previous 7 days | top 10% of days | 211 mm | 16 of 31 | 3.7 |
+| Peninsula average, previous 7 days | top 5% of days | 256 mm | 8 of 31 | 2.7 |
+| Peninsula average, previous 7 days | top 2.5% of days | 300 mm | 6 of 31 | 1.6 |
+| Peninsula average, previous 7 days | top 1% of days | 349 mm | 2 of 31 | 0.9 |
+| Peninsula average, that day + previous 3 days | top 10% of days | 125 mm | 18 of 31 | 6.0 |
+| Peninsula average, that day + previous 3 days | top 5% of days | 158 mm | 16 of 31 | 3.1 |
+| Peninsula average, that day + previous 3 days | top 2.5% of days | 192 mm | 6 of 31 | 1.9 |
+| Peninsula average, that day + previous 3 days | top 1% of days | 229 mm | 4 of 31 | 0.9 |
 
 **Each flood: rain as a percentile of ordinary rainy-season days**
 
@@ -42,7 +42,7 @@ Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 
 | 2008-09-11 | 106 mm | 94 | 162 mm | 93 |
 | 2009-08-13 | 93 mm | 90 | 187 mm | 96 |
 | 2010-08-09 | 86 mm | 88 | 124 mm | 86 |
-| 2014-05-04 | 59 mm | 74 | 40 mm | 32 |
+| 2014-05-04 | 59 mm | 74 | 40 mm | 33 |
 | 2014-07-13 | 114 mm | 96 | 168 mm | 94 |
 | 2014-09-05 | 80 mm | 86 | 80 mm | 66 |
 | 2015-09-16 | 80 mm | 86 | 121 mm | 84 |
@@ -53,6 +53,9 @@ Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 
 | 2020-07-14 | 104 mm | 93 | 170 mm | 94 |
 | 2020-08-25 | 144 mm | 98 | 194 mm | 96 |
 | 2021-07-26 | 29 mm | 38 | 91 mm | 72 |
+| 2022-06-17 | 60 mm | 75 | 115 mm | 82 |
+| 2022-07-09 | 84 mm | 87 | 88 mm | 70 |
+| 2022-08-15 | 179 mm | 99 | 184 mm | 95 |
 | 2022-08-17 | 179 mm | 99 | 244 mm | 99 |
 | 2022-08-28 | 207 mm | 100 | 247 mm | 99 |
 | 2023-05-09 | 24 mm | 32 | 34 mm | 26 |
@@ -63,7 +66,7 @@ Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 
 | 2024-07-27 | 180 mm | 100 | 160 mm | 93 |
 | 2024-08-04 | 24 mm | 32 | 136 mm | 89 |
 | 2024-10-24 | 34 mm | 47 | 66 mm | 56 |
-| 2025-07-23 | 46 mm | 61 | 60 mm | 51 |
+| 2025-07-23 | 46 mm | 62 | 60 mm | 51 |
 | 2025-07-31 | 55 mm | 71 | 53 mm | 46 |
 | 2026-05-23 | 8 mm | 9 | 11 mm | 8 |
 | 2026-08-03 | 65 mm | 79 | 103 mm | 78 |
@@ -72,8 +75,8 @@ Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 
 
 | Floods | Number | AUC | 90% interval |
 |---|---|---|---|
-| Shoreline communities | 10 | 0.52 | 0.40-0.64 |
-| Inland | 18 | 0.47 | 0.35-0.58 |
+| Shoreline communities | 10 | 0.52 | 0.41-0.64 |
+| Inland | 21 | 0.50 | 0.39-0.61 |
 
 **Wettest days with no reported flood (first dates to search for missing floods)**
 
