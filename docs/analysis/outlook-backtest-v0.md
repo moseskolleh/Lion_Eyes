@@ -40,7 +40,7 @@ highest level the Outlook gave for the flood day or the day before it.
 
 What this shows:
 - **5 of 9 floods had ELEVATED or HIGH in time, and 4 of 9 had HIGH.**
-- **The same-morning Outlook flagged 7 of 9, but often too late.** Three floods (4 Aug 2024, 31 Jul 2025, 3 Aug 2026) were reported between 04:00 and 06:00, before that morning's Outlook came out. Night and early-morning floods are the rule in Freetown: 13 of the 17 with a reported time happened then.
+- **The same-morning Outlook flagged 7 of 9, but often too late.** Three floods (4 Aug 2024, 31 Jul 2025, 3 Aug 2026) were reported between 04:00 and 06:00, before that morning's Outlook came out. Night and early-morning floods are the rule in Freetown: 18 of the 29 with a reported time happened then.
 - **Two floods were missed at every lead: 24 Oct 2024 and 23 May 2026.** Both were short local downpours that the half-hourly analysis already showed are too small for satellites, let alone forecasts.
 - **4 Aug 2024 was HIGH partly for the wrong reason.** The forecast promised heavy rain that mostly did not come (7 mm fell). The ground was already soaked, though, with 128 mm in the previous three days, and the wall collapsed.
 

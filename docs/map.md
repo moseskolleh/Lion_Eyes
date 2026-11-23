@@ -75,6 +75,6 @@ there has its own link (`floods.html#FT-20130808`).
 `floodwatch places` places every name in the flood history with OpenStreetMap:
 neighbourhoods first, then streets and landmarks whose name matches the report.
 If streets of the same name lie more than 1.5 km apart, the name is left off
-rather than guessed. 46 of the 110 names are on the map (November 2026); the
+rather than guessed. 46 of the 109 names are on the map (November 2026); the
 rest are too vague ("low-lying areas of Freetown") or not in OpenStreetMap
 under that spelling. Results are in `data/derived/map_places.csv`.

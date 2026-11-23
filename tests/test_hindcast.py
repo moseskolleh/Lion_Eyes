@@ -87,3 +87,19 @@ def test_offline_run_refuses_a_table_that_starts_too_late(tmp_path, monkeypatch)
     assert len(hindcast.load_daily(2015)) == len(days)
     with pytest.raises(SystemExit, match="--from 2008"):
         hindcast.load_daily(2008)
+
+
+def test_season_edge_check_counts_catches_and_false_alarm_days():
+    days = pd.date_range("2020-05-01", "2020-11-30", freq="D")
+    rain = pd.Series(0.0, index=days)
+    rain.loc["2020-05-10"] = 20.0  # May flood: caught once the 30 mm threshold is cut to 18 mm
+    rain.loc["2020-08-10"] = 60.0  # August flood
+    rain.loc["2020-05-20"] = 25.0  # ordinary May day
+    daily = pd.DataFrame({"day_mean": rain})
+    rows = hindcast.season_edge_check(daily, days, _days("2020-05-10", "2020-08-10"), seasons=1)
+    wet = {r["reduction"]: r for r in rows if r["level"] == "wet" and r["months"] != "Jul-Sep"}
+    peak = next(r for r in rows if r["level"] == "wet" and r["months"] == "Jul-Sep")
+    assert (peak["caught"], peak["floods"]) == (1, 1)
+    assert (wet["none"]["caught"], wet["none"]["false_alarm_days_per_season"]) == (0, 0.0)
+    assert (wet["x0.6"]["caught"], wet["x0.6"]["false_alarm_days_per_season"]) == (1, 1.0)
+    assert wet["as now"]["threshold_mm"] == "18-24"

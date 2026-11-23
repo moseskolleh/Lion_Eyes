@@ -1,107 +1,107 @@
 {
-  "floods": 31,
-  "heavy_no_flood": 27,
+  "floods": 45,
+  "heavy_no_flood": 23,
   "ordinary": 29,
   "skill": {
     "max_1h": {
-      "auc_vs_ordinary": 0.753,
+      "auc_vs_ordinary": 0.702,
       "auc_vs_ordinary_90pct": [
-        0.687,
-        0.815
+        0.635,
+        0.764
       ],
-      "auc_vs_heavy_no_flood": 0.428,
+      "auc_vs_heavy_no_flood": 0.367,
       "auc_vs_heavy_no_flood_90pct": [
-        0.341,
-        0.521
+        0.295,
+        0.438
       ],
       "median": {
-        "flood": 16.6,
-        "heavy_no_flood": 18.9,
+        "flood": 15.7,
+        "heavy_no_flood": 19.6,
         "ordinary": 9.1
       }
     },
     "max_3h": {
-      "auc_vs_ordinary": 0.746,
+      "auc_vs_ordinary": 0.701,
       "auc_vs_ordinary_90pct": [
-        0.681,
-        0.809
+        0.636,
+        0.761
       ],
-      "auc_vs_heavy_no_flood": 0.4,
+      "auc_vs_heavy_no_flood": 0.348,
       "auc_vs_heavy_no_flood_90pct": [
-        0.311,
-        0.496
+        0.276,
+        0.422
       ],
       "median": {
-        "flood": 37.3,
+        "flood": 35.3,
         "heavy_no_flood": 37.4,
         "ordinary": 17.7
       }
     },
     "max_6h": {
-      "auc_vs_ordinary": 0.767,
+      "auc_vs_ordinary": 0.708,
       "auc_vs_ordinary_90pct": [
-        0.702,
-        0.826
+        0.643,
+        0.768
       ],
-      "auc_vs_heavy_no_flood": 0.394,
+      "auc_vs_heavy_no_flood": 0.328,
       "auc_vs_heavy_no_flood_90pct": [
-        0.307,
-        0.487
+        0.255,
+        0.4
       ],
       "median": {
-        "flood": 52.8,
+        "flood": 46.7,
         "heavy_no_flood": 60.8,
         "ordinary": 22.5
       }
     },
     "max_24h": {
-      "auc_vs_ordinary": 0.78,
+      "auc_vs_ordinary": 0.729,
       "auc_vs_ordinary_90pct": [
-        0.709,
-        0.842
+        0.669,
+        0.785
       ],
-      "auc_vs_heavy_no_flood": 0.381,
+      "auc_vs_heavy_no_flood": 0.303,
       "auc_vs_heavy_no_flood_90pct": [
-        0.293,
-        0.478
+        0.229,
+        0.378
       ],
       "median": {
-        "flood": 81.4,
-        "heavy_no_flood": 107.0,
+        "flood": 72.8,
+        "heavy_no_flood": 112.0,
         "ordinary": 31.3
       }
     },
     "max_24h_mean": {
-      "auc_vs_ordinary": 0.805,
+      "auc_vs_ordinary": 0.762,
       "auc_vs_ordinary_90pct": [
-        0.743,
-        0.861
+        0.707,
+        0.815
       ],
-      "auc_vs_heavy_no_flood": 0.391,
+      "auc_vs_heavy_no_flood": 0.313,
       "auc_vs_heavy_no_flood_90pct": [
-        0.302,
-        0.49
+        0.235,
+        0.391
       ],
       "median": {
-        "flood": 62.1,
+        "flood": 51.6,
         "heavy_no_flood": 79.1,
         "ordinary": 20.1
       }
     },
     "chirps_day_mean": {
-      "auc_vs_ordinary": 0.85,
+      "auc_vs_ordinary": 0.828,
       "auc_vs_ordinary_90pct": [
-        0.775,
-        0.913
+        0.769,
+        0.883
       ],
-      "auc_vs_heavy_no_flood": 0.169,
+      "auc_vs_heavy_no_flood": 0.141,
       "auc_vs_heavy_no_flood_90pct": [
-        0.09,
-        0.259
+        0.072,
+        0.211
       ],
       "median": {
-        "flood": 67.3,
-        "heavy_no_flood": 115.7,
+        "flood": 65.1,
+        "heavy_no_flood": 112.0,
         "ordinary": 18.3
       }
     }
@@ -198,6 +198,56 @@
       "hours_onset_to_report": 1.5
     },
     {
+      "flood": "2012-07-09",
+      "reported_time": "2012-07-09 09:00:00",
+      "assumption": "'flash flooding in Freetown today' (posted 10:00): assume 09:00",
+      "rain_3h_before_mm": 4.0,
+      "rain_6h_before_mm": 11.4,
+      "rain_12h_before_mm": 22.2,
+      "heavy_onset": NaN,
+      "hours_onset_to_report": NaN
+    },
+    {
+      "flood": "2013-08-08",
+      "reported_time": "2013-08-08 22:00:00",
+      "assumption": "'around 10.00 pm local time'",
+      "rain_3h_before_mm": 19.0,
+      "rain_6h_before_mm": 19.8,
+      "rain_12h_before_mm": 40.3,
+      "heavy_onset": "2013-08-08 21:00:00",
+      "hours_onset_to_report": 1.0
+    },
+    {
+      "flood": "2013-08-21",
+      "reported_time": "2013-08-21 06:15:00",
+      "assumption": "'around 6:15AM'",
+      "rain_3h_before_mm": 10.4,
+      "rain_6h_before_mm": 13.7,
+      "rain_12h_before_mm": 17.7,
+      "heavy_onset": NaN,
+      "hours_onset_to_report": NaN
+    },
+    {
+      "flood": "2016-09-19",
+      "reported_time": "2016-09-19 03:00:00",
+      "assumption": "'early hours of Monday': assume 03:00",
+      "rain_3h_before_mm": 10.2,
+      "rain_6h_before_mm": 18.3,
+      "rain_12h_before_mm": 19.1,
+      "heavy_onset": NaN,
+      "hours_onset_to_report": NaN
+    },
+    {
+      "flood": "2018-06-22",
+      "reported_time": "2018-06-22 08:00:00",
+      "assumption": "'this morning' (posted 12:36): assume 08:00",
+      "rain_3h_before_mm": 0.0,
+      "rain_6h_before_mm": 0.0,
+      "rain_12h_before_mm": 0.3,
+      "heavy_onset": NaN,
+      "hours_onset_to_report": NaN
+    },
+    {
       "flood": "2023-07-28",
       "reported_time": "2023-07-29 01:00:00",
       "assumption": "'late night 28 Jul into early hours of 29 Jul': assume 01:00",
@@ -292,6 +342,132 @@
       "chirps_day_mean": 65.1
     },
     {
+      "date": "2011-11-27",
+      "group": "flood",
+      "event_id": "FT-20111127",
+      "time_of_day": NaN,
+      "max_1h": 5.4,
+      "max_3h": 6.9,
+      "peak_3h_ends": "2011-11-28 15:30:00",
+      "max_6h": 10.9,
+      "max_24h": 20.1,
+      "max_24h_mean": 12.6,
+      "product": "final",
+      "chirps_day_mean": 10.3
+    },
+    {
+      "date": "2012-05-23",
+      "group": "flood",
+      "event_id": "FT-20120523",
+      "time_of_day": NaN,
+      "max_1h": 17.1,
+      "max_3h": 27.5,
+      "peak_3h_ends": "2012-05-23 19:30:00",
+      "max_6h": 28.7,
+      "max_24h": 35.4,
+      "max_24h_mean": 28.3,
+      "product": "final",
+      "chirps_day_mean": 18.0
+    },
+    {
+      "date": "2012-07-05",
+      "group": "flood",
+      "event_id": "FT-20120705",
+      "time_of_day": "rain from the night of Wednesday 4 July until about 09:00 on 6 July",
+      "max_1h": 19.3,
+      "max_3h": 46.3,
+      "peak_3h_ends": "2012-07-05 05:00:00",
+      "max_6h": 62.5,
+      "max_24h": 138.4,
+      "max_24h_mean": 116.9,
+      "product": "final",
+      "chirps_day_mean": 92.3
+    },
+    {
+      "date": "2012-07-09",
+      "group": "flood",
+      "event_id": "FT-20120709",
+      "time_of_day": "before 10:00 UTC (post says 'today')",
+      "max_1h": 13.6,
+      "max_3h": 35.3,
+      "peak_3h_ends": "2012-07-10 00:00:00",
+      "max_6h": 41.7,
+      "max_24h": 56.5,
+      "max_24h_mean": 34.3,
+      "product": "final",
+      "chirps_day_mean": 34.8
+    },
+    {
+      "date": "2013-06-28",
+      "group": "flood",
+      "event_id": "FT-20130628",
+      "time_of_day": NaN,
+      "max_1h": 15.9,
+      "max_3h": 38.8,
+      "peak_3h_ends": "2013-06-28 19:30:00",
+      "max_6h": 53.8,
+      "max_24h": 66.3,
+      "max_24h_mean": 48.9,
+      "product": "final",
+      "chirps_day_mean": 38.1
+    },
+    {
+      "date": "2013-07-15",
+      "group": "flood",
+      "event_id": "FT-20130715",
+      "time_of_day": "before about 12:20 UTC (posts say 'today')",
+      "max_1h": 6.7,
+      "max_3h": 11.1,
+      "peak_3h_ends": "2013-07-15 14:30:00",
+      "max_6h": 15.2,
+      "max_24h": 19.9,
+      "max_24h_mean": 16.8,
+      "product": "final",
+      "chirps_day_mean": 39.9
+    },
+    {
+      "date": "2013-08-08",
+      "group": "flood",
+      "event_id": "FT-20130808",
+      "time_of_day": "about 22:00 local time (GMT) on Thursday 8 August; second collapse between 02:00 and 03:00 on 9 August",
+      "max_1h": 25.0,
+      "max_3h": 39.7,
+      "peak_3h_ends": "2013-08-09 01:00:00",
+      "max_6h": 52.2,
+      "max_24h": 81.6,
+      "max_24h_mean": 63.6,
+      "product": "final",
+      "chirps_day_mean": 92.8
+    },
+    {
+      "date": "2013-08-16",
+      "group": "flood",
+      "event_id": "FT-20130816",
+      "time_of_day": NaN,
+      "max_1h": 14.8,
+      "max_3h": 32.5,
+      "peak_3h_ends": "2013-08-16 11:30:00",
+      "max_6h": 37.7,
+      "max_24h": 55.4,
+      "max_24h_mean": 43.6,
+      "product": "final",
+      "chirps_day_mean": 231.9
+    },
+    {
+      "date": "2013-08-21",
+      "group": "flood",
+      "event_id": "FT-20130821",
+      "time_of_day": "around 06:15",
+      "max_1h": 6.3,
+      "max_3h": 13.8,
+      "peak_3h_ends": "2013-08-21 08:30:00",
+      "max_6h": 18.0,
+      "max_24h": 34.2,
+      "max_24h_mean": 27.9,
+      "product": "final",
+      "chirps_day_mean": 53.1
+    },
+    {
       "date": "2014-05-04",
       "group": "flood",
       "event_id": "FT-20140504",
@@ -348,6 +524,62 @@
       "chirps_day_mean": 65.8
     },
     {
+      "date": "2016-07-07",
+      "group": "flood",
+      "event_id": "FT-20160707",
+      "time_of_day": "before 17:47 UTC",
+      "max_1h": 22.3,
+      "max_3h": 38.8,
+      "peak_3h_ends": "2016-07-07 19:00:00",
+      "max_6h": 46.7,
+      "max_24h": 54.3,
+      "max_24h_mean": 32.4,
+      "product": "final",
+      "chirps_day_mean": 66.9
+    },
+    {
+      "date": "2016-07-13",
+      "group": "flood",
+      "event_id": "FT-20160713",
+      "time_of_day": NaN,
+      "max_1h": 11.8,
+      "max_3h": 35.3,
+      "peak_3h_ends": "2016-07-12 07:00:00",
+      "max_6h": 52.1,
+      "max_24h": 77.4,
+      "max_24h_mean": 63.1,
+      "product": "final",
+      "chirps_day_mean": 73.2
+    },
+    {
+      "date": "2016-09-19",
+      "group": "flood",
+      "event_id": "FT-20160919",
+      "time_of_day": "overnight 18 to 19 September; deaths in the early hours of Monday 19 September",
+      "max_1h": 6.0,
+      "max_3h": 12.2,
+      "peak_3h_ends": "2016-09-19 02:00:00",
+      "max_6h": 14.1,
+      "max_24h": 21.4,
+      "max_24h_mean": 15.6,
+      "product": "final",
+      "chirps_day_mean": 37.0
+    },
+    {
+      "date": "2016-11-17",
+      "group": "flood",
+      "event_id": "FT-20161117",
+      "time_of_day": "during the day; ongoing at 20:55 UTC",
+      "max_1h": 4.8,
+      "max_3h": 10.9,
+      "peak_3h_ends": "2016-11-17 07:00:00",
+      "max_6h": 11.6,
+      "max_24h": 19.8,
+      "max_24h_mean": 14.9,
+      "product": "final",
+      "chirps_day_mean": 43.6
+    },
+    {
       "date": "2017-08-14",
       "group": "flood",
       "event_id": "FT-20170814",
@@ -374,6 +606,20 @@
       "max_24h_mean": 41.0,
       "product": "final",
       "chirps_day_mean": 57.5
+    },
+    {
+      "date": "2018-06-22",
+      "group": "flood",
+      "event_id": "FT-20180622",
+      "time_of_day": "morning",
+      "max_1h": 22.8,
+      "max_3h": 51.9,
+      "peak_3h_ends": "2018-06-22 14:00:00",
+      "max_6h": 63.9,
+      "max_24h": 67.4,
+      "max_24h_mean": 51.6,
+      "product": "final",
+      "chirps_day_mean": 14.6
     },
     {
       "date": "2019-08-02",
@@ -810,48 +1056,6 @@
       "chirps_day_mean": 158.7
     },
     {
-      "date": "2013-08-06",
-      "group": "heavy_no_flood",
-      "event_id": NaN,
-      "time_of_day": NaN,
-      "max_1h": 16.8,
-      "max_3h": 41.6,
-      "peak_3h_ends": "2013-08-05 20:00:00",
-      "max_6h": 66.8,
-      "max_24h": 137.8,
-      "max_24h_mean": 117.5,
-      "product": "final",
-      "chirps_day_mean": 100.9
-    },
-    {
-      "date": "2013-08-16",
-      "group": "heavy_no_flood",
-      "event_id": NaN,
-      "time_of_day": NaN,
-      "max_1h": 14.8,
-      "max_3h": 32.5,
-      "peak_3h_ends": "2013-08-16 11:30:00",
-      "max_6h": 37.7,
-      "max_24h": 55.4,
-      "max_24h_mean": 43.6,
-      "product": "final",
-      "chirps_day_mean": 231.9
-    },
-    {
-      "date": "2013-08-25",
-      "group": "heavy_no_flood",
-      "event_id": NaN,
-      "time_of_day": NaN,
-      "max_1h": 28.6,
-      "max_3h": 57.6,
-      "peak_3h_ends": "2013-08-25 09:00:00",
-      "max_6h": 77.6,
-      "max_24h": 100.1,
-      "max_24h_mean": 82.0,
-      "product": "final",
-      "chirps_day_mean": 118.0
-    },
-    {
       "date": "2013-08-30",
       "group": "heavy_no_flood",
       "event_id": NaN,
@@ -906,20 +1110,6 @@
       "max_24h_mean": 78.5,
       "product": "final",
       "chirps_day_mean": 120.4
-    },
-    {
-      "date": "2016-09-17",
-      "group": "heavy_no_flood",
-      "event_id": NaN,
-      "time_of_day": NaN,
-      "max_1h": 9.4,
-      "max_3h": 23.4,
-      "peak_3h_ends": "2016-09-17 08:30:00",
-      "max_6h": 40.2,
-      "max_24h": 73.0,
-      "max_24h_mean": 56.9,
-      "product": "final",
-      "chirps_day_mean": 115.7
     },
     {
       "date": "2017-07-08",

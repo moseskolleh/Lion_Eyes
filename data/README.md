@@ -31,7 +31,9 @@ line, the columns above plus `found_via` from round 3 on):
 by year, each post opened and quoted). `checked_dates_round2.json` and
 `checked_dates_round4.json` record the dates searched with no flood found, and
 posts that mention a flood without placing it in Freetown (kept out of the
-catalogue).
+catalogue). `round4_raw/` holds the round 4 file as uploaded and
+`decisions.json`, which lists the records left out or changed after checking
+each one against its quoted post.
 
 **Known gaps (November 2026):** nothing was found for 2000-2006. 2011-2013,
 2016 and 2018 now have events from round 4, mostly residents' posts. Small
