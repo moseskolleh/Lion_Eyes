@@ -1,7 +1,7 @@
 {
   "issued": "2026-11-23",
   "edition": "morning",
-  "issued_at": "2026-11-23T12:00Z",
+  "issued_at": "2026-11-23T14:43Z",
   "forecast_run": "2026-11-23 00:00 UTC",
   "observed_rain_last_3_days_mm": 0.1,
   "observed_period": "the last 3 days",
@@ -20,7 +20,7 @@
     },
     {
       "date": "2026-11-22",
-      "product": "GPM_3IMERGDE.07",
+      "product": "GPM_3IMERGDL.07",
       "mean_mm": 0.0,
       "max_mm": 0.0
     }
