@@ -1,0 +1,11 @@
+{
+ "left_out": {
+  "2012-07-11": "Girl drowned in a Freetown slum; the post gives no date of the drowning and it may belong to the 4-6 July or 9 July 2012 rain, so adding it could double-count.",
+  "2012-08-29": "X post mourns lives lost in 'yesterday's floods' in Sierra Leone but names no town; kept out unless another source places it in Freetown."
+ },
+ "changed": {
+  "2011-07-07": "kept as July 2011 (month only): the post does not give the day of the rain",
+  "2012-07-04": "dated 5 July (approx_day) with end 6 July: deaths fell somewhere in the 4-6 July rain",
+  "2013-08-08": "deaths 7 (BBC); reports range from 2 to 15"
+ }
+}

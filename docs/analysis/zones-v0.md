@@ -18,7 +18,7 @@ model.
 
 | Zone | Name | Area | Low ground near streams | Steep share | Flood places in it |
 |---|---|---|---|---|---|
-| 16 | Kroo Bay | 7.6 km² | 0.11 km² | 7% | Kroo Bay (8 events) |
+| 16 | Kroo Bay | 7.6 km² | 0.11 km² | 7% | Kroo Bay (8 events), Kingtom |
 | 11 | Kaningo | 13.6 km² | 0.21 km² | 18% | Kaningo, Lumley |
 | 23 | Cline Town | 6.6 km² | 0.06 km² | 13% | Cline Town, Kanikay |
 | 25 | Tengbeh Town | 6.2 km² | 0.14 km² | 2% | Tengbeh Town, Wilberforce |

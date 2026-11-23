@@ -1,39 +1,39 @@
-Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 2026-10-08, 19 rainy seasons, 47 dated floods.
+Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 2026-10-08, 19 rainy seasons, 45 dated floods.
 
 **How well each rain measure separates flood days from ordinary rainy-season days**
 
 | Rain measure | AUC | 90% interval | Median on flood days | Median on other days |
 |---|---|---|---|---|
 | Wettest cell, that day | 0.79 | 0.73-0.85 | 84 mm | 36 mm |
-| Peninsula average, that day | 0.80 | 0.75-0.85 | 62 mm | 22 mm |
-| Peninsula average, previous 3 days | 0.76 | 0.70-0.81 | 94 mm | 45 mm |
-| Peninsula average, previous 7 days | 0.75 | 0.69-0.82 | 202 mm | 94 mm |
-| Peninsula average, that day + previous 3 days | 0.77 | 0.71-0.83 | 127 mm | 58 mm |
+| Peninsula average, that day | 0.80 | 0.75-0.85 | 65 mm | 22 mm |
+| Peninsula average, previous 3 days | 0.77 | 0.71-0.83 | 101 mm | 45 mm |
+| Peninsula average, previous 7 days | 0.76 | 0.68-0.82 | 190 mm | 94 mm |
+| Peninsula average, that day + previous 3 days | 0.77 | 0.71-0.83 | 136 mm | 58 mm |
 
 **Warning rules: floods caught vs false alarms**
 
 | Rain measure | Fires at | Threshold | Floods caught | False alarms per season |
 |---|---|---|---|---|
-| Wettest cell, that day | top 10% of days | 62 mm | 33 of 47 | 15.0 |
-| Wettest cell, that day | top 5% of days | 87 mm | 21 of 47 | 8.2 |
-| Wettest cell, that day | top 2.5% of days | 107 mm | 16 of 47 | 4.1 |
-| Wettest cell, that day | top 1% of days | 135 mm | 10 of 47 | 1.6 |
-| Peninsula average, that day | top 10% of days | 40 mm | 30 of 47 | 16.1 |
-| Peninsula average, that day | top 5% of days | 58 mm | 24 of 47 | 8.4 |
-| Peninsula average, that day | top 2.5% of days | 75 mm | 18 of 47 | 4.2 |
-| Peninsula average, that day | top 1% of days | 98 mm | 10 of 47 | 1.6 |
-| Peninsula average, previous 3 days | top 10% of days | 100 mm | 22 of 47 | 5.9 |
-| Peninsula average, previous 3 days | top 5% of days | 126 mm | 15 of 47 | 3.8 |
-| Peninsula average, previous 3 days | top 2.5% of days | 155 mm | 9 of 47 | 1.9 |
-| Peninsula average, previous 3 days | top 1% of days | 185 mm | 5 of 47 | 0.8 |
-| Peninsula average, previous 7 days | top 10% of days | 211 mm | 21 of 47 | 3.5 |
-| Peninsula average, previous 7 days | top 5% of days | 256 mm | 12 of 47 | 2.6 |
-| Peninsula average, previous 7 days | top 2.5% of days | 300 mm | 9 of 47 | 1.4 |
-| Peninsula average, previous 7 days | top 1% of days | 349 mm | 4 of 47 | 0.8 |
-| Peninsula average, that day + previous 3 days | top 10% of days | 125 mm | 25 of 47 | 5.7 |
-| Peninsula average, that day + previous 3 days | top 5% of days | 158 mm | 19 of 47 | 2.9 |
-| Peninsula average, that day + previous 3 days | top 2.5% of days | 192 mm | 9 of 47 | 1.7 |
-| Peninsula average, that day + previous 3 days | top 1% of days | 229 mm | 6 of 47 | 0.8 |
+| Wettest cell, that day | top 10% of days | 62 mm | 31 of 45 | 15.1 |
+| Wettest cell, that day | top 5% of days | 87 mm | 21 of 45 | 8.2 |
+| Wettest cell, that day | top 2.5% of days | 107 mm | 16 of 45 | 4.1 |
+| Wettest cell, that day | top 1% of days | 135 mm | 10 of 45 | 1.6 |
+| Peninsula average, that day | top 10% of days | 40 mm | 29 of 45 | 16.2 |
+| Peninsula average, that day | top 5% of days | 58 mm | 24 of 45 | 8.4 |
+| Peninsula average, that day | top 2.5% of days | 75 mm | 18 of 45 | 4.2 |
+| Peninsula average, that day | top 1% of days | 98 mm | 10 of 45 | 1.6 |
+| Peninsula average, previous 3 days | top 10% of days | 100 mm | 23 of 45 | 5.9 |
+| Peninsula average, previous 3 days | top 5% of days | 126 mm | 15 of 45 | 3.8 |
+| Peninsula average, previous 3 days | top 2.5% of days | 155 mm | 9 of 45 | 1.9 |
+| Peninsula average, previous 3 days | top 1% of days | 185 mm | 5 of 45 | 0.8 |
+| Peninsula average, previous 7 days | top 10% of days | 211 mm | 20 of 45 | 3.5 |
+| Peninsula average, previous 7 days | top 5% of days | 256 mm | 12 of 45 | 2.6 |
+| Peninsula average, previous 7 days | top 2.5% of days | 300 mm | 9 of 45 | 1.4 |
+| Peninsula average, previous 7 days | top 1% of days | 349 mm | 4 of 45 | 0.8 |
+| Peninsula average, that day + previous 3 days | top 10% of days | 125 mm | 25 of 45 | 5.7 |
+| Peninsula average, that day + previous 3 days | top 5% of days | 158 mm | 19 of 45 | 2.9 |
+| Peninsula average, that day + previous 3 days | top 2.5% of days | 192 mm | 9 of 45 | 1.7 |
+| Peninsula average, that day + previous 3 days | top 1% of days | 229 mm | 6 of 45 | 0.8 |
 
 **Each flood: rain as a percentile of ordinary rainy-season days**
 
@@ -42,20 +42,18 @@ Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 
 | 2008-09-11 | 106 mm | 94 | 162 mm | 94 |
 | 2009-08-13 | 93 mm | 91 | 187 mm | 96 |
 | 2010-08-09 | 86 mm | 88 | 124 mm | 87 |
-| 2011-07-07 | 84 mm | 88 | 124 mm | 86 |
 | 2011-11-27 | 16 mm | 20 | 31 mm | 24 |
-| 2012-05-23 | 24 mm | 33 | 28 mm | 21 |
-| 2012-07-04 | 128 mm | 97 | 127 mm | 87 |
+| 2012-05-23 | 24 mm | 33 | 28 mm | 20 |
+| 2012-07-05 | 128 mm | 97 | 133 mm | 89 |
 | 2012-07-09 | 63 mm | 78 | 152 mm | 92 |
-| 2012-07-11 | 74 mm | 84 | 84 mm | 70 |
 | 2013-06-28 | 51 mm | 68 | 126 mm | 87 |
 | 2013-07-15 | 54 mm | 71 | 67 mm | 58 |
 | 2013-08-08 | 118 mm | 96 | 323 mm | 100 |
 | 2013-08-16 | 284 mm | 100 | 308 mm | 100 |
-| 2013-08-21 | 72 mm | 83 | 105 mm | 80 |
+| 2013-08-21 | 72 mm | 82 | 105 mm | 80 |
 | 2014-05-04 | 59 mm | 75 | 40 mm | 33 |
 | 2014-07-13 | 114 mm | 96 | 168 mm | 94 |
-| 2014-09-05 | 80 mm | 87 | 80 mm | 67 |
+| 2014-09-05 | 80 mm | 86 | 80 mm | 67 |
 | 2015-09-16 | 80 mm | 87 | 121 mm | 85 |
 | 2016-07-07 | 87 mm | 88 | 155 mm | 93 |
 | 2016-07-13 | 106 mm | 94 | 105 mm | 80 |
@@ -70,7 +68,7 @@ Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 
 | 2020-08-25 | 144 mm | 98 | 194 mm | 97 |
 | 2021-07-26 | 29 mm | 39 | 91 mm | 73 |
 | 2022-06-17 | 60 mm | 76 | 115 mm | 83 |
-| 2022-07-09 | 84 mm | 88 | 88 mm | 71 |
+| 2022-07-09 | 84 mm | 87 | 88 mm | 71 |
 | 2022-08-15 | 179 mm | 100 | 184 mm | 96 |
 | 2022-08-17 | 179 mm | 100 | 244 mm | 99 |
 | 2022-08-28 | 207 mm | 100 | 247 mm | 99 |
@@ -92,7 +90,29 @@ Source: CHIRPS v3 daily (satellite + gauges, IMERG-timed). Period 2008-04-01 to 
 | Floods | Number | AUC | 90% interval |
 |---|---|---|---|
 | Shoreline communities | 10 | 0.52 | 0.41-0.64 |
-| Inland | 37 | 0.54 | 0.46-0.63 |
+| Inland | 35 | 0.55 | 0.46-0.64 |
+
+**Season-edge thresholds: the Outlook's "wet" day on observed rain**
+
+| Months | Reduction | Threshold | Caught | False-alarm days a season | Per flood caught |
+|---|---|---|---|---|---|
+| Jul-Sep | none | 30 mm | 33 of 35 | 21.7 | 12 |
+| May, Jun, Oct, Nov | none | 30 mm | 4 of 10 | 7.3 | 35 |
+| May, Jun, Oct, Nov | as now | 18-24 mm | 7 of 10 | 12.9 | 35 |
+| May, Jun, Oct, Nov | x0.8 | 24 mm | 5 of 10 | 11.8 | 45 |
+| May, Jun, Oct, Nov | x0.6 | 18 mm | 7 of 10 | 18.8 | 51 |
+| May, Jun, Oct, Nov | x0.4 | 12 mm | 8 of 10 | 29.3 | 70 |
+
+**Season-edge thresholds: the Outlook's "very wet" day on observed rain**
+
+| Months | Reduction | Threshold | Caught | False-alarm days a season | Per flood caught |
+|---|---|---|---|---|---|
+| Jul-Sep | none | 50 mm | 26 of 35 | 10.6 | 8 |
+| May, Jun, Oct, Nov | none | 50 mm | 0 of 10 | 1.7 | - |
+| May, Jun, Oct, Nov | as now | 30-40 mm | 3 of 10 | 4.3 | 27 |
+| May, Jun, Oct, Nov | x0.8 | 40 mm | 2 of 10 | 3.4 | 32 |
+| May, Jun, Oct, Nov | x0.6 | 30 mm | 4 of 10 | 7.3 | 35 |
+| May, Jun, Oct, Nov | x0.4 | 20 mm | 5 of 10 | 16.1 | 61 |
 
 **Wettest days with no reported flood (first dates to search for missing floods)**
 

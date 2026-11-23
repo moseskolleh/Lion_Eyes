@@ -60,3 +60,14 @@ def test_flood_history_cards_have_anchors_and_map_links():
     assert 'id="FT-20130808"' in page
     assert 'href="index.html#place=' in page
     assert 'class="yearnav"' in page
+
+
+def test_flood_history_names_the_month_with_most_floods():
+    from floodwatch import events
+
+    cat = events.load_catalogue()
+    by_month = cat.groupby(cat["date"].dt.month).size()
+    top = by_month.idxmax()
+    name = ["January", "February", "March", "April", "May", "June", "July", "August",
+            "September", "October", "November", "December"][top - 1]
+    assert f"in {name}, the worst month" in site._floods_page()
