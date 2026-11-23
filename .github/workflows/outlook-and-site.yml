@@ -9,6 +9,10 @@
 #
 # One-time setup (repository settings):
 #   * Settings > Pages > Build and deployment > Source: "GitHub Actions".
+#     If it is left on "Deploy from a branch", GitHub also turns the README
+#     into a plain Jekyll page on every push to main (including the Outlook
+#     commits below) and publishes it over this site, whichever finishes last.
+#     The deploy job checks the setting and fails if it is wrong.
 #   * Settings > Secrets and variables > Actions > New repository secret
 #     EARTHDATA_TOKEN = a NASA Earthdata Login token (for observed rain).
 #     Without it the Outlook still runs, but ground wetness shows as unknown.
@@ -100,3 +104,14 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5
+
+      - name: Check that Pages publishes this workflow, not the branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          source=$(gh api "repos/${{ github.repository }}/pages" --jq .build_type)
+          echo "GitHub Pages source: $source"
+          if [ "$source" != "workflow" ]; then
+            echo "::error title=GitHub Pages is set to deploy from a branch::GitHub publishes the README over this site after every push. Fix: Settings > Pages > Build and deployment > Source: GitHub Actions, then re-run this workflow."
+            exit 1
+          fi
