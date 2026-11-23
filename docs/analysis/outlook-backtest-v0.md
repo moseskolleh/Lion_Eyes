@@ -18,7 +18,7 @@ rain rather than IMERG, because CHIRPS covers the whole period.
 
 ## 1. Before floods
 
-The morning Outlook is issued at about 08:15 Freetown time (08:13 UTC; it was 09:23 until late November 2026, which changes none of these results). Each cell is the
+The morning Outlook is issued at about 08:15 Freetown time (08:12 UTC; it was 09:23 until late November 2026, which changes none of these results). Each cell is the
 highest level the Outlook gave for the flood day or the day before it.
 
 | Flood | Reported time | 2 days before | Day before | Same morning | **In time** |

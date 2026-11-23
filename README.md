@@ -105,7 +105,7 @@ tests/
 
 ## Daily Outlook and website: one-time setup
 
-The workflow `.github/workflows/outlook-and-site.yml` runs every day at 08:13 and 20:47 UTC. It:
+The workflow `.github/workflows/outlook-and-site.yml` runs every day at 08:12 and 20:46 UTC. It:
 1. issues the Outlook;
 2. commits the bulletin and forecast archive to `main`;
 3. rebuilds the website and publishes it.
